@@ -5,7 +5,14 @@ import { Modal, Button } from 'react-bootstrap';
 export default class RevokeSso extends React.Component {
   constructor(props) {
     super(props);
+  }
 
+  componentDidMount(){
+    this.props.clickEvent({
+      pageName: "RevokeSso",
+      headerText: "REVOKE SSO",
+      subHeaderText: "GLOBAL",
+    })
   }
 
   render() {

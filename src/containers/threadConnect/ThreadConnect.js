@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import moment from "moment";
 import Highcharts from "highcharts";
 
+import "./ThreadConnect.css"
+
 import CustomCarousel from "../../components/Carousal.js";
 import PopUpModal from "../../components/PopUpModal";
 
@@ -87,7 +89,9 @@ export default class ThreadConnect extends React.Component {
               },
               {
                 buttonName: "dots",
-                onClick: "",
+                onClick: {
+                  showPopUpModal: this.showPopUpModal.bind(this),
+                },
               },
             ],
           },
@@ -160,7 +164,9 @@ export default class ThreadConnect extends React.Component {
               },
               {
                 buttonName: "dots",
-                onClick: "",
+                onClick: {
+                  showPopUpModal: this.showPopUpModal.bind(this),
+                },
               },
             ],
           },
@@ -187,6 +193,11 @@ export default class ThreadConnect extends React.Component {
 
   componentDidMount() {
     // this.highChart();
+    this.props.clickEvent({
+      pageName: "ThreadConnect",
+      headerText: "MY THREAD CONNECT SERVICE",
+      subHeaderText: "GLOBAL",
+    })
     var serviceNames = [];
     this.state.serviceCards.forEach((service) => {
       serviceNames.push(service.serviceName);

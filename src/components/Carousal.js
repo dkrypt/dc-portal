@@ -20,12 +20,11 @@ export default class CarouselItem extends React.Component {
   }
 
   componentDidMount() {
-        setTimeout(() => {
-     
+    setTimeout(() => {
       let carouselNode = document.querySelector(".carousel-indicators");
 
       if (carouselNode != null) {
-        carouselNode.classList.add("col-12","p-0");
+        carouselNode.classList.add("col-12", "p-0");
       }
     }, 100);
   }
@@ -43,8 +42,14 @@ export default class CarouselItem extends React.Component {
               <div className="row">
                 {serviceCard.map((service, index) => {
                   return (
-                    
-                    <div className={serviceCard.length < 2 ? "col-sm-4 service-tile-content" : "col service-tile-content"} key={index}>
+                    <div
+                      className={
+                        serviceCard.length < 2
+                          ? "col-sm-4 service-tile-content"
+                          : "col service-tile-content"
+                      }
+                      key={index}
+                    >
                       <div className="thumb-wrapper borderStyle p-1">
                         <Link
                           className="service-text"
@@ -95,11 +100,13 @@ export default class CarouselItem extends React.Component {
                                     <span className="greenDot"></span>
                                   ) : value == "Restarting $status" ? (
                                     <span className="yellowDot"></span>
-                                  ) : typeof value == "string" && value.includes("$open") ? (
+                                  ) : typeof value == "string" &&
+                                    value.includes("$open") ? (
                                     <a href="#">
                                       <LaunchIcon className="m-1" />
                                     </a>
-                                  ) : typeof value == "string" && value.includes("$snowimg") ? (
+                                  ) : typeof value == "string" &&
+                                    value.includes("$snowimg") ? (
                                     <a href="#">
                                       <img
                                         className="img-fluid m-1"
@@ -145,7 +152,15 @@ export default class CarouselItem extends React.Component {
                                         Grafana
                                       </Dropdown.Item>
                                       <Dropdown.Divider />
-                                      <Dropdown.Item href="#">
+                                      <Dropdown.Item
+                                        onClick={buttonData.onClick.showPopUpModal.bind(
+                                          this,
+                                          {
+                                            show: true,
+                                            buttonName: "Integration Versions",
+                                          }
+                                        )}
+                                      >
                                         Integration Version Details
                                       </Dropdown.Item>
                                     </Dropdown.Menu>

@@ -62,7 +62,7 @@ export default class CenterHeader extends React.Component {
               <input
                 type="text"
                 name="search"
-                className="round borderStyle"
+                className="round"
                 placeholder="search"
               />
               <input type="submit" className="corner" value="" />

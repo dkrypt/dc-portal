@@ -7,6 +7,13 @@ export default class EnableAccount extends React.Component {
     super(props);
 
   }
+  componentDidMount(){
+    this.props.clickEvent({
+      pageName: "EnableAccount",
+      headerText: "ENABLE ACCOUNT",
+      subHeaderText: "GLOBAL",
+    })
+  }
 
   render() {
     return (

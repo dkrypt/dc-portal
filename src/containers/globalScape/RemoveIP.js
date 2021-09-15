@@ -7,6 +7,13 @@ export default class RemoveIP extends React.Component {
     super(props);
 
   }
+  componentDidMount(){
+    this.props.clickEvent({
+      pageName: "RemoveIP",
+      headerText: "REMOVE IP",
+      subHeaderText: "GLOBAL",
+    })
+  }
 
   render() {
     return (

@@ -38,8 +38,7 @@ export default class RunNow extends React.Component {
               Event Name*
             </label>
             <div className="col-sm-8">
-              <i className="fa fa-user icon"></i>
-              {/* <textarea className="form-control form-control-sm" name="gs_eve-name" cols="40" rows="5">{this.props.eventName}</textarea> */}
+              <i className="fa fa-user icon"></i>             
               <input
                 className="form-control form-control-sm"
                 type="text"

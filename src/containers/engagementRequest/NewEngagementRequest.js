@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import "./NewEngagementRequest.css";
+
 export default class NewEngagementRequest extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +27,7 @@ export default class NewEngagementRequest extends React.Component {
         rkoPWZP: { type: "STRING", value: "" },
         EQ1v55l: { type: "STRING", value: "" },
         MeOjkkJ: { type: "STRING", value: "" },
-        EMAIL_RECEIPT: { type: "STRING", value: "" }
+        EMAIL_RECEIPT: { type: "STRING", value: "" },
       },
       submissionToken: "",
       formDisplay: "block",
@@ -41,7 +43,13 @@ export default class NewEngagementRequest extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(()=>{
+    this.props.clickEvent({
+      pageName: "NewEngagementRequest",
+      headerText: "NEW ENGAGEMENT REQUEST",
+      subHeaderText: "GLOBAL",
+    });
+
+    setTimeout(() => {
       var multipleCancelButton = new window.Choices(
         "#choices-multiple-remove-button",
         {
@@ -56,22 +64,21 @@ export default class NewEngagementRequest extends React.Component {
       );
 
       // disable past dates
-   
+
       window.jQuery(function () {
         var dtToday = new Date();
-  
+
         var month = dtToday.getMonth() + 1;
         var day = dtToday.getDate();
         var year = dtToday.getFullYear();
         if (month < 10) month = "0" + month.toString();
         if (day < 10) day = "0" + day.toString();
-  
+
         var minDate = year + "-" + month + "-" + day;
-  
+
         window.jQuery("#inputDate").attr("min", minDate);
       });
-    },50)   
-    
+    }, 50);
 
     var serviceNames = [];
 
@@ -95,7 +102,6 @@ export default class NewEngagementRequest extends React.Component {
         console.log("SubToken: ", this.state.submissionToken);
       },
     }); */
-    
   }
 
   handleInputChange(event) {

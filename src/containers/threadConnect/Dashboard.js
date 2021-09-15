@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import moment from "moment"
+import moment from "moment";
 import Highcharts from "highcharts";
 
 import CustomCarousel from "../../components/Carousal.js";
@@ -267,8 +267,16 @@ export default class Dashboard extends React.Component {
               </button>
             </div>
             <div className="col">
-                <div className="row"><div className="col text-right">System Health <span className="greenDot"></span></div></div>
-                <div className="row"><div className="col text-right">Last Restart- {this.state.date} </div></div>
+              <div className="row">
+                <div className="col text-right">
+                  System Health <span className="greenDot"></span>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col text-right">
+                  Last Restart- {this.state.date}{" "}
+                </div>
+              </div>
             </div>
           </div>
         </div>

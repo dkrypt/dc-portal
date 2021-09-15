@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 
 import Logo_GE from "../assets/images/Logo-GE1.svg";
@@ -17,6 +17,19 @@ import Icon_Confluence from "../assets/images/Icon-Confluence.svg";
 export default class Sidebar extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      userName: "Steve Rogers",
+      department: "GE Corporate",
+      currentPersona: "OWNER",
+      togglePersona: true,
+    };
+  }
+
+  handleTogglePersona(persona) {
+    this.setState({
+      currentPersona: persona,
+    });
   }
 
   render() {
@@ -33,7 +46,49 @@ export default class Sidebar extends React.Component {
               </div>
               <div className="border-bottom mx-2"></div>
               <div className="text-center user-details pt-1">
-                <b>User | GE Corporate</b>
+                <span className="user-name">
+                  <b>{this.state.userName}</b>
+                </span>
+                <span className="detail-divider mx-1">|</span>
+                <span className="department">
+                  <b>{this.state.department}</b>
+                </span>
+                {this.state.togglePersona ? (
+                  <div className="toggle-persona">
+                    <a
+                      className="dropdown-toggle"
+                      href="#"
+                      id="dropdownMenuLink"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      <b>{this.state.currentPersona}</b>
+                    </a>
+                    <div
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuLink"
+                    >
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={this.handleTogglePersona.bind(this, "OWNER")}
+                      >
+                        OWNER
+                      </a>
+                      <div className="dropdown-divider"></div>
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={this.handleTogglePersona.bind(this, "VIEWER")}
+                      >
+                        VIEWER
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
@@ -52,44 +107,46 @@ export default class Sidebar extends React.Component {
           <span className="sidebarMenu">
             <Link
               className="list-group-item list-group-item-action"
-              to="/"
-              onClick={this.props.clickEvent.bind(this, {
-                pageName: "Dashboard",
-                headerText: "DASHBOARD",
-              })}
+              to="/"              
             >
               <img className="img-fluid" alt="" src={Icon_Dashboard} />
               DASHBOARD
-            </Link>            
+            </Link>
           </span>
+          {this.state.currentPersona === "OWNER" ? (
+            <span className="sidebarMenu">
+              <Link
+                className="list-group-item list-group-item-action"
+                to="/manage"
+                onClick={this.props.clickEvent.bind(this, {
+                  pageName: "Manage",
+                  headerText: "MANAGE",
+                  subHeaderText: "GLOBAL",
+                })}
+              >
+                <img className="img-fluid" alt="" src={Icon_Subscriptions} />{" "}
+                MANAGE
+              </Link>
+            </span>
+          ) : (
+            ""
+          )}
           <span className="sidebarMenu">
             <Link
-              className="list-group-item list-group-item-action"
-              to="/manage"
-              onClick={this.props.clickEvent.bind(this, {
-                pageName: "Manage",
-                headerText: "MANAGE",                
-              })}
-            >
-              <img className="img-fluid" alt="" src={Icon_Subscriptions} />{" "}
-              MANAGE
-            </Link>           
-          </span>
-          <span className="sidebarMenu">
-          <Link
               className="list-group-item list-group-item-action"
               to="/announcements-events"
               onClick={this.props.clickEvent.bind(this, {
                 pageName: "AnnouncementsAndEvents",
                 headerText: "ANNOUNCEMENTS & EVENTS",
+                subHeaderText: "GLOBAL",
               })}
             >
               <img className="img-fluid" alt="" src={Icon_Announcements} />{" "}
               ANNOUNCEMENTS & EVENTS
-            </Link>           
+            </Link>
           </span>
           <span className="sidebarMenu">
-          <Link
+            <Link
               className="list-group-item list-group-item-action"
               to="#"
               role="button"
@@ -103,58 +160,58 @@ export default class Sidebar extends React.Component {
                 src={Icon_Engagement_Requests}
               />
               ENGAGEMENT REQUESTS
-            </Link>            
+            </Link>
             <div className="dropdown-content">
-            <Link
-              to="/newengagementrequest"
-              onClick={this.props.clickEvent.bind(this, {
-                  pageName: "NewEngagementRequest",
-                  headerText: "NEW ENGAGEMENT REQUEST",
-                })}
-            >
-              NEW ENGAGEMENT REQUEST
-            </Link>              
+              <Link
+                to="/newengagementrequest"
+              >
+                NEW ENGAGEMENT REQUEST
+              </Link>
             </div>
           </span>
           <span className="sidebarMenu">
-          <Link
+            <Link
               className="list-group-item list-group-item-action"
               to="/support"
               onClick={this.props.clickEvent.bind(this, {
                 pageName: "Support",
-                headerText: "SUPPORT",
+                headerText: "SUPPORT",                
+                subHeaderText: "GLOBAL",
               })}
             >
               <img className="img-fluid" alt="" src={Icon_Support} />
               SUPPORT
-            </Link>            
+            </Link>
           </span>
           <span className="sidebarMenu">
-          <Link
+            <Link
               className="list-group-item list-group-item-action"
               to="/preferences"
               onClick={this.props.clickEvent.bind(this, {
                 pageName: "Preferences",
                 headerText: "PREFERENCES",
+                subHeaderText: "GLOBAL",
               })}
             >
               <img className="img-fluid" alt="" src={Icon_Settings} />{" "}
               PREFERENCES
-            </Link>            
-          </span>
-          <span className="sidebarMenu">
-          <Link
-              className="list-group-item list-group-item-action"
-              to="/administration"
-              onClick={this.props.clickEvent.bind(this, {
-                pageName: "Administration",
-                headerText: "ADMINISTRATION",
-              })}
-            >
-              <img className="img-fluid" alt="" src={Icon_Administration} />{" "}
-              ADMINISTRATION
             </Link>
-            {/* Might need in future
+          </span>
+          {this.state.currentPersona === "OWNER" ? (
+            <span className="sidebarMenu">
+              <Link
+                className="list-group-item list-group-item-action"
+                to="/administration"
+                onClick={this.props.clickEvent.bind(this, {
+                  pageName: "Administration",
+                  headerText: "ADMINISTRATION",
+                  subHeaderText: "GLOBAL",
+                })}
+              >
+                <img className="img-fluid" alt="" src={Icon_Administration} />{" "}
+                ADMINISTRATION
+              </Link>
+              {/* Might need in future
              <div className="dropdown-content">
               <a
                 href="#"
@@ -167,7 +224,10 @@ export default class Sidebar extends React.Component {
                 USER MANAGEMENT
               </a>
             </div> */}
-          </span>
+            </span>
+          ) : (
+            ""
+          )}
         </div>
         <div className="col-3 footer">
           <div className="social-media text-center page-footer">

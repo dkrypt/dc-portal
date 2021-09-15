@@ -225,6 +225,13 @@ export default class Dashboard extends React.Component {
   }
 
   componentDidMount() {
+
+    this.props.clickEvent({
+      pageName: "Dashboard",
+      headerText: "DASHBOARD",
+      subHeaderText: "GLOBAL",
+    })
+    
     var serviceNames = [];
     this.state.serviceCards.forEach((service) => {
       serviceNames.push(service.serviceName)

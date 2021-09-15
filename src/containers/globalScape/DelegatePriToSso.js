@@ -22,7 +22,7 @@ export default class DelegatePriToSso extends React.Component {
           </div>
           <div className="form-group row">
           <div className="col-sm-10 text-center">
-            <Button variant="primary" onClick="">
+            <Button variant="primary" >
               Delegate Privileges
             </Button>
             </div>

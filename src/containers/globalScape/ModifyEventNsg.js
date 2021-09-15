@@ -5,7 +5,14 @@ import { Button } from 'react-bootstrap';
 export default class ModifyEventNsg extends React.Component {
   constructor(props) {
     super(props);
+  }
 
+  componentDidMount(){
+    this.props.clickEvent({
+      pageName: "ModifyEventNsg",
+      headerText: "MODIFY EVENT",
+      subHeaderText: "GLOBAL",
+    })
   }
 
   render() {

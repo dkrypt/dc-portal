@@ -1,70 +1,73 @@
-import React from "react";
-import { Tab, Nav, Row, Col } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Tab, Nav, Col, Card } from "react-bootstrap";
 import Orgspaceinstance from "../orgSpaceInstance/OrgSpaceInstance.js";
 import NewProvisioning from "./NewProvisioning.js";
 import UpdateManagement from "./UpdateManagement.js";
-function ThreadConnect() {
+function ThreadConnect(props) {
+  useEffect(() => {
+    props.clickEvent({
+      pageName: "ManageTC",
+      headerText: "MANAGE THREAD CONNECT",
+      subHeaderText: "GLOBAL",
+    });
+  }, []);
   return (
     <>
-      <Orgspaceinstance />
-      <div className="container">
-        <div className="row">
-          <div className="card">
-            <div className="card-header">
-              <Tab.Container id="left-tabs-example" defaultActiveKey="first">
-                <Row>
-                  <Col sm={12}>
-                    <Nav variant="pills" className="flex-row">
-                      <Col sm={3}>
-                        <Nav.Item className="card aligncenter">
-                          <Nav.Link eventKey="first">New Provisioning</Nav.Link>
-                        </Nav.Item>
-                      </Col>
-                      <Col sm={3}>
-                        <Nav.Item className="card aligncenter">
-                          <Nav.Link eventKey="second">
-                            Update Management
-                          </Nav.Link>
-                        </Nav.Item>
-                      </Col>
-                      <Col sm={3}>
-                        <Nav.Item className="card aligncenter">
-                          <Nav.Link eventKey="third">Deployment</Nav.Link>
-                        </Nav.Item>
-                      </Col>
-                      <Col sm={3}>
-                        <Nav.Item className="card aligncenter">
-                          <Nav.Link eventKey="four"> File-Placement</Nav.Link>
-                        </Nav.Item>
-                      </Col>
-                    </Nav>
-                  </Col>
-                  <br></br>
-                  <br></br>
-                  <br></br>
-
-                  <Col sm={12}>
-                    <Tab.Content>
-                      <Tab.Pane eventKey="first">
-                        <NewProvisioning />
-                      </Tab.Pane>
-                      <Tab.Pane eventKey="second">
-                        <UpdateManagement />
-                      </Tab.Pane>
-                      <Tab.Pane eventKey="third">
-                        {" "}
-                        <h1>Deployment </h1>{" "}
-                      </Tab.Pane>
-                      <Tab.Pane eventKey="four">
-                        <h1>File-Placement</h1>
-                      </Tab.Pane>
-                    </Tab.Content>
-                  </Col>
-                </Row>
-              </Tab.Container>
-            </div>
-          </div>
-        </div>
+      <div className="container-lg w-100 p-3 mb-3 tc-manage">
+        <Orgspaceinstance />
+        <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+          <Card className="tc-manage">
+            <Card.Header className="tc-manage">
+              <Nav variant="pills" className="tc-manage">
+                <Col md={3} className="tc-manage">
+                  <Nav.Item className="card aligncenter tc-manage ">
+                    <Nav.Link eventKey="first" className="tc-manage">
+                      New Provisioning
+                    </Nav.Link>
+                  </Nav.Item>
+                </Col>
+                <Col md={3} className="tc-manage">
+                  <Nav.Item className="card aligncenter tc-manage ">
+                    <Nav.Link eventKey="second" className="tc-manage">
+                      Update Management
+                    </Nav.Link>
+                  </Nav.Item>
+                </Col>
+                <Col md={3} className="tc-manage">
+                  <Nav.Item className="card aligncenter tc-manage">
+                    <Nav.Link eventKey="third" className="tc-manage">
+                      Deployment
+                    </Nav.Link>
+                  </Nav.Item>
+                </Col>
+                <Col md={3} className="tc-manage">
+                  <Nav.Item className="card aligncenter tc-manage">
+                    <Nav.Link eventKey="four" className="tc-manage">
+                      File-Placement
+                    </Nav.Link>
+                  </Nav.Item>
+                </Col>
+              </Nav>
+            </Card.Header>
+            <Card.Body className="tc-manage">
+              <Tab.Content className="tc-manage">
+                <Tab.Pane eventKey="first" className="tc-manage">
+                  <NewProvisioning />
+                </Tab.Pane>
+                <Tab.Pane eventKey="second" className="tc-manage">
+                  <UpdateManagement />
+                </Tab.Pane>
+                <Tab.Pane eventKey="third" className="tc-manage">
+                  {" "}
+                  <h1>Deployment </h1>{" "}
+                </Tab.Pane>
+                <Tab.Pane eventKey="four" className="tc-manage">
+                  <h1>File-Placement</h1>
+                </Tab.Pane>
+              </Tab.Content>
+            </Card.Body>
+          </Card>
+        </Tab.Container>
       </div>
     </>
   );

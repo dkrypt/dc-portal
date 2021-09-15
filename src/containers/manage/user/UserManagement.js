@@ -60,9 +60,83 @@ const UserManagement = (props) => {
 
   return (
     <>
-      {/* <Form> */}
-      <OrgSpaceInstance />
-      {/* <AdminBox adminData={adminList} /> */}
+      <Row className="mb-3">
+        <Form.Group as={Col} md="4" controlId="validationFormik03">
+          <Form.Label className="select-label">Org</Form.Label>
+
+          <select
+            className="form-select classic select-height"
+            // value={values.InstanceName}
+            // onChange={InstanceHandleChange}
+            // onchange={handleChange}
+            // style={{ height: "40px" }}
+            // isInvalid={!!errors.InstanceName}
+            // defaultValue=""
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.InstanceName}
+          >
+            <option defaultValue> Select org </option>
+            <option value="org1">Org1</option>
+            <option value="org2">Org2</option>
+            <option value="org3">Org3</option>
+          </select>
+          <Form.Control.Feedback type="invalid">
+            {/* {errors.InstanceName} */}
+          </Form.Control.Feedback>
+          {/* </FloatingLabel> */}
+        </Form.Group>
+        <Form.Group as={Col} md="4" controlId="validationFormik03">
+          <Form.Label className="select-label">Space</Form.Label>
+
+          <select
+            className="form-select classic select-height"
+            // value={values.InstanceName}
+            // onChange={InstanceHandleChange}
+            // onchange={handleChange}
+            // style={{ height: "40px" }}
+            // isInvalid={!!errors.InstanceName}
+            // defaultValue=""
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.InstanceName}
+          >
+            <option defaultValue> Select Space </option>
+            <option value="Space1">Space1</option>
+            <option value="Space2">Space2</option>
+            <option value="Space3">Space3</option>
+          </select>
+          <Form.Control.Feedback type="invalid">
+            {/* {errors.Space} */}
+          </Form.Control.Feedback>
+          {/* </FloatingLabel> */}
+        </Form.Group>
+        <Form.Group as={Col} md="4" controlId="validationFormik03">
+          <Form.Label className="select-label">instance</Form.Label>
+
+          <select
+            className="form-select classic select-height"
+            // value={values.InstanceName}
+            // onChange={InstanceHandleChange}
+            // onchange={handleChange}
+            // style={{ height: "40px" }}
+            // isInvalid={!!errors.InstanceName}
+            // defaultValue=""
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.InstanceName}
+          >
+            <option defaultValue> Select instance </option>
+            <option value="instance1">instance1</option>
+            <option value="instance2">instance2</option>
+            <option value="instance3">instance3</option>
+          </select>
+          <Form.Control.Feedback type="invalid">
+            {/* {errors.Space} */}
+          </Form.Control.Feedback>
+          {/* </FloatingLabel> */}
+        </Form.Group>
+      </Row>
       <Row style={{ display: "flex", flexDirection: "row" }}>
         <Col>
           <AdminBox adminData={adminList} label="Admin user" />
@@ -177,7 +251,6 @@ const UserManagement = (props) => {
           <Button type="submit">Submit</Button>
         </div>
       </div>
-      {/* </Form> */}
     </>
   );
 };

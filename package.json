@@ -6,6 +6,7 @@
   "homepage": "v1.2beta/assets",
   "scripts": {
     "start": "cross-env PORT=3011 REACT_APP_BASEURL=/ PUBLIC_URL=/ react-scripts start",
+    "build:dev": "cross-env REACT_APP_BASEURL=/ PUBLIC_URL=/ react-scripts build",
     "build": "cross-env REACT_APP_BASEURL=/v1.2beta/dcsc react-scripts build",
     "preinstall": "npx npm-force-resolutions",
     "test": "nyc cross-env NODE_ENV=test jasmine",
@@ -16,22 +17,32 @@
   "author": "Shubham Paskanti",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/core": "4.12.3",
+    "@material-ui/icons": "4.11.2",
     "@testing-library/jest-dom": "5.14.1",
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "12.8.3",
     "axios": "0.21.1",
-    "@material-ui/core": "4.12.3",
-    "@material-ui/icons": "4.11.2",
+    "formik": "^2.2.9",
     "highcharts": "9.2.0",
     "moment": "2.29.1",
     "moment-timezone": "0.5.33",
     "react": "17.0.2",
     "react-bootstrap": "1.6.1",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-editor": "^1.4.0",
+    "react-bootstrap-table2-toolkit": "^2.1.3",
+    "react-data-table-component": "^6.11.8",
     "react-dom": "17.0.2",
+    "react-loader-spinner": "^4.0.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.3",
+    "react-select": "^4.3.1",
+    "react-table": "^7.7.0",
+    "styled-components": "^5.3.1",
     "uuid": "8.3.2",
-    "web-vitals": "1.1.2"
+    "web-vitals": "1.1.2",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "7.15.0",
@@ -79,7 +90,9 @@
       "no-useless-constructor": "off",
       "jsx-a11y/anchor-is-valid": "off",
       "jsx-a11y/role-supports-aria-props": "off",
-      "react/jsx-no-target-blank": "off"
+      "react/jsx-no-target-blank": "off",
+      "no-useless-concat": "off",
+      "react-hooks/exhaustive-deps": "off"
     }
   },
   "browserslist": {

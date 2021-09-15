@@ -41,7 +41,7 @@ function Manage(props) {
         <div style={CardCss.card}>
           <Link
             // className="list-group-item list-group-item-action"
-            to="/managesubscription"
+            to="/manage/managesubscription"
             onClick={props.clickEvent.bind(this, {
               pageName: "Subscription",
               headerText: "SUBSCRIPTION",
@@ -98,7 +98,7 @@ function Manage(props) {
           > */}
           <Link
             // className="list-group-item list-group-item-action"
-            to="/manageuser"
+            to="/manage/manageuser"
             onClick={props.clickEvent.bind(this, {
               pageName: "User",
               headerText: "Manage User",
@@ -133,7 +133,7 @@ function Manage(props) {
           > */}
           <Link
             // className="list-group-item list-group-item-action"
-            to="/managetc"
+            to="/manage/managetc"
             onClick={props.clickEvent.bind(this, {
               pageName: "ManageTC",
               headerText: "MANAGE THREAD CONNECT",
@@ -172,7 +172,7 @@ function Manage(props) {
           > */}
           <Link
             // className="list-group-item list-group-item-action"
-            to="/managetc"
+            to="/manage/manage_ec"
             onClick={props.clickEvent.bind(this, {
               pageName: "Enterpriseconnect",
               headerText: "ENTERPRISECONNECT",

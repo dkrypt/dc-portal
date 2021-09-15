@@ -1,0 +1,61 @@
+.form-group {
+  position: unset !important;
+}
+
+.form-group.required .control-label:after {
+  content: "*";
+  color: red;
+}
+
+.choices__inner {
+  background-color: inherit !important;
+  border-radius: 0.25rem !important;
+  border: 1px solid #ced4da !important;
+}
+
+.choices__inner:focus {
+  border: 1px solid black !important;
+}
+
+.choices__input {
+  background-color: inherit !important;
+}
+
+.choices__list--multiple .choices__item {
+  background-color: #005eb8 !important;
+  border: #005eb8 !important;
+}
+
+.choices__list--dropdown .choices__item,
+.choices__list--dropdown .choices__list,
+.choices__list--dropdown,
+.choices {
+  position: unset !important;
+}
+
+.choices__list--dropdown .choices__item {
+  font-size: 1rem !important;
+  font-weight: 400;
+  color: #495057 !important;
+}
+
+
+.choices {
+  border-radius: 0.25rem !important;
+}
+
+.choices:focus {
+  border-color: inherit !important;
+  outline: 0;
+  box-shadow: inherit !important;
+}
+
+.post-submit-msg {
+  padding: 34vh;
+}
+
+.form-control:focus {
+  border-color: inherit !important;
+  outline: 0;
+  box-shadow: inherit !important;
+}

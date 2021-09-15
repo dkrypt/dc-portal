@@ -1,10 +1,10 @@
-import React from "react";
-import { Table } from "react-bootstrap";
+import React, { useState } from "react";
+import { Row, Col, Table } from "react-bootstrap";
 
 import defaultLogo from "../../assets/images/Logo-UserProfile.jpg";
 
 export default function Users() {
-  const tableData = [
+  const initialTableData = [
     {
       userName: "Shubham Paskanti",
       userId: "503249986",
@@ -62,8 +62,63 @@ export default function Users() {
     },
   ];
 
+  const [emailid, setEmailid] = useState("");
+  const [role, setRole] = useState("");
+  const [tableData, setData] = useState(initialTableData);
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    var tempData = {
+      userName: emailid,
+      userId: emailid,
+      emailId: emailid,
+      accessPermissions: {
+        developer: role === "Developer" ? true : false,
+        admin: false,
+        viewer: role === "Viewer" ? true : false,
+      },
+      imgSrc: "",
+    }
+
+    var currentData = Object.assign([],tableData)
+
+    currentData.push(tempData)
+
+    setData(currentData)
+  };
+
   return (
     <>
+      <div className="row">
+        <div className="col mb-2">
+          <form id="search-form" onSubmit={handleSubmit}>
+            <input
+              className="col-4 borderStyle p-1"
+              name="emailid"
+              type="search"
+              placeholder="Enter Email ID"
+              onChange={(e) => setEmailid(e.target.value)}
+              required
+            ></input>
+            <select
+              className="col-4 borderStyle ml-1 tc-user-role"
+              name="role"
+              onChange={(e) => setRole(e.target.value)}
+              placeholder="Select a Role"
+              required
+            >
+              <option defaultValue>
+                Select a Role
+              </option>
+              <option>Developer</option>
+              <option>Viewer</option>
+            </select>
+            <button type="submit" className="btn-secondary ml-1 borderStyle">
+              <small>Add User</small>
+            </button>
+          </form>
+        </div>
+      </div>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>

@@ -8,7 +8,7 @@ const ToastMessage = ({ showToast, updateToast, toastMessage }) => {
       onClose={() => updateToast(false, "")}
       show={showToast}
       delay={3000}
-      autohide
+      
     >
       <Toast.Header>
         <img src={Icon_TC} className="rounded me-2" alt="" />

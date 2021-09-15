@@ -171,6 +171,13 @@ export default class Dive extends React.Component {
   }
 
   componentDidMount() {
+
+    this.props.clickEvent({
+      pageName: "Dive",
+      headerText: "MY DIVE SERVICE",
+      subHeaderText: "GLOBAL",
+    })
+
     var serviceNames = [];
     this.state.serviceCards.forEach((service) => {
       serviceNames.push(service.serviceName);
