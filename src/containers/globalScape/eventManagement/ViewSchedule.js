@@ -4,9 +4,10 @@ import {ViewScheduleDaily} from "./ViewScheduleDaily.js";
 import {ViewScheduleOnce} from "./ViewScheduleOnce.js";
 
 export const ViewSchedule = ({ closeModal, toastMessage, openModal, eventName }) => {
-  // const [scheduleTime, setScheduleTime] = useState('');
+  const [scheduleTime, setScheduleTime] = useState('');
   // const [showCalendar, setShowCalendar] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showModalDaily, setShowModalDaily] = useState(false);
   const [showModalOnce, setShowModalOnce] = useState(false);
   const [selectedEventName, setSelectedEventName] = useState('');
   const onEnablebuttonClick = () => {

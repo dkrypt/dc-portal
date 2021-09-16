@@ -3,7 +3,7 @@ import AxiosInstance from "../api/api.js";
 import { Spinner } from "react-bootstrap";
 import {ViewSchedule} from "./ViewSchedule.js";
 
-export const EventListButtons = ({ eventName, toastMessage }) => {
+export const EventListButtons = ({ eventName, toastMessage, isLoader }) => {
   // State getters and setters
   const [runNowData, setRunNowData] = useState('');
   const [enableData, setEnableData] = useState('');
@@ -13,10 +13,12 @@ export const EventListButtons = ({ eventName, toastMessage }) => {
   const [selectedOption, setSelectedOption] = useState('');
   const [showModal, setShowModal] = useState(false);
   const runNowClick = () => {
+    isLoader(true);
     setLoaded(true);
     AxiosInstance.post(`/ASYNCExecuteEvent?EventRuleName=${eventName}&ID=12345`)
       .then((response) => {
         setRunNowData(response.data);
+        isLoader(true);
         setLoaded(false);
         toastMessage(true, runNowData);
       })
@@ -34,17 +36,21 @@ export const EventListButtons = ({ eventName, toastMessage }) => {
     }  
   }
   const enableNow = () => {
+    isLoader(true);
     AxiosInstance.post(`/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=true`)    
       .then((response) => {
         setEnableData(response.data);
+        isLoader(false);
         toastMessage(true, enableData);
       })
       .catch((e) => console.error(e));
   }
   const disableNow = () => {
+    isLoader(true);
     AxiosInstance.post(`/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=false`)    
       .then((response) => {
         setDisableData(response.data);
+        isLoader(false);
         toastMessage(true, disableData);
       })
       .catch((e) => console.error(e));

@@ -3,9 +3,9 @@ import Breadcrumb from "../breadcrumb/Breadcrumb";
 
 export const CenterHeader = (props) => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light">
-      <div className="headers row">
-        <div className="col pr-0">
+    <div className="container-fluid p-2 center-header">
+      <div className="row ml-2 mt-4 headers">
+        <div className="col p-0">
           {props.headerText}
 
           <span className="global-icon ml-1">
@@ -23,7 +23,6 @@ export const CenterHeader = (props) => {
             <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
               <a
                 className="dropdown-item"
-                href="#"
                 onClick={() => props.onPersonaChange({
                   personaName: "GLOBAL",
                 })}
@@ -35,15 +34,15 @@ export const CenterHeader = (props) => {
                 return (
                   <Fragment key={index}>
                     <div className="dropdown-divider"></div>
-                    <a
-                      className="dropdown-item"
-                      href="#"
+                    <div className="dropdown-item">﹂<a
+                      className="sub-org-space"
                       onClick={() => props.onPersonaChange({
                         personaName: option,
                       })}
                     >
                       {option}
-                    </a>
+                    </a></div>
+                    
                   </Fragment>
                 );
               })}
@@ -51,8 +50,11 @@ export const CenterHeader = (props) => {
           </span>
         </div>
       </div>
-      <div className="col-sm"></div>
-      <div className="search-bar">
+      <div className="row ml-2 mt-3 .service-tile-content">
+        <Breadcrumb />
+      </div>
+      {/* Disabled Search Option for Time Being */}
+      {/* <div className="search-bar">
         <form id="search-form">
           <div className="search">
             <input
@@ -64,7 +66,7 @@ export const CenterHeader = (props) => {
             <input type="submit" className="corner" value="" />
           </div>
         </form>
-      </div>
-    </nav>
+      </div> */}
+    </div>
   );
 };

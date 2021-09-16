@@ -8,6 +8,7 @@ import {RemoveIP} from "./RemoveIP.js";
 import {AssignGroup} from "./AssignGroup.js";
 import {DisableAccount} from "./DisableAccount.js";
 import { Link } from "react-router-dom";
+import './GlobalScape.css';
 
 export const GlobalScape = () => {
   const [currentStep, setCurrentStep] = useState(0);

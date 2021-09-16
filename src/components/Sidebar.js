@@ -94,8 +94,10 @@ export default function Sidebar(props) {
       <div className="list-group list-group-flush p-0 mt-2">
         <span className="sidebarMenu">
           <Link className="list-group-item list-group-item-action" to="/">
-            <img className="img-fluid" alt="" src={Icon_Dashboard} />
-            DASHBOARD
+            <div className="navlink-wrapper">
+              <img className="img-fluid" alt="" src={Icon_Dashboard} />
+              <span>DASHBOARD</span>
+            </div>
           </Link>
         </span>
         <span className="sidebarMenu">

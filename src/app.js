@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { StoreProvider, createStore } from 'easy-peasy';
 import "./app.css";
 
 import Sidebar from "./components/Sidebar.js";
@@ -7,12 +8,12 @@ import {CenterHeader} from "./components/CenterHeader.js";
 import {CookieNotification} from "./components/CookieNotification";
 import Router from "./router/Router.js";
 import ReactLoader from "./components/ReactLoader";
-import Breadcrumb from "./breadcrumb/Breadcrumb.js";
-import Logout from "./components/Logout.js";
+import StoreModel from './StoreModel';
 
 const BASE_ENDPOINT = process.env.REACT_APP_BASEURL;
 
 const API_ENDPOINT = "/v1.2beta/dcsc/api/";
+const store = createStore(StoreModel);
 
 export default function App() {
   const [appState, setAppState] = useState({
@@ -102,49 +103,47 @@ export default function App() {
   };
 
   return (
-    <BrowserRouter basename={BASE_ENDPOINT}>
-      <Fragment>
-        <div
-          className="loader container-fluid"
-          style={{ display: appState.isloading }}
-        >
-          <div className="row w-100 h-100 text-center">
-            <ReactLoader />
+    <StoreProvider store={store}>
+      <BrowserRouter basename={BASE_ENDPOINT}>
+        <Fragment>
+          <div
+            className="loader container-fluid"
+            style={{ display: appState.isloading }}
+          >
+            <div className="row w-100 h-100 text-center">
+              <ReactLoader />
+            </div>
           </div>
-        </div>
-        <div className="MainDiv">
-          {/* <Logout /> */}
-          <div className="row m-0">
-            <Sidebar
-              clickEvent={switchPage}
-              displayUsername={defaultUsername}
-            />
-
-            <div className="col-9 p-0 page-content-wrapper">
-              <CenterHeader
-                headerText={appState.headerText}
-                subText={appState.subHeaderText}
-                subHeaderOpts={appState.subHeaderOpts}
-                onPersonaChange={changePersona}
+          <div className="MainDiv">
+            <div className="row m-0">
+              <Sidebar
+                clickEvent={switchPage}
+                displayUsername={defaultUsername}
               />
-
-              <div className="container-fluid center-container d-grid mb-2">
-                {/* <Breadcrumb /> */}
-                <Router
-                  clickEvent={switchPage}
-                  persona={appState.subHeaderText}
-                  setPersonaHandler={setPersonaOptions}
-                  baseUrl={appState.endPoint}
-                  authToken={appState.authToken}
-                  isLoader={isLoader}
-                  changeUsername={changeUsername}
+              <div className="col-9 p-0 page-content-wrapper">
+                <CenterHeader
+                  headerText={appState.headerText}
+                  subText={appState.subHeaderText}
+                  subHeaderOpts={appState.subHeaderOpts}
+                  onPersonaChange={changePersona}
                 />
-                <CookieNotification />
+                <div className="container-fluid center-container d-grid mb-2">
+                  <Router
+                    clickEvent={switchPage}
+                    persona={appState.subHeaderText}
+                    setPersonaHandler={setPersonaOptions}
+                    baseUrl={appState.endPoint}
+                    authToken={appState.authToken}
+                    isLoader={isLoader}
+                    changeUsername={changeUsername}
+                  />
+                  <CookieNotification />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Fragment>
-    </BrowserRouter>
+        </Fragment>
+      </BrowserRouter>
+    </StoreProvider>
   );
 }

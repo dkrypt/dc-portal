@@ -61,6 +61,7 @@ img{
 }
 
 .sidebar-heading {
+  height: 9.5em;
   display: flex;
   flex-flow: column;
   padding: 1rem 1rem 1rem 1rem !important;
@@ -120,8 +121,8 @@ img{
 }
 
 .center-header{
+  height: 9.5em;
   position: fixed !important;
-  height: 7rem !important;
   background-color: white;
 }
 
@@ -245,9 +246,8 @@ a:hover {
   font-size: 0.8em;
 }
 .center-container {
-  margin-top: 7rem;
+  margin-top: 9.5em;
 }
-
 .navbar-expand-lg {
   position: fixed !important;
   height: 6.2rem;
