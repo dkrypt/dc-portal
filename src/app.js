@@ -3,8 +3,8 @@ import { BrowserRouter } from "react-router-dom";
 import "./app.css";
 
 import Sidebar from "./components/Sidebar.js";
-import CenterHeader from "./components/CenterHeader.js";
-import CookieNotification from "./components/CookieNotification";
+import {CenterHeader} from "./components/CenterHeader.js";
+import {CookieNotification} from "./components/CookieNotification";
 import Router from "./router/Router.js";
 import ReactLoader from "./components/ReactLoader";
 import Breadcrumb from "./breadcrumb/Breadcrumb.js";

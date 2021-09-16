@@ -10,9 +10,7 @@ import Icon_Engagement_Requests from "../assets/images/Icon-Engagement-Requests.
 import Icon_Support from "../assets/images/Icon-Support.svg";
 import Icon_Settings from "../assets/images/Icon-Settings.svg";
 import Icon_Administration from "../assets/images/Icon-Administration.svg";
-import Icon_Github from "../assets/images/Icon-Github.svg";
-import Icon_Yammer from "../assets/images/Icon-Yammer.svg";
-import Icon_Confluence from "../assets/images/Icon-Confluence.svg";
+import { Footer } from "./Footer";
 
 export default function Sidebar(props) {
   const [userName, setUserName] = useState("Steve Rogers");
@@ -235,17 +233,7 @@ export default function Sidebar(props) {
           ""
         )}
       </div>
-      <div className="col-3 footer">
-        <div className="social-media text-center page-footer">
-          <div className="social-tag text-muted">Socialize With Us</div>
-          <img alt="" className="img-fluid px-2" src={Icon_Github} />
-          <img alt="" className="img-fluid px-2" src={Icon_Yammer} />
-          <img alt="" className="img-fluid px-2" src={Icon_Confluence} />
-        </div>
-        <div className="footer-copyright text-center text-muted mt-2">
-          © 2021 GENERAL ELECTRIC
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }

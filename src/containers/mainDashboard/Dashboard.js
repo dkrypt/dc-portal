@@ -1,10 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { Carousel, Dropdown } from "react-bootstrap";
-
-import { Link } from "react-router-dom";
-
-import CustomCarousel from "../../components/Carousal.js";
+import {Carousal as CustomCarousel} from "../../components/Carousal.js";
 
 import Icon_TC from "../../assets/images/Icon-TC.png";
 import Icon_EC from "../../assets/images/Icon-EC.svg";

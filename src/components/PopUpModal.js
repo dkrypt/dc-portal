@@ -10,7 +10,7 @@ export default function PopUpModal(props) {
 
   return (
     <>
-      <Modal show={show} onHide={props.onClose.bind(this, false)}>
+      <Modal show={show} onHide={() => props.onClose(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{props.modalName}</Modal.Title>
         </Modal.Header>

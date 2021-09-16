@@ -211,19 +211,39 @@ a:hover {
 }
 
 .footer {
-  user-select: none;
-  position: fixed !important;
-  bottom: 1rem;
+  position: absolute !important;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-bottom: 1rem;
 }
 
 .social-tag {
-  font-size: 0.72em;
+  font-size: 1.2rem;
+}
+.social-media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.social-media-bar {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+.img-size-2 {
+  height: 40px;
+  width: 40px;
 }
 
 .footer-copyright {
-  font-size: 0.88em;
+  /* font-size: 1rem; */
 }
 
+.text-meta {
+  font-size: 0.8em;
+}
 .center-container {
   margin-top: 7rem;
 }

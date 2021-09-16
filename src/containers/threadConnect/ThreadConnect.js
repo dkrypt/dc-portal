@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import "./ThreadConnect.css";
 
-import CustomCarousel from "../../components/Carousal.js";
+import {Carousal as CustomCarousel} from "../../components/Carousal.js";
 import PopUpModal from "../../components/PopUpModal";
 
 import Icon_TC from "../../assets/images/Icon-TC.png";

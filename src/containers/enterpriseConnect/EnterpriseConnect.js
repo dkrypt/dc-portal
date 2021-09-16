@@ -1,18 +1,12 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Highcharts from "highcharts";
 
-export default class EnterpriseConnect extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    this.highChart();
-    this.props.setPersonaHandler([]);
-  }
-
-  // istanbul ignore next
-  highChart() {
+export const EnterpriseConnect = ({ setPersonaHandler, }) => {
+  useEffect(() => {
+    highChart();
+    setPersonaHandler();
+  }, []);
+  const highChart = () => {
     // Create the chart
     Highcharts.chart("pieContainer", {
       chart: {
@@ -209,117 +203,64 @@ export default class EnterpriseConnect extends React.Component {
       ],
     });
   }
-
-  render() {
-    return (
-      <Fragment>
-        <div className="container-lg w-100 p-3 borderStyle mb-3">
-          <div className="row mx-1">
-            <div className="col mx-1 borderStyle">
-              <div className="card border-0">
-                <div className="card-body p-0">
-                  <div id="barContainer" style={{ height: "15rem" }}></div>
-                </div>
+  return (
+    <Fragment>
+      <div className="container-lg w-100 p-3 borderStyle mb-3">
+        <div className="row mx-1">
+          <div className="col mx-1 borderStyle">
+            <div className="card border-0">
+              <div className="card-body p-0">
+                <div id="barContainer" style={{ height: "15rem" }}></div>
               </div>
             </div>
-            <div className="col mx-1 borderStyle">
-              <div className="card border-0">
-                <div className="card-body p-0">
-                  <div id="columnContainer" style={{ height: "15rem" }}></div>
-                </div>
-              </div>
-            </div>
-            <div className="col mx-1 borderStyle">
-              <div className="card border-0">
-                <div className="card-body p-0">
-                  <div id="pieContainer" style={{ height: "15rem" }}></div>
-                </div>
-              </div>
-            </div>
-            {/* <div className="col service-tile-content m-1 borderStyle p-2 text-left">
-              <div className="titles">SUMMARY</div>
-              <div className="row service-details">
-                <div className="col service-tile-content">Gateway Count: 8</div>
-                <div className="col service-tile-content">
-                  Gateway Status: <span className="greenDot"></span>
-                </div>
-                <div className="col service-tile-content">Agent Count: 4</div>
-                <div className="col service-tile-content">
-                  Agent Status: <span className="redDot"></span>
-                </div>
-              </div>
-            </div> */}
-            {/* <div className="col service-tile-content m-1 borderStyle p-2 text-left">
-              <div className="titles">AGENTS - CLIENTS & SERVER</div>
-              <div className="row service-details g-2">
-                <div className="col service-tile-content">
-                  Customer Connect JMS Client Agent #922838
-                </div>
-                <div className="col service-tile-content">
-                  Customer Connect JMS Server Agent #922838
-                </div>
-                <div className="col service-tile-content">
-                  SCX Racer DB Client Agent #959034
-                </div>
-                <div className="col service-tile-content">
-                  SCX Racer DB Server Agent #959034
-                </div>
-              </div>
-            </div> */}
           </div>
-        </div>
-        <div className="container-lg w-100 p-3 borderStyle">
-          <div className="row service-text p-3">
-            <div className="col service-tile-content borderStyle p-3 mx-1">
-              <div className="titles mb-1">SUMMARY</div>
-              <ul className="list-unstyled service-details m-0">
-                <li>Licenses Has Been Created: 6</li>
-                <li>Active Client/Server Instance: 10</li>
-                <li>Active Connectivity in Client Pool: 30</li>
-                <li>Gateway Scaling: 5</li>
-                <li>Failed Connection Since Launched: 5</li>
-              </ul>
-              {/* <div className="row service-text">
-                <div className="col service-tile-content">
-                  <div className="titles">ALERTS</div>
-                  <ul className="list-unstyled service-details">
-                    <li>
-                      Client Agent #9281824 (Customer Connect JMS) is restarting
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
+          <div className="col mx-1 borderStyle">
+            <div className="card border-0">
+              <div className="card-body p-0">
+                <div id="columnContainer" style={{ height: "15rem" }}></div>
+              </div>
             </div>
-            <div className="col service-tile-content borderStyle p-3 mx-1">
-              <div className="titles mb-1">Additional Links</div>
-              <ul className="list-unstyled service-details m-0">
-                <li>
-                  <a href="#">@Access Customer Portal</a>
-                </li>
-                <li>
-                  <a href="#">@Webhook Creations</a>
-                </li>
-                <li>
-                  <a href="#">@New Gateway Service Request</a>
-                </li>
-                <li>
-                  <a href="#">@New License Request</a>
-                </li>
-              </ul>
-              {/* <div className="row service-text">
-                <div className="col service-tile-content">
-                  <div className="titles">ALERTS</div>
-                  <ul className="list-unstyled service-details">
-                    <li>
-                      Client Agent #9281824 (Customer Connect JMS) is restarting
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
+          </div>
+          <div className="col mx-1 borderStyle">
+            <div className="card border-0">
+              <div className="card-body p-0">
+                <div id="pieContainer" style={{ height: "15rem" }}></div>
+              </div>
             </div>
           </div>
         </div>
-      </Fragment>
-    );
-  }
-}
+      </div>
+      <div className="container-lg w-100 p-3 borderStyle">
+        <div className="row service-text p-3">
+          <div className="col service-tile-content borderStyle p-3 mx-1">
+            <div className="titles mb-1">SUMMARY</div>
+            <ul className="list-unstyled service-details m-0">
+              <li>Licenses Has Been Created: 6</li>
+              <li>Active Client/Server Instance: 10</li>
+              <li>Active Connectivity in Client Pool: 30</li>
+              <li>Gateway Scaling: 5</li>
+              <li>Failed Connection Since Launched: 5</li>
+            </ul>
+          </div>
+          <div className="col service-tile-content borderStyle p-3 mx-1">
+            <div className="titles mb-1">Additional Links</div>
+            <ul className="list-unstyled service-details m-0">
+              <li>
+                <a href="#">@Access Customer Portal</a>
+              </li>
+              <li>
+                <a href="#">@Webhook Creations</a>
+              </li>
+              <li>
+                <a href="#">@New Gateway Service Request</a>
+              </li>
+              <li>
+                <a href="#">@New License Request</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  );
+};

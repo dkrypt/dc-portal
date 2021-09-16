@@ -1,19 +1,8 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Highcharts from "highcharts";
 
-export default class DivePower extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    this.highChart();
-    this.props.setPersonaHandler([]);
-  }
-
-  // istanbul ignore next
-  highChart() {
-    // Create the chart
+export const DivePower = ({ setPersonaHandler }) => {
+  const highCharts = () => {
     Highcharts.chart("container", {
       chart: {
         type: "line",
@@ -27,9 +16,6 @@ export default class DivePower extends React.Component {
           fontSize: "1.5vw !important",
         },
       },
-      // subtitle: {
-      //     text: 'Source: WorldClimate.com'
-      // },
       xAxis: {
         categories: [
           "Jan",
@@ -45,11 +31,6 @@ export default class DivePower extends React.Component {
           "Nov",
           "Dec",
         ],
-      },
-      yAxis: {
-        // title: {
-        //     text: 'GE Power PMXE2E'
-        // }
       },
       plotOptions: {
         line: {
@@ -68,95 +49,85 @@ export default class DivePower extends React.Component {
         },
       ],
     });
-  }
+  };
+  useEffect(() => {
+    highCharts();
+    setPersonaHandler([])
+  }, []);
+  return (
+    <Fragment>
+      <div className="container-lg w-100 p-3 borderStyle mb-5">
+        <div className="row mx-1">
+          <div className="col service-tile-content m-1 borderStyle p-2 text-left">
+            <div className="titles">SUMMARY</div>
+            <div className="row service-details">
+              <div className="col service-tile-content">
+                Dashboard Count: 8
+              </div>
+              <div className="col service-tile-content">
+                Dashboard Status: <span className="yellowDot"></span>
+              </div>
+              <div className="col service-tile-content">
+                Subscription Status: <span className="greenDot"></span>
+              </div>
+              <div className="col service-tile-content">User Count: 4</div>
+            </div>
+          </div>
+          <div className="col service-tile-content m-1 borderStyle p-2 text-left">
+            <div className="titles">SUBSCRIPTION SUMMARY</div>
+            <div className="row service-details g-2">
+              <div className="col service-tile-content">
+                Ariba Vendor Onboarding
+              </div>
+              <div className="col service-tile-content">
+                BMS_Material Master
+              </div>
+              <div className="col service-tile-content">
+                BMS_Production Order
+              </div>
+              <div className="col service-tile-content">Goods Receipt</div>
+              <div className="col service-tile-content">Purchare Order</div>
+              <div className="col service-tile-content">Tech Assignment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="container-lg w-100 p-3 borderStyle">
+        <div className="row service-text">
+          <div className="col service-tile-content-6 mt-2">
+            <div className="titles">SUBSCRIPTION INSIGHTS</div>
+            <span className="badge badge-success ml-1">Active</span>
 
-  render() {
-    return (
-      <Fragment>
-        <div className="container-lg w-100 p-3 borderStyle mb-5">
-          <div className="row mx-1">
-            <div className="col service-tile-content m-1 borderStyle p-2 text-left">
-              <div className="titles">SUMMARY</div>
-              <div className="row service-details">
-                <div className="col service-tile-content">
-                  Dashboard Count: 8
-                </div>
-                <div className="col service-tile-content">
-                  Dashboard Status:
-                </div>
-                <div className="col service-tile-content">
-                  Subscription Status:
-                </div>
-                <div className="col service-tile-content">User Count: 4</div>
+            <ul className="pl-3 list-unstyled service-details">
+              <li>Subscription Plan: Yearly(Platinum)</li>
+              <li>Created Date: March 29,2021</li>
+              <li>Valid Till: March 3, 2022</li>
+              <li>Last Invoice Generation: March 29,2021</li>
+              <li>Next Invoice Generation: March 29,2022</li>
+            </ul>
+            <div className="row justify-content-center">
+              <div className="col service-tile-content">
+                <button
+                  type="button"
+                  className="btn btn-warning text-white m-1"
+                >
+                  Change Plan
+                </button>
+                <button type="button" className="btn btn-danger m-1">
+                  Cancel Subscription
+                </button>
               </div>
             </div>
-            <div className="col service-tile-content m-1 borderStyle p-2 text-left">
-              <div className="titles">SUBSCRIPTION SUMMARY</div>
-              <div className="row service-details g-2">
-                <div className="col service-tile-content">
-                  Ariba Vendor Onboarding
-                </div>
-                <div className="col service-tile-content">
-                  BMS_Material Master
-                </div>
-                <div className="col service-tile-content">
-                  BMS_Production Order
-                </div>
-                <div className="col service-tile-content">Goods Receipt</div>
-                <div className="col service-tile-content">Purchare Order</div>
-                <div className="col service-tile-content">Tech Assignment</div>
+          </div>
+          <div className="col-6">
+            <div className="card border-0">
+              <div className="card-body p-0">
+                <div id="container" style={{ height: "15rem" }}></div>
               </div>
             </div>
           </div>
         </div>
-        <div className="container-lg w-100 p-3 borderStyle">
-          <div className="row service-text">
-            <div className="col service-tile-content-6 mt-2">
-              <div className="titles">SUBSCRIPTION INSIGHTS</div>
-              <span className="badge badge-success ml-1">Active</span>
-
-              <ul className="pl-3 list-unstyled service-details">
-                <li>Subscription Plan: Yearly(Platinum)</li>
-                <li>Created Date: March 29,2021</li>
-                <li>Valid Till: March 3, 2022</li>
-                <li>Last Invoice Generation: March 29,2021</li>
-                <li>Next Invoice Generation: March 29,2022</li>
-              </ul>
-              <div className="row justify-content-center">
-                <div className="col service-tile-content">
-                  <button
-                    type="button"
-                    className="btn btn-warning text-white m-1"
-                  >
-                    Change Plan
-                  </button>
-                  <button type="button" className="btn btn-danger m-1">
-                    Cancel Subscription
-                  </button>
-                </div>
-              </div>
-              {/* <div className="row service-text">
-                <div className="col service-tile-content">
-                  <h5>
-                    <b>Alerts</b>
-                  </h5>
-                  <ul className="list-unstyled">
-                    <li>GE Power Subscription has no active Dashboard</li>
-                    <li>GE Power Subscription has no active Users</li>
-                  </ul>
-                </div>
-              </div> */}
-            </div>
-            <div className="col-6">
-              <div className="card border-0">
-                <div className="card-body p-0">
-                  <div id="container" style={{ height: "15rem" }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Fragment>
-    );
-  }
-}
+      </div>
+    </Fragment>
+  );
+};

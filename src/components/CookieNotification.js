@@ -1,39 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export default class CookieNotification extends React.Component {
-  /* istanbul ignore next */
-  constructor(props) {
-    super(props);
-    this.state = {
-      cookieNotificationKey: "readCookieNotification",
-    };
-  }
+export const CookieNotification = () => {
+  const [cookieNotificationKey, setCookieNotificationKey] = useState('readCookieNotification');
 
-  /* istanbul ignore next */
-  componentDidMount() {
-    let isReadCookieNotification = this.getCookie(
-      this.state.cookieNotificationKey
+  useEffect(() => {
+    let isReadCookieNotification = getCookie(
+      cookieNotificationKey
     );
     if (isReadCookieNotification != "Y") {
       setTimeout(() => {
         window.showCookieInfo();
       }, 500);
     }
-  }
-
+  }, [])
+  
   /* istanbul ignore next */
-  readCookieNotification(e) {
-    document.cookie = this.state.cookieNotificationKey + "=Y";
-    window.hideCookieInfo();
-  }
-
-  /* istanbul ignore next */
-  readCookieNotificationIgnore() {
-    window.hideCookieInfo();
-  }
-
-  /* istanbul ignore next */
-  getCookie(name) {
+  const getCookie = (name) => {
     var cookieName = name + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(";");
@@ -48,40 +30,45 @@ export default class CookieNotification extends React.Component {
     }
     return "N";
   }
+  
+  /* istanbul ignore next */
+  const readCookieNotification = (e) => {
+    document.cookie = cookieNotificationKey + "=Y";
+    window.hideCookieInfo();
+  }
 
-  render() {
-    /* jshint ignore:start */
-    /* istanbul ignore next */
-    return (
-      <div id="cookieConsent">
-        <div
-          id="closeCookieConsent"
-          onClick={(event) => {
-            this.readCookieNotificationIgnore(event);
-          }}
-        >
-          x
+  /* istanbul ignore next */
+  const readCookieNotificationIgnore = () => {
+    window.hideCookieInfo();
+  }
+  
+  /* jshint ignore:start */
+  /* istanbul ignore next */
+  return (
+    <div id="cookieConsent">
+      <div
+        id="closeCookieConsent"
+        onClick={(event) => readCookieNotificationIgnore(event)}
+      >
+        x
+      </div>
+      <div className="row">
+        <div className="col-sm-10">
+          Digital Connect Portal uses cookies to store information on your
+          computer. Some are essential to make our site work, others help us
+          improve the user experience. By using the site, you consent to the
+          placement of these cookies.
         </div>
-        <div className="row">
-          <div className="col-sm-10">
-            Digital Connect Portal uses cookies to store information on your
-            computer. Some are essential to make our site work, others help us
-            improve the user experience. By using the site, you consent to the
-            placement of these cookies.
-          </div>
-          <div className="col-sm-2">
-            <a
-              className="cookieConsentOK"
-              onClick={(event) => {
-                this.readCookieNotification(event);
-              }}
-            >
-              Allow Cookies
-            </a>
-          </div>
+        <div className="col-sm-2">
+          <a
+            className="cookieConsentOK"
+            onClick={(event) => readCookieNotification(event)}
+          >
+            Allow cookies.
+          </a>
         </div>
       </div>
-    );
-    /* jshint ignore:end */
-  }
-}
+    </div>
+  );
+  /* jshint ignore:end */
+};
