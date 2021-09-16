@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import Logo_GE from "../assets/images/Logo-GE1.svg";
@@ -14,233 +14,238 @@ import Icon_Github from "../assets/images/Icon-Github.svg";
 import Icon_Yammer from "../assets/images/Icon-Yammer.svg";
 import Icon_Confluence from "../assets/images/Icon-Confluence.svg";
 
-export default class Sidebar extends React.Component {
-  constructor(props) {
-    super(props);
+export default function Sidebar(props) {
+  const [userName, setUserName] = useState("Steve Rogers");
+  const [unit, setUnit] = useState("GE Corporate");
+  const [persona, setPersona] = useState("OWNER");
+  const [togglePersona, setTogglePersona] = useState(false);
 
-    this.state = {
-      userName: "Steve Rogers",
-      department: "GE Corporate",
-      currentPersona: "OWNER",
-      togglePersona: true,
-    };
-  }
+  const handleTogglePersona = (selectedPersona) => {
+    setPersona(selectedPersona);
+  };
 
-  handleTogglePersona(persona) {
-    this.setState({
-      currentPersona: persona,
-    });
-  }
+  useEffect(() => {
+    console.log("displayUsername: ", props.displayUsername);
+    setUserName(props.displayUsername);
+  }, [props.displayUsername]);
 
-  render() {
-    return (
-      <div className="col-3 p-0" id="sidebar-wrapper">
-        <div className="sidebar-heading p-3">
-          <div className="d-flex flex-row p-3">
-            <div className="col-3 pr-0 GE-Logo">
-              <img className="img-fluid" alt="" src={Logo_GE} />
-            </div>
-            <div className="col-9 pl-0 portal-name">
-              <div className="text-center headers">
+  return (
+    <div className="col-3 p-0" id="sidebar-wrapper">
+      <div className="sidebar-heading px-3 py-2">
+        <div className="d-flex flex-row px-3 py-2">
+          <div className="col-3 p-0">
+            <Link to="/">
+              <img className="img-fluid GE-Logo" alt="" src={Logo_GE} />
+            </Link>
+          </div>
+          <div className="col-9 px-0 pt-1">
+            <div className="text-center GE-header">
+              <Link to="/">
                 <b>DIGITAL CONNECT</b>
-              </div>
-              <div className="border-bottom mx-2"></div>
-              <div className="text-center user-details pt-1">
-                <span className="user-name">
-                  <b>{this.state.userName}</b>
-                </span>
-                <span className="detail-divider mx-1">|</span>
-                <span className="department">
-                  <b>{this.state.department}</b>
-                </span>
-                {this.state.togglePersona ? (
-                  <div className="toggle-persona">
+              </Link>
+            </div>
+            <div className="border-bottom mx-3"></div>
+            <div className="text-center user-details pt-1">
+              <span className="user-name">
+                <b>{userName}</b>
+              </span>
+              <span className="detail-divider mx-1">|</span>
+              <span className="department">
+                <b>{unit}</b>
+              </span>
+              {togglePersona ? (
+                <div className="toggle-persona">
+                  <a
+                    className="dropdown-toggle"
+                    href="#"
+                    id="dropdownMenuLink"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <b>{persona}</b>
+                  </a>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuLink"
+                  >
                     <a
-                      className="dropdown-toggle"
+                      className="dropdown-item"
                       href="#"
-                      id="dropdownMenuLink"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
+                      onClick={() => handleTogglePersona("OWNER")}
                     >
-                      <b>{this.state.currentPersona}</b>
+                      OWNER
                     </a>
-                    <div
-                      className="dropdown-menu"
-                      aria-labelledby="dropdownMenuLink"
+                    <div className="dropdown-divider"></div>
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={() => handleTogglePersona("VIEWER")}
                     >
-                      <a
-                        className="dropdown-item"
-                        href="#"
-                        onClick={this.handleTogglePersona.bind(this, "OWNER")}
-                      >
-                        OWNER
-                      </a>
-                      <div className="dropdown-divider"></div>
-                      <a
-                        className="dropdown-item"
-                        href="#"
-                        onClick={this.handleTogglePersona.bind(this, "VIEWER")}
-                      >
-                        VIEWER
-                      </a>
-                    </div>
+                      VIEWER
+                    </a>
                   </div>
-                ) : (
-                  ""
-                )}
-              </div>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
-          </div>
-        </div>
-        <div className="list-group list-group-flush p-0 mt-2">
-          <span className="sidebarMenu">
-            <a
-              target="_blank"
-              href="https://dc-wordpress-ci.digitalconnect.apps.ge.com/"
-              className="list-group-item list-group-item-action"
-            >
-              <img className="img-fluid" alt="" src={Icon_Products} />
-              PRODUCTS & SERVICES
-            </a>
-          </span>
-          <span className="sidebarMenu">
-            <Link
-              className="list-group-item list-group-item-action"
-              to="/"              
-            >
-              <img className="img-fluid" alt="" src={Icon_Dashboard} />
-              DASHBOARD
-            </Link>
-          </span>
-          {this.state.currentPersona === "OWNER" ? (
-            <span className="sidebarMenu">
-              <Link
-                className="list-group-item list-group-item-action"
-                to="/manage"
-                onClick={this.props.clickEvent.bind(this, {
-                  pageName: "Manage",
-                  headerText: "MANAGE",
-                  subHeaderText: "GLOBAL",
-                })}
-              >
-                <img className="img-fluid" alt="" src={Icon_Subscriptions} />{" "}
-                MANAGE
-              </Link>
-            </span>
-          ) : (
-            ""
-          )}
-          <span className="sidebarMenu">
-            <Link
-              className="list-group-item list-group-item-action"
-              to="/announcements-events"
-              onClick={this.props.clickEvent.bind(this, {
-                pageName: "AnnouncementsAndEvents",
-                headerText: "ANNOUNCEMENTS & EVENTS",
-                subHeaderText: "GLOBAL",
-              })}
-            >
-              <img className="img-fluid" alt="" src={Icon_Announcements} />{" "}
-              ANNOUNCEMENTS & EVENTS
-            </Link>
-          </span>
-          <span className="sidebarMenu">
-            <Link
-              className="list-group-item list-group-item-action"
-              to="#"
-              role="button"
-              id="dropdownMenuLink"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                className="img-fluid"
-                alt=""
-                src={Icon_Engagement_Requests}
-              />
-              ENGAGEMENT REQUESTS
-            </Link>
-            <div className="dropdown-content">
-              <Link
-                to="/newengagementrequest"
-              >
-                NEW ENGAGEMENT REQUEST
-              </Link>
-            </div>
-          </span>
-          <span className="sidebarMenu">
-            <Link
-              className="list-group-item list-group-item-action"
-              to="/support"
-              onClick={this.props.clickEvent.bind(this, {
-                pageName: "Support",
-                headerText: "SUPPORT",                
-                subHeaderText: "GLOBAL",
-              })}
-            >
-              <img className="img-fluid" alt="" src={Icon_Support} />
-              SUPPORT
-            </Link>
-          </span>
-          <span className="sidebarMenu">
-            <Link
-              className="list-group-item list-group-item-action"
-              to="/preferences"
-              onClick={this.props.clickEvent.bind(this, {
-                pageName: "Preferences",
-                headerText: "PREFERENCES",
-                subHeaderText: "GLOBAL",
-              })}
-            >
-              <img className="img-fluid" alt="" src={Icon_Settings} />{" "}
-              PREFERENCES
-            </Link>
-          </span>
-          {this.state.currentPersona === "OWNER" ? (
-            <span className="sidebarMenu">
-              <Link
-                className="list-group-item list-group-item-action"
-                to="/administration"
-                onClick={this.props.clickEvent.bind(this, {
-                  pageName: "Administration",
-                  headerText: "ADMINISTRATION",
-                  subHeaderText: "GLOBAL",
-                })}
-              >
-                <img className="img-fluid" alt="" src={Icon_Administration} />{" "}
-                ADMINISTRATION
-              </Link>
-              {/* Might need in future
-             <div className="dropdown-content">
-              <a
-                href="#"
-                onClick={this.props.clickEvent.bind(this, {
-                  pageName: "UserManagement",
-                  headerText: "USER MANAGEMENT",
-                  // subHeaderText: "Persona 1",
-                })}
-              >
-                USER MANAGEMENT
-              </a>
-            </div> */}
-            </span>
-          ) : (
-            ""
-          )}
-        </div>
-        <div className="col-3 footer">
-          <div className="social-media text-center page-footer">
-            <div className="social-tag text-muted">Socialize With Us</div>
-            <img alt="" className="img-fluid px-2" src={Icon_Github} />
-            <img alt="" className="img-fluid px-2" src={Icon_Yammer} />
-            <img alt="" className="img-fluid px-2" src={Icon_Confluence} />
-          </div>
-          <div className="footer-copyright text-center text-muted mt-2">
-            © 2021 GENERAL ELECTRIC
           </div>
         </div>
       </div>
-    );
-  }
+      <div className="list-group list-group-flush p-0 mt-2">
+        <span className="sidebarMenu">
+          <Link className="list-group-item list-group-item-action" to="/">
+            <img className="img-fluid" alt="" src={Icon_Dashboard} />
+            DASHBOARD
+          </Link>
+        </span>
+        <span className="sidebarMenu">
+          <a
+            target="_blank"
+            href="https://dc-wordpress-ci.digitalconnect.apps.ge.com/"
+            className="list-group-item list-group-item-action"
+          >
+            <img className="img-fluid" alt="" src={Icon_Products} />
+            PRODUCTS & SERVICES
+          </a>
+        </span>
+        {persona === "OWNER" ? (
+          <span className="sidebarMenu dropright">
+          <Link
+            className="list-group-item list-group-item-action dropdown-toggle"
+            role="button"
+            id="dropdownMenuLink"
+            data-toggle="dropdown"
+            aria-expanded="false"
+          >
+             <img className="img-fluid" alt="" src={Icon_Subscriptions} />
+              MANAGE
+          </Link>
+          <div className="dropdown-menu dropdown-content">
+            <Link className="dropdown-item" to="/manage/managesubscription">SUBSCRIPTION</Link>
+            <Link className="dropdown-item " to="/manage/manageuser">USER</Link>
+            <Link className="dropdown-item" to="/manage/managetc">THREAD CONNECT</Link>
+            <Link className="dropdown-item" to="/manage/manage_ec">ENTERPRISE CONNECT</Link>
+            <Link className="dropdown-item" >DIVE</Link>
+          </div>
+            {/* <Link
+              className="list-group-item list-group-item-action"
+              to="/manage"
+              onClick={() =>
+                props.clickEvent({
+                  pageName: "Manage",
+                  headerText: "MANAGE",
+                  subHeaderText: "GLOBAL",
+                })
+              }
+            >
+              <img className="img-fluid" alt="" src={Icon_Subscriptions} />
+              MANAGE
+            </Link> */}
+          </span>
+        ) : (
+          ""
+        )}
+        <span className="sidebarMenu">
+          <Link
+            className="list-group-item list-group-item-action"
+            to="/announcements-events"
+            onClick={() =>
+              props.clickEvent({
+                pageName: "AnnouncementsAndEvents",
+                headerText: "ANNOUNCEMENTS & EVENTS",
+                subHeaderText: "GLOBAL",
+              })
+            }
+          >
+            <img className="img-fluid" alt="" src={Icon_Announcements} />
+            ANNOUNCEMENTS & EVENTS
+          </Link>
+        </span>
+        <span className="sidebarMenu dropright">
+          <Link
+            className="list-group-item list-group-item-action dropdown-toggle"
+            to="#"
+            role="button"
+            id="dropdownMenuLink"
+            data-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img className="img-fluid" alt="" src={Icon_Engagement_Requests} />
+            ENGAGEMENT REQUESTS
+          </Link>
+          <div className="dropdown-menu dropdown-content">
+            <Link className="dropdown-item" to="/new-engagement-request">NEW ENGAGEMENT REQUEST</Link>
+            <Link className="dropdown-item " to="/new-engagement-request">ENHANCEMENT REQUEST</Link>
+            <Link className="dropdown-item" to="/new-engagement-request">OPTIONAL</Link>
+          </div>
+          
+        </span>
+        <span className="sidebarMenu">
+          <Link
+            className="list-group-item list-group-item-action"
+            to="/support"
+            onClick={() =>
+              props.clickEvent({
+                pageName: "Support",
+                headerText: "SUPPORT",
+                subHeaderText: "GLOBAL",
+              })
+            }
+          >
+            <img className="img-fluid" alt="" src={Icon_Support} />
+            SUPPORT
+          </Link>
+        </span>
+        <span className="sidebarMenu">
+          <Link
+            className="list-group-item list-group-item-action"
+            to="/preferences"
+            onClick={() =>
+              props.clickEvent({
+                pageName: "Preferences",
+                headerText: "PREFERENCES",
+                subHeaderText: "GLOBAL",
+              })
+            }
+          >
+            <img className="img-fluid" alt="" src={Icon_Settings} />
+            PREFERENCES
+          </Link>
+        </span>
+        {persona === "OWNER" ? (
+          <span className="sidebarMenu">
+            <Link
+              className="list-group-item list-group-item-action"
+              to="/administration"
+              onClick={() =>
+                props.clickEvent({
+                  pageName: "Administration",
+                  headerText: "ADMINISTRATION",
+                  subHeaderText: "GLOBAL",
+                })
+              }
+            >
+              <img className="img-fluid" alt="" src={Icon_Administration} />
+              ADMINISTRATION
+            </Link>
+          </span>
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="col-3 footer">
+        <div className="social-media text-center page-footer">
+          <div className="social-tag text-muted">Socialize With Us</div>
+          <img alt="" className="img-fluid px-2" src={Icon_Github} />
+          <img alt="" className="img-fluid px-2" src={Icon_Yammer} />
+          <img alt="" className="img-fluid px-2" src={Icon_Confluence} />
+        </div>
+        <div className="footer-copyright text-center text-muted mt-2">
+          © 2021 GENERAL ELECTRIC
+        </div>
+      </div>
+    </div>
+  );
 }

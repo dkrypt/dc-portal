@@ -35,7 +35,7 @@ export default class CarouselItem extends React.Component {
 
   render() {
     return (
-      <Carousel interval={3000}>
+      <Carousel interval={5000}>
         {this.props.serviceCardDisplay.map((serviceCard, indexArr) => {
           return (
             <Carousel.Item key={indexArr}>
@@ -67,18 +67,22 @@ export default class CarouselItem extends React.Component {
                             <div className="col ml-1 titles service-tile-content">
                               {service.serviceName}
                             </div>
-                            <div className="col-3 text-center service-tile-content">
-                              <img
-                                className="img-fluid"
-                                src={service.img.src}
-                                alt={service.img.alt}
-                                style={
-                                  typeof service.img.style == "object"
-                                    ? service.img.style
-                                    : {}
-                                }
-                              />
-                            </div>
+                            {service.hasOwnProperty("img") ? (
+                              <div className="col-3 text-center service-tile-content">
+                                <img
+                                  className="img-fluid"
+                                  src={service.img.src}
+                                  alt={service.img.alt}
+                                  style={
+                                    typeof service.img.style == "object"
+                                      ? service.img.style
+                                      : {}
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </Link>
                         <div className="row service-details">
@@ -90,6 +94,24 @@ export default class CarouselItem extends React.Component {
                                   key={index}
                                 >
                                   {key
+                                    .replace("$date", this.state.date)
+                                    .replace("$month", this.state.month)}
+                                  :{" "}
+                                  {typeof value == "string" &&
+                                  value.includes("Healthy") ? (
+                                    value === "Healthy $partial" ? (
+                                      <span className="yellowDot"></span>
+                                    ) : (
+                                      <span className="greenDot"></span>
+                                    )
+                                  ) : value === "Restarting" ? (
+                                    <span className="yellowDot"></span>
+                                  ) : value === "Stopped" ? (
+                                    <span className="redDot"></span>
+                                  ) : (
+                                    value
+                                  )}
+                                  {/* {key
                                     .replace("$date", this.state.date)
                                     .replace("$month", this.state.month)}
                                   :{" "}
@@ -117,7 +139,7 @@ export default class CarouselItem extends React.Component {
                                     </a>
                                   ) : (
                                     ""
-                                  )}
+                                  )} */}
                                 </div>
                               );
                             }
@@ -153,13 +175,12 @@ export default class CarouselItem extends React.Component {
                                       </Dropdown.Item>
                                       <Dropdown.Divider />
                                       <Dropdown.Item
-                                        onClick={buttonData.onClick.showPopUpModal.bind(
-                                          this,
-                                          {
+                                        onClick={() =>
+                                          buttonData.onClick.showPopUpModal({
                                             show: true,
                                             buttonName: "Integration Versions",
-                                          }
-                                        )}
+                                          })
+                                        }
                                       >
                                         Integration Version Details
                                       </Dropdown.Item>
@@ -186,7 +207,7 @@ export default class CarouselItem extends React.Component {
                                         : ""
                                     }
                                   >
-                                    {buttonData.buttonName == "Open" ? (
+                                    {/* {buttonData.buttonName == "Open" ? (
                                       <img
                                         className="img-fluid"
                                         src={Icon_Open}
@@ -195,7 +216,7 @@ export default class CarouselItem extends React.Component {
                                       />
                                     ) : (
                                       ""
-                                    )}
+                                    )} */}
                                     {buttonData.type == "internal" ? (
                                       <Link className="" to={buttonData.path}>
                                         {buttonData.buttonName}

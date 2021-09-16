@@ -1,12 +1,12 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import Dashboard from "../containers/mainDashboard/Dashboard.js";
-import ThreadConnect from "../containers/threadConnect/ThreadConnect.js";
+import { Dashboard as MainDashboard } from "../containers/mainDashboard/Dashboard.js";
+import { ThreadConnect } from "../containers/threadConnect/ThreadConnect.js";
 import EnterpriseConnect from "../containers/enterpriseConnect/EnterpriseConnect.js";
 import Dive from "../containers/dive/Dive.js";
 import DivePower from "../containers/dive/DivePower.js";
-import NewEngagementRequest from "../containers/engagementRequest/NewEngagementRequest.js";
+import { NewEngagementRequest } from "../containers/engagementRequest/NewEngagementRequest.js";
 import TCDashboard from "../containers/threadConnect/Dashboard.js";
 import GlobalScape from "../containers/globalScape/GlobalScape.js";
 import Manage from "../containers/manage/Manage.js";
@@ -22,79 +22,97 @@ import RemoveIP from "../containers/globalScape/RemoveIP.js";
 import AssignGroup from "../containers/globalScape/AssignGroup.js";
 import DisableAccount from "../containers/globalScape/DisableAccount.js";
 import ManageEc from "../containers/manage/enterpriseConnect/ManageEc.js";
+import NewUser from "../containers/userManagement/NewUser.js";
+import NoSubscriptions from "../containers/userManagement/NoSubscriptions.js";
 
 export default function Router(props) {
   return (
     <Switch>
+      <Route exact path="/new-user">
+        <NewUser />
+      </Route>
       <Route exact path="/">
-        <Dashboard
-          clickEvent={props.clickEvent.bind(this)}
+        <MainDashboard
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/threadconnect">
-        <ThreadConnect
-          clickEvent={props.clickEvent.bind(this)}
-          persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
-          baseUrl={props.baseUrl}
-          authToken={props.authToken}
+      <Route exact path="/no-subscriptions">
+        <NoSubscriptions
+          clickEvent={props.clickEvent}
+          isLoader={props.isLoader}
+          changeUsername={props.changeUsername}
         />
       </Route>
-      <Route exact path="/enterpriseconnect">
-        <EnterpriseConnect
-          clickEvent={props.clickEvent.bind(this)}
+      <Route exact path="/thread-connect">
+        <ThreadConnect
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
+        />
+      </Route>
+      <Route exact path="/enterprise-connect">
+        <EnterpriseConnect
+          clickEvent={props.clickEvent}
+          persona={props.persona}
+          setPersonaHandler={props.setPersonaHandler}
+          baseUrl={props.baseUrl}
+          authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/dive">
         <Dive
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/divepower">
+      <Route exact path="/dive-power">
         <DivePower
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/newengagementrequest">
+      <Route exact path="/new-engagement-request">
         <NewEngagementRequest
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/threadconnect/dashboard">
+      <Route exact path="/thread-connect/dashboard">
         <TCDashboard
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape">
         <GlobalScape
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
           isLoader={props.isLoader}
@@ -102,54 +120,59 @@ export default function Router(props) {
       </Route>
       <Route exact path="/manage">
         <Manage
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/manage/managetc">
         <ManageTC
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/manage/manage_ec">
         <ManageEc
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/manage/managesubscription">
         <ManageSubscription
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/manage/manageuser">
         <ManageUser
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape/eventmanagement">
         <EventList
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
           isLoader={props.isLoader}
@@ -157,66 +180,73 @@ export default function Router(props) {
       </Route>
       <Route exact path="/globalscape/delegatepriviledgestosso">
         <DelegatePriToSso
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape/revokesso">
         <RevokeSso
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape/enableaccount">
         <EnableAccount
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape/modifyeventfornsg">
         <ModifyEventNsg
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape/removeip">
         <RemoveIP
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
       <Route exact path="/globalscape/assigngroup">
         <AssignGroup
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
 
       <Route exact path="/globalscape/disableaccount">
         <DisableAccount
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
+          isLoader={props.isLoader}
         />
       </Route>
     </Switch>

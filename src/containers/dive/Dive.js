@@ -37,9 +37,8 @@ export default class Dive extends React.Component {
           },
           serviceInfo: {
             "Data Ingestion": "Healthy $status",
-            "User Management": `${21} active users out of ${200} $open`,
+            "User Management": `${21} active users out of ${200}`,
             "Number of Flows": 22,
-            "Open Incidents": "$snowimg",
           },
           displayPermissions: {
             displayCard: true,
@@ -110,9 +109,8 @@ export default class Dive extends React.Component {
           },
           serviceInfo: {
             "Data Ingestion": "Healthy $status",
-            "User Management": `${9} active users out of ${25} $open`,
+            "User Management": `${9} active users out of ${25}`,
             "Number of Flows": 52,
-            "Open Incidents": "$snowimg",
           },
           displayPermissions: {
             displayCard: true,
@@ -245,106 +243,11 @@ export default class Dive extends React.Component {
   render() {
     return (
       <Fragment>
-        <div className="container-lg w-100 p-3 borderStyle mb-3">
-          <div className="row mx-1">
-            <div className="col service-tile-content m-1 borderStyle p-2 titles">
-            <div className="text-center titles mb-1">DIVE HEALTH</div>
-              <div className="row p-1 m-1">
-                <div className="col m-1 text-center service-tile-content">
-                  Dashboard: <span className="greenDot"></span>
-                  <a href="#">
-                    <LaunchIcon className="m-1" />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid m-1"
-                      src={Icon_Snow}
-                      alt="Open-Icon"
-                      style={{ width: "10%" }}
-                    />
-                  </a>
-                </div>
-                <div className="col m-1 text-center service-tile-content">
-                  Admin Console: <span className="redDot"></span>
-                  <a href="#">
-                    <LaunchIcon className="m-1" />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid m-1"
-                      src={Icon_Snow}
-                      alt="Open-Icon"
-                      style={{ width: "10%" }}
-                    />
-                  </a>
-                </div>
-                <div className="col m-1 text-center service-tile-content">
-                  Customer: <span className="greenDot"></span>
-                  <a href="#">
-                    <LaunchIcon className="m-1" />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid m-1"
-                      src={Icon_Snow}
-                      alt="Open-Icon"
-                      style={{ width: "10%" }}
-                    />
-                  </a>
-                </div>
-              </div>
-              <div className="row p-1 m-1">
-                <div className="col m-1 text-center service-tile-content">
-                  Elasticsearch: <span className="yellowDot"></span>
-                  <a href="#">
-                    <LaunchIcon className="m-1" />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid m-1"
-                      src={Icon_Snow}
-                      alt="Open-Icon"
-                      style={{ width: "10%" }}
-                    />
-                  </a>
-                </div>
-                <div className="col m-1 text-center service-tile-content">
-                  TRF: <span className="greenDot"></span>
-                  <a href="#">
-                    <LaunchIcon className="m-1" />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid m-1"
-                      src={Icon_Snow}
-                      alt="Open-Icon"
-                      style={{ width: "10%" }}
-                    />
-                  </a>
-                </div>
-                <div className="col m-1 text-center service-tile-content">
-                  Product TC: <span className="greenDot"></span>
-                  <a href="#">
-                    <LaunchIcon className="m-1" />
-                  </a>
-                  <a href="#">
-                    <img
-                      className="img-fluid m-1"
-                      src={Icon_Snow}
-                      alt="Open-Icon"
-                      style={{ width: "10%" }}
-                    />
-                  </a>
-                </div>
-              </div>              
-          </div>
-        </div>          
-        </div>
-        <div
-          className="container-lg w-100 p-3 borderStyle"
+      <div
+          className="container-lg w-100 p-3 borderStyle mb-3"
           id="carousel-container"
         >
-          <div className="text-center titles mb-3">DIVE ORG</div>
+          <div className="text-center titles mb-3">MY SUBSCRIPTIONS</div>
           <CustomCarousel
             serviceCardDisplay={this.state.serviceCardDisplay}
             clickEvent={this.props.clickEvent}
@@ -355,6 +258,102 @@ export default class Dive extends React.Component {
             modalName={this.state.modalName}
           />
         </div>
+        <div className="container-lg w-100 p-3 borderStyle ">
+          <div className="row mx-1">
+            <div className="col service-tile-content m-1 borderStyle p-2 titles">
+            <div className="text-center titles mb-1">DIVE HEALTH</div>
+              <div className="row p-1 m-1">
+                <div className="col m-1 text-center service-tile-content">
+                  Dashboard: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                  {/* <a href="#">
+                    <img
+                      className="img-fluid m-1"
+                      src={Icon_Snow}
+                      alt="Open-Icon"
+                      style={{ width: "10%" }}
+                    />
+                  </a> */}
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  Admin Console: <span className="redDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                  {/* <a href="#">
+                    <img
+                      className="img-fluid m-1"
+                      src={Icon_Snow}
+                      alt="Open-Icon"
+                      style={{ width: "10%" }}
+                    />
+                  </a> */}
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  Customer: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                  {/* <a href="#">
+                    <img
+                      className="img-fluid m-1"
+                      src={Icon_Snow}
+                      alt="Open-Icon"
+                      style={{ width: "10%" }}
+                    />
+                  </a> */}
+                </div>
+              </div>
+              <div className="row p-1 m-1">
+                <div className="col m-1 text-center service-tile-content">
+                  Elasticsearch: <span className="yellowDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                  {/* <a href="#">
+                    <img
+                      className="img-fluid m-1"
+                      src={Icon_Snow}
+                      alt="Open-Icon"
+                      style={{ width: "10%" }}
+                    />
+                  </a> */}
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  TRF: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                  {/* <a href="#">
+                    <img
+                      className="img-fluid m-1"
+                      src={Icon_Snow}
+                      alt="Open-Icon"
+                      style={{ width: "10%" }}
+                    />
+                  </a> */}
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  Product TC: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                  {/* <a href="#">
+                    <img
+                      className="img-fluid m-1"
+                      src={Icon_Snow}
+                      alt="Open-Icon"
+                      style={{ width: "10%" }}
+                    />
+                  </a> */}
+                </div>
+              </div>              
+          </div>
+        </div>          
+        </div>
+        
       </Fragment>
     );
   }

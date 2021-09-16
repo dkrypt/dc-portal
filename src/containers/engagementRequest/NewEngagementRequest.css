@@ -34,7 +34,7 @@
 }
 
 .choices__list--dropdown .choices__item {
-  font-size: 1rem !important;
+  font-size: 0.8em !important;
   font-weight: 400;
   color: #495057 !important;
 }

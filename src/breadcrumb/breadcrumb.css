@@ -1,6 +1,28 @@
 .breadcrumb {
-    padding: 0.1rem !important;
-    margin-bottom: 0.5rem !important;
-    background-color: white !important;
-    font-size: 1.3vw;
-  }
+  padding: 0.3rem 0.4rem !important;
+  margin-bottom: 0.5rem !important;
+  background-color: lightgrey !important;
+  font-size: 0.8em;
+  user-select: none;
+}
+
+.breadcrumb-item {
+  padding: 0 0.1rem !important;
+}
+
+.breadcrumb-item a{
+  color: #333f48 !important;
+}
+
+.breadcrumb-item a:hover{
+  text-decoration: underline !important;
+}
+
+.breadcrumb-item.active {
+  color: #333f48 !important;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">" !important;
+  padding-right: 0.2rem !important;
+}

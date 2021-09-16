@@ -32,7 +32,7 @@ body {
 }
 
 html::-webkit-scrollbar {
-  width: 5px;
+  width: 7px;
   height: 5px;
 }
 
@@ -45,17 +45,9 @@ html::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
-h5 {
-  font-size: 1.8vw !important;
+img{
+  user-select: none;
 }
-
-h6 {
-  font-size: 1.5vw !important;
-}
-
-/* .para-text {
-    font-size: 1vw;
-  } */
 
 #sidebar-wrapper {
   position: fixed;
@@ -78,36 +70,42 @@ h6 {
 
 .dropdown-content {
   display: none;
+  top:0px !important;
+  padding: 0!important;
+  margin-left: 0 !important;
   position: absolute;
-  background-color: #59cbe8;
-  min-width: 100%;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  background-color: #002e5d;
   z-index: 1;
+  font-size: 1em;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.dropdown-content .dropdown-item{
+  padding: 0.78rem;
 }
 
 .dropdown-content a {
   text-align: center;
   color: white;
-  padding: 12px 16px;
   text-decoration: none;
-  display: block;
 }
 
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {
-  background-color: #005eb8;
+  background-color: #005eb8 !important;
   color: white !important;
 }
 
 /* Show the dropdown menu on hover */
-.sidebarMenu:hover .dropdown-content {
+/* .sidebarMenu:hover .dropdown-content {
   display: block;
-}
+} */
 
 .sidebarMenu {
   position: relative;
   display: inline-block;
-  font-size: 1.1vw;
+  font-size: 0.88em;
 }
 
 .sidebarMenu img {
@@ -116,18 +114,35 @@ h6 {
 }
 
 .titles {
-  font-size: 1.2vw;
+  font-size: 0.94em;
   font-weight: bold;
+  user-select: none !important;
 }
 
-.headers {
-  font-size: 1.25vw;
+.center-header{
+  position: fixed !important;
+  height: 7rem !important;
+  background-color: white;
+}
+
+.headers, .GE-header {
+  font-size: 1.1em;
   font-weight: bold;
   flex-flow: column;
+  user-select: none !important;
+}
+
+.GE-Logo{
+  width: 150%;
+}
+
+.GE-header a, .GE-header a:hover{
+  color: #fff!important;
 }
 
 .user-details {
-  font-size: 0.8vw;
+  font-size: 0.65em;
+  user-select: none !important;
 }
 
 .global-icon img {
@@ -135,12 +150,17 @@ h6 {
 }
 
 .global-icon {
-  font-size: 0.6vw;
+  font-size: 0.47em;
   font-weight: lighter;
   position: relative;
 }
 
-.dropdown-toggle {
+.sub-org-space {
+  margin-left: 10px;
+  color: #333f48;
+}
+
+.dropdown-toggle, .dropdown-item {
   color: #333f48;
 }
 
@@ -156,6 +176,7 @@ h6 {
 
 .list-group-item {
   padding-left: 3.5rem !important;
+  user-select: none;
 }
 
 .service-tile-content {
@@ -174,38 +195,37 @@ a:hover {
 
 .list-group-item-action:focus {
   color: white !important;
-  font-weight: bold;
-  /* font-size: 1.2vw; */
+  font-weight: bold;  
+  background-color: #005eb8 !important;
 }
 
 .list-group-item-action:active {
   color: white !important;
   font-weight: bold;
-  /* font-size: 1.2vw; */
 }
 
 .list-group-item-action:hover {
   color: white !important;
   font-weight: bold;
-  /* font-size: 1.2vw; */
   background-color: #005eb8 !important;
 }
 
 .footer {
+  user-select: none;
   position: fixed !important;
   bottom: 1rem;
 }
 
 .social-tag {
-  font-size: 0.9vw;
+  font-size: 0.72em;
 }
 
 .footer-copyright {
-  font-size: 1vw;
+  font-size: 0.88em;
 }
 
 .center-container {
-  margin-top: 6.8rem;
+  margin-top: 7rem;
 }
 
 .navbar-expand-lg {
@@ -254,7 +274,7 @@ a:hover {
 } */
 
 .service-details {
-  font-size: 1vw;
+  font-size: 0.82em;
   flex-flow: column;
   color: #333f48 !important;
 }
@@ -265,6 +285,7 @@ a:hover {
 }
 
 .page-content-wrapper {
+  position: unset;
   min-width: 0;
   width: 75%;
   margin-left: 25%;
@@ -283,8 +304,8 @@ a:hover {
 }
 
 .yellowDot {
-  background: yellow;
-  border: 1px solid yellow;
+  background: #ede728;
+  border: 1px solid #ede728;
 }
 
 .greenDot {
@@ -292,7 +313,7 @@ a:hover {
   border: 1px solid rgb(4, 240, 4);
 }
 
-.dropdown-menu {
+.global-icon .dropdown-menu {
   font-size: 12px !important;
   border: 1.5px #dbe2e9 solid !important;
   border-radius: 0.3rem !important;
@@ -331,18 +352,18 @@ a:hover {
   position: relative !important;
   margin-right: 0 !important;
   margin-left: 0 !important;
+  margin-bottom: 0 !important;
   text-align: center;
   line-height: 1;
-  margin: 0.5rem 0;
-  /* height: 5px; */
+  margin-top: 0.8rem;
 }
 
 .carousel-indicators li {
   display: inline-block;
-  width: 13px;
-  height: 4px;
+  width: 10px;
+  height: 0px;
   margin: 0 8px;
-  background: #333;
+  background: #333F48;
   border-radius: 50%;
   opacity: 0.25;
   cursor: pointer;
@@ -356,7 +377,7 @@ a:hover {
 .carousel-buttons button {
   height: 1.7rem;
   white-space: nowrap;
-  font-size: 0.8vw;
+  font-size: 0.66em;
   padding: 0 2px;
   margin: 1px 1.666px !important;
   background: #dbe2e9;
@@ -371,8 +392,9 @@ a:hover {
   color: white !important;
 }
 
+/* Might use in Future */
 .main-dashboard .thumb-wrapper {
-  height: 13rem;
+  height: 8rem;
 }
 
 .loader {
@@ -401,7 +423,7 @@ a:hover {
   text-align: left;
   background-color: rgba(20, 20, 20, 0.8);
   min-height: 26px;
-  font-size: 14px;
+  font-size: 16px;
   color: #ccc;
   line-height: 26px;
   padding: 8px 0 8px 30px;
@@ -435,14 +457,38 @@ a:hover {
   border-radius: 5px;
   padding: 0 20px;
   cursor: pointer;
-  float: right;
-  margin: 0 60px 0 10px;
+  margin-top: 12px;  
+  font-size: 14px;
 }
 #cookieConsent a.cookieConsentOK:hover {
   background-color: #e0c91f;
 }
 /*Cookie Consent End*/
 
+.logoutWarningModal .modal-header{
+  background-color: #f55e06;
+}
+
+.logoutWarningModal .modal-body, .logoutWarningModal .modal-footer {
+  background-color: #ffebeb;
+}
+
+.logoutWarningModal .modal-footer{
+  border-top: 0;
+  padding: 0 1rem 0.5rem 1rem;
+}
+
+.healthStatusRed{
+  color:#ff0000
+}
+
+.healthStatusYellow{
+  color: #ede728
+}
+
+.healthStatusGreen{
+  color:rgb(4, 240, 4)
+}
 
 
 /* <--------chittaranjan css ---> */

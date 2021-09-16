@@ -1,7 +1,7 @@
 .tc-dashboard button {
   height: 1.7rem;
   white-space: nowrap;
-  font-size: 1vw;
+  font-size: 0.8em;
   padding: 0 2px;
   margin: 1px 1.666px !important;
   background: #dbe2e9;
@@ -10,7 +10,7 @@
 
 .tc-user-table {
   line-height: 12px;
-  font-size: 1vw;
+  font-size: 0.8em;
 }
 
 .tc-user-role {

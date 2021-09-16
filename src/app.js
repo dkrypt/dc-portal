@@ -1,82 +1,71 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
-import Loader from "react-loader-spinner";
 import "./app.css";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 import Sidebar from "./components/Sidebar.js";
 import CenterHeader from "./components/CenterHeader.js";
 import CookieNotification from "./components/CookieNotification";
 import Router from "./router/Router.js";
+import ReactLoader from "./components/ReactLoader";
 import Breadcrumb from "./breadcrumb/Breadcrumb.js";
+import Logout from "./components/Logout.js";
 
 const BASE_ENDPOINT = process.env.REACT_APP_BASEURL;
 
 const API_ENDPOINT = "/v1.2beta/dcsc/api/";
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentPage: "",
-      headerText: "",
-      subHeaderText: "",
-      subHeaderOpts: [],
-      authToken: "",
-      endPoint: API_ENDPOINT,
-      previousPageDetails: {
-        previousPage: "",
-        headerText: "",
-      },
-      isloading: "none",
-    };
-  }
+export default function App() {
+  const [appState, setAppState] = useState({
+    currentPage: "",
+    headerText: "",
+    subHeaderText: "GLOBAL",
+    subHeaderOpts: [],
+    authToken: "",
+    endPoint: API_ENDPOINT,
+    isloading: "block",
+  });
 
-  componentDidMount() {
-    let authToken = this.getToken("ec-config");
+  const [defaultUsername, setDefaultUsername] = useState("Steve Rogers");
+
+  useEffect(() => {
+    let authToken = getToken("ec-config");
+
+    var serviceNames = ["IBS", "GPAS-Lite"];
+
+    setPersonaOptions(serviceNames);
     setTimeout(() => {
-      this.setState({
-        authToken: authToken       
-      });
-    }, 1000);
-  }
+      setAppState((prevState) => ({
+        ...prevState,
+        authToken: authToken,
+        isloading: "none",
+      }));
+    }, 3000);
+  }, []);
 
-  componentDidUpdate(prevprops, prevstate) {
-    if (prevstate.headerText != this.state.headerText) {
-      // console.log("Location: ",pathnames)
-      /* this.setState({        
-        currentPage: this.state.previousPageDetails.previousPage,
-        headerText: this.state.previousPageDetails.headerText,
-      }); */
-    }
-  }
-
-  switchPage(changePageTo) {
-    this.setState({
-      previousPageDetails: {
-        previousPage: this.state.currentPage,
-        headerText: this.state.headerText,
-        subHeaderText: this.state.subHeaderText,
-      },
+  const switchPage = (changePageTo) => {
+    setAppState((prevState) => ({
+      ...prevState,
       currentPage: changePageTo.pageName,
       headerText: changePageTo.headerText,
-      subHeaderText: changePageTo.subHeaderText,
-    });
-  }
+      // subHeaderText: changePageTo.subHeaderText,
+    }));
+  };
 
-  changePersona(value) {
-    this.setState({
+  const changePersona = (value) => {
+    setAppState((prevState) => ({
+      ...prevState,
       subHeaderText: value.personaName,
-    });
-  }
+    }));
+  };
 
-  setPersonaOptions(options) {
-    this.setState({
+  const setPersonaOptions = (options) => {
+    setAppState((prevState) => ({
+      ...prevState,
       subHeaderOpts: options,
-    });
-  }
+    }));
+  };
 
-  getToken(name) {
+  const getToken = (name) => {
     var cookieName = name + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(";");
@@ -89,67 +78,73 @@ export default class App extends React.Component {
         return c.substring(cookieName.length, c.length);
       }
     }
-  }
-isLoader(load){
-if(load){
-  this.setState({
-    isloading : "block"
-  })
-}
-else{
-  this.setState({
-    isloading : "none"
-  })
-}
-}
-  render() {
-    return (
-      <BrowserRouter basename={BASE_ENDPOINT}>
-        <Fragment>
-          <div
-            className="loader container-fluid"
-            style={{ display: this.state.isloading }}
-          >
-            <div className="row w-100 h-100 text-center">
-              <Loader
-                className="col-sm-12"
-                type="Oval"
-                color="#00BFFF"
-                height={80}
-                width={80}
-                // timeout={4000} //3 secs
-              />
-            </div>
+  };
+
+  const changeUsername = (username) => {
+    console.log("username: ", username);
+    setTimeout(() => {
+      setDefaultUsername(username);
+    }, 100);
+  };
+
+  const isLoader = (load) => {
+    if (load) {
+      setAppState((prevState) => ({
+        ...prevState,
+        isloading: "block",
+      }));
+    } else {
+      setAppState((prevState) => ({
+        ...prevState,
+        isloading: "none",
+      }));
+    }
+  };
+
+  return (
+    <BrowserRouter basename={BASE_ENDPOINT}>
+      <Fragment>
+        <div
+          className="loader container-fluid"
+          style={{ display: appState.isloading }}
+        >
+          <div className="row w-100 h-100 text-center">
+            <ReactLoader />
           </div>
-          <div className="MainDiv">
-            <div className="row m-0">
-              <Sidebar clickEvent={this.switchPage.bind(this)} />
+        </div>
+        <div className="MainDiv">
+          {/* <Logout /> */}
+          <div className="row m-0">
+            <Sidebar
+              clickEvent={switchPage}
+              displayUsername={defaultUsername}
+            />
 
-              <div className="col-9 p-0 page-content-wrapper">
-                <CenterHeader
-                  headerText={this.state.headerText}
-                  subText={this.state.subHeaderText}
-                  subHeaderOpts={this.state.subHeaderOpts}
-                  onPersonaChange={this.changePersona.bind(this)}
+            <div className="col-9 p-0 page-content-wrapper">
+              <CenterHeader
+                headerText={appState.headerText}
+                subText={appState.subHeaderText}
+                subHeaderOpts={appState.subHeaderOpts}
+                onPersonaChange={changePersona}
+              />
+
+              <div className="container-fluid center-container d-grid mb-2">
+                {/* <Breadcrumb /> */}
+                <Router
+                  clickEvent={switchPage}
+                  persona={appState.subHeaderText}
+                  setPersonaHandler={setPersonaOptions}
+                  baseUrl={appState.endPoint}
+                  authToken={appState.authToken}
+                  isLoader={isLoader}
+                  changeUsername={changeUsername}
                 />
-
-                <div className="container-fluid center-container d-grid mb-2">
-                  <Breadcrumb />
-                  <Router
-                    clickEvent={this.switchPage.bind(this)}
-                    persona={this.state.subHeaderText}
-                    setPersonaHandler={this.setPersonaOptions.bind(this)}
-                    baseUrl={this.state.endPoint}
-                    authToken={this.state.authToken}
-                    isLoader = {this.isLoader.bind(this)}
-                  />
-                  <CookieNotification/>
-                </div>
+                <CookieNotification />
               </div>
             </div>
           </div>
-        </Fragment>
-      </BrowserRouter>
-    );
-  }
+        </div>
+      </Fragment>
+    </BrowserRouter>
+  );
 }

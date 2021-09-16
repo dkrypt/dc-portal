@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import Breadcrumb from "../breadcrumb/Breadcrumb";
 
 export default class CenterHeader extends React.Component {
   constructor(props) {
@@ -7,9 +8,9 @@ export default class CenterHeader extends React.Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-light">
-        <div className="headers row">
-          <div className="col pr-0">
+      <div className="container-fluid p-2 center-header">
+        <div className="row ml-2 mt-4 headers">
+          <div className="col p-0">
             {this.props.headerText}
 
             <span className="global-icon ml-1">
@@ -27,7 +28,6 @@ export default class CenterHeader extends React.Component {
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a
                   className="dropdown-item"
-                  href="#"
                   onClick={this.props.onPersonaChange.bind(this, {
                     personaName: "GLOBAL",
                   })}
@@ -39,15 +39,15 @@ export default class CenterHeader extends React.Component {
                   return (
                     <Fragment key={index}>
                       <div className="dropdown-divider"></div>
-                      <a
-                        className="dropdown-item"
-                        href="#"
+                      <div className="dropdown-item">﹂<a
+                        className="sub-org-space"
                         onClick={this.props.onPersonaChange.bind(this, {
                           personaName: option,
                         })}
                       >
                         {option}
-                      </a>
+                      </a></div>
+                      
                     </Fragment>
                   );
                 })}
@@ -55,8 +55,11 @@ export default class CenterHeader extends React.Component {
             </span>
           </div>
         </div>
-        <div className="col-sm"></div>
-        <div className="search-bar">
+        <div className="row ml-2 mt-3 .service-tile-content">
+          <Breadcrumb />
+        </div>
+        {/* Disabled Search Option for Time Being */}
+        {/* <div className="search-bar">
           <form id="search-form">
             <div className="search">
               <input
@@ -68,8 +71,8 @@ export default class CenterHeader extends React.Component {
               <input type="submit" className="corner" value="" />
             </div>
           </form>
-        </div>
-      </nav>
+        </div> */}
+      </div>
     );
   }
 }

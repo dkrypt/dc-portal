@@ -76,7 +76,7 @@ export default class CookieNotification extends React.Component {
                 this.readCookieNotification(event);
               }}
             >
-              That's Fine
+              Allow Cookies
             </a>
           </div>
         </div>
