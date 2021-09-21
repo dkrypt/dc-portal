@@ -4,7 +4,7 @@ import Highcharts from "highcharts";
 export const EnterpriseConnect = ({ setPersonaHandler, }) => {
   useEffect(() => {
     highChart();
-    setPersonaHandler();
+    setPersonaHandler([]);
   }, []);
   const highChart = () => {
     // Create the chart
@@ -18,7 +18,7 @@ export const EnterpriseConnect = ({ setPersonaHandler, }) => {
           color: "#005EB8",
           fontWeight: "bold",
           fontFamily: "GE Inspira Sans !important",
-          fontSize: "1.2vw !important",
+          fontSize: "1.5em !important",
         },
       },
       subtitle: {
@@ -26,7 +26,7 @@ export const EnterpriseConnect = ({ setPersonaHandler, }) => {
         align: "center",
         verticalAlign: "middle",
         style: {
-          fontSize: "6px",
+          fontSize: "0.6em",
           textAlign: "center",
         },
         x: 0,
@@ -86,7 +86,7 @@ export const EnterpriseConnect = ({ setPersonaHandler, }) => {
           color: "#005EB8",
           fontWeight: "bold",
           fontFamily: "GE Inspira Sans !important",
-          fontSize: "1.2vw !important",
+          fontSize: "1.5em !important",
         },
       },
       /* subtitle: {
@@ -157,7 +157,7 @@ export const EnterpriseConnect = ({ setPersonaHandler, }) => {
           color: "#005EB8",
           fontWeight: "bold",
           fontFamily: "GE Inspira Sans !important",
-          fontSize: "1.2vw !important",
+          fontSize: "1.5em !important",
         },
       },
       /* subtitle: {
@@ -174,7 +174,7 @@ export const EnterpriseConnect = ({ setPersonaHandler, }) => {
         },
       },
       tooltip: {
-        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        headerFormat: '<span style="font-size:1em">{point.key}</span><table>',
         pointFormat:
           '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
           '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',

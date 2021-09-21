@@ -61,12 +61,13 @@ img{
 }
 
 .sidebar-heading {
-  height: 9.5em;
   display: flex;
   flex-flow: column;
-  padding: 1rem 1rem 1rem 1rem !important;
+  justify-content: center;
   color: white;
   background-color: #005eb8;
+  height: 18vh;
+  padding: 3.7vh 0;
 }
 
 .dropdown-content {
@@ -82,10 +83,6 @@ img{
   border: none !important;
 }
 
-.dropdown-content .dropdown-item{
-  padding: 0.78rem;
-}
-
 .dropdown-content a {
   text-align: center;
   color: white;
@@ -99,42 +96,51 @@ img{
 }
 
 /* Show the dropdown menu on hover */
-/* .sidebarMenu:hover .dropdown-content {
+.sidebarMenu:hover .dropdown-content {
   display: block;
-} */
+}
 
 .sidebarMenu {
   position: relative;
   display: inline-block;
-  font-size: 0.88em;
+  font-size: 1.2em;
 }
 
 .sidebarMenu img {
+  width: 10%;
   padding-right: 0.9rem;
   padding-bottom: 0.2rem;
 }
 
 .titles {
-  font-size: 0.94em;
+  font-size: 1.4em;
   font-weight: bold;
   user-select: none !important;
 }
 
-.center-header{
-  height: 9.5em;
+.center-header{  
+  width: 75% !important;
   position: fixed !important;
+  padding: 1rem 1rem !important;
   background-color: white;
+  height: 18vh;
 }
 
 .headers, .GE-header {
-  font-size: 1.1em;
+  font-size: 1.5em;
   font-weight: bold;
   flex-flow: column;
   user-select: none !important;
+  padding-top: 1vh;
 }
 
+.headers{
+  padding: 2.5vh 0 !important;
+}
+
+
 .GE-Logo{
-  width: 150%;
+  width: 9vh;
 }
 
 .GE-header a, .GE-header a:hover{
@@ -142,7 +148,7 @@ img{
 }
 
 .user-details {
-  font-size: 0.65em;
+  font-size: 0.9em;
   user-select: none !important;
 }
 
@@ -154,6 +160,17 @@ img{
   font-size: 0.47em;
   font-weight: lighter;
   position: relative;
+}
+
+.global-icon .search {
+  position: relative;
+  width: 9rem;
+  height: 33px;
+  margin: 0 0.5rem;
+}
+
+.global-icon .search>.dropdown-item:focus, .global-icon .search>.dropdown-item:hover{
+  background-color: #fff !important;
 }
 
 .sub-org-space {
@@ -175,9 +192,15 @@ img{
   color: white;
 }
 
-.list-group-item {
-  padding-left: 3.5rem !important;
+.list-group-item{
+  padding: 1.2rem 0;
+  padding-left: 4.5rem !important;
   user-select: none;
+}
+
+.dropdown-content .dropdown-item{
+  padding: 1.23rem 0.78rem;
+  text-align: left;
 }
 
 .service-tile-content {
@@ -212,41 +235,32 @@ a:hover {
 }
 
 .footer {
-  position: absolute !important;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-  margin-bottom: 1rem;
+  user-select: none;
+  position: fixed !important;
+  bottom: 1rem;
 }
 
 .social-tag {
-  font-size: 1.2rem;
+  font-size: 1.4em;
 }
-.social-media {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
+.social-media img{
+  width: 11%;
 }
-.social-media-bar {
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-}
-.img-size-2 {
-  height: 40px;
-  width: 40px;
+
+.social-media .confluence-icon{
+  width: 9%;
 }
 
 .footer-copyright {
-  /* font-size: 1rem; */
+  font-size: 1em;
 }
 
 .text-meta {
   font-size: 0.8em;
 }
 .center-container {
-  margin-top: 9.5em;
+  margin-top: 18vh;
 }
 .navbar-expand-lg {
   position: fixed !important;
@@ -294,7 +308,7 @@ a:hover {
 } */
 
 .service-details {
-  font-size: 0.82em;
+  font-size: 1.2em;
   flex-flow: column;
   color: #333f48 !important;
 }
@@ -315,8 +329,8 @@ a:hover {
 .yellowDot,
 .greenDot {
   display: inline-block;
-  height: 10px;
-  width: 10px;
+  height: 15px;
+  width: 15px;
   border: 1px solid red;
   border-radius: 50%;
   background: red;
@@ -334,7 +348,7 @@ a:hover {
 }
 
 .global-icon .dropdown-menu {
-  font-size: 12px !important;
+  font-size: 1.3em !important;
   border: 1.5px #dbe2e9 solid !important;
   border-radius: 0.3rem !important;
 }
@@ -343,8 +357,8 @@ a:hover {
   background-color: #005eb8 !important;
 }
 
-.dropdown-item:focus,
-.dropdown-item:hover {
+.global-icon .dropdown-item:focus,
+.global-icon .dropdown-item:hover {
   background-color: #dbe2e9 !important;
 }
 
@@ -369,19 +383,19 @@ a:hover {
 }
 
 .carousel-indicators {
-  position: relative !important;
-  margin-right: 0 !important;
-  margin-left: 0 !important;
-  margin-bottom: 0 !important;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: unset!important;
   line-height: 1;
-  margin-top: 0.8rem;
+  margin-top: 1rem;
+  margin-bottom: 0 !important;
 }
 
 .carousel-indicators li {
   display: inline-block;
-  width: 10px;
-  height: 0px;
+  width: 15px;
+  height: 5px;
   margin: 0 8px;
   background: #333F48;
   border-radius: 50%;
@@ -397,7 +411,7 @@ a:hover {
 .carousel-buttons button {
   height: 1.7rem;
   white-space: nowrap;
-  font-size: 0.66em;
+  font-size: 0.9em;
   padding: 0 2px;
   margin: 1px 1.666px !important;
   background: #dbe2e9;
@@ -414,7 +428,7 @@ a:hover {
 
 /* Might use in Future */
 .main-dashboard .thumb-wrapper {
-  height: 8rem;
+  height: 18vh;
 }
 
 .loader {
@@ -443,10 +457,10 @@ a:hover {
   text-align: left;
   background-color: rgba(20, 20, 20, 0.8);
   min-height: 26px;
-  font-size: 16px;
+  font-size: 20px;
   color: #ccc;
   line-height: 26px;
-  padding: 8px 0 8px 30px;
+  padding: 15px 25px 15px 30px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -475,10 +489,10 @@ a:hover {
   color: #fff;
   display: inline-block;
   border-radius: 5px;
-  padding: 0 20px;
+  padding: 5px 20px;
   cursor: pointer;
   margin-top: 12px;  
-  font-size: 14px;
+  font-size: 18px;
 }
 #cookieConsent a.cookieConsentOK:hover {
   background-color: #e0c91f;

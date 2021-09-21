@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import "./ThreadConnect.css";
 
-import {Carousal as CustomCarousel} from "../../components/Carousal.js";
+import {CustomCarousel} from "../../components/CustomCarousel.js";
 import PopUpModal from "../../components/PopUpModal";
 
 import Icon_TC from "../../assets/images/Icon-TC.png";
@@ -46,14 +46,14 @@ export const ThreadConnect = (props) => {
             buttonName: "Users",
             type: "popup",
             onClick: {
-              showPopUpModal: () => displayPopUpModal(),
+              displayPopUpModal,
             },
           },
           {
             buttonName: "APIs",
             type: "popup",
             onClick: {
-              showPopUpModal: () => displayPopUpModal(),
+              displayPopUpModal,
             },
           },
           {
@@ -77,7 +77,7 @@ export const ThreadConnect = (props) => {
           {
             buttonName: "dots",
             onClick: {
-              showPopUpModal: () => displayPopUpModal(),
+              displayPopUpModal,
             },
           },
         ],
@@ -110,14 +110,14 @@ export const ThreadConnect = (props) => {
             buttonName: "Users",
             type: "popup",
             onClick: {
-              showPopUpModal: () => displayPopUpModal,
+              displayPopUpModal,
             },
           },
           {
             buttonName: "APIs",
             type: "popup",
             onClick: {
-              showPopUpModal: () => displayPopUpModal,
+              displayPopUpModal,
             },
           },
           {
@@ -141,7 +141,7 @@ export const ThreadConnect = (props) => {
           {
             buttonName: "dots",
             onClick: {
-              showPopUpModal: () => displayPopUpModal,
+              displayPopUpModal,
             },
           },
         ],

@@ -6,24 +6,16 @@ import {NavLink} from 'react-router-dom';
 
 export const Footer = () => {
     return (
-    <div className="footer">
-        <div className="social-media page-footer">
-          <div className="social-tag text-muted">Socialize With Us</div>
-          <div className="social-media-bar">
-            <a href='https://github.build.ge.com/DC-Admin-Portal/dc-portal-mirror'>
-                <img alt="" className="img-fluid px-2 img-size-2" src={Icon_Github} />
-            </a>
-            <a href='#'>
-                <img alt="" className="img-fluid px-2 img-size-2" src={Icon_Yammer} />
-            </a>
-            <a href='#'>
-                <img alt="" className="img-fluid px-2 img-size-2" src={Icon_Confluence} />
-            </a>
-          </div>
-        </div>
-        <div className="text-muted mt-2 text-meta">
-          © 2021 GENERAL ELECTRIC
-        </div>
+      <div className="col-3 footer">
+      <div className="social-media text-center page-footer">
+        <div className="social-tag text-muted">Socialize With Us</div>
+        <a href="https://github.build.ge.com/DC-Admin-Portal/dc-portal-mirror"><img alt="" className="img-fluid px-2 github-icon" src={Icon_Github} /></a>
+        <img alt="" className="img-fluid px-2 yammer-icon" src={Icon_Yammer} />
+        <img alt="" className="img-fluid px-2 confluence-icon" src={Icon_Confluence} />
+      </div>
+      <div className="footer-copyright text-center text-muted mt-2">
+        © 2021 GENERAL ELECTRIC
+      </div>
     </div>
     )
 }

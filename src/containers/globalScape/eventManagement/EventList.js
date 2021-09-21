@@ -26,7 +26,7 @@ export const EventList = ({ clickEvent, isLoader }) => {
     AxiosInstance.post("/DISP_DISPLAY_EVENT_LIST?UserID=502663088")
       .then((response) => {
         setEventsData(response.data);
-        setLoading(false);
+        isLoader(false);
       })
       .catch((e) =>console.error(e));
   }, []);

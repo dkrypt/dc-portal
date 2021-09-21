@@ -33,14 +33,15 @@ export default function App() {
 
     var serviceNames = ["IBS", "GPAS-Lite"];
 
-    setPersonaOptions(serviceNames);
+    // setPersonaOptions(serviceNames);
     setTimeout(() => {
       setAppState((prevState) => ({
         ...prevState,
         authToken: authToken,
         isloading: "none",
+        subHeaderOpts: serviceNames,
       }));
-    }, 3000);
+    }, 300);
   }, []);
 
   const switchPage = (changePageTo) => {

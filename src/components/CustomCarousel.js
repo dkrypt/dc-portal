@@ -9,23 +9,23 @@ import Icon_Snow from "../assets/images/Icon-Snow.png";
 
 const DOLLARREGEX = /[$].+/gm;
 
-export const Carousal = ({ clickEvent, serviceCardDisplay }) => {
+export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
   const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
   const [month, setMonth] = useState(moment().format('MMMM'));
   useEffect(() => {
-    setTimeout(() => {
+    /* setTimeout(() => {
       const carouselNode = document.querySelector('.carousel-indicators');
       if (carouselNode !== null) {
         carouselNode.classList.add('col-12', 'p-0');
       }
-    }, 100);
+    }, 100); */
   }, []);
   const handleExternalLink = (url) => {
     // window.open(url, '_blank');
     console.log(url);
   };
   return (
-    <Carousel interval={3000}>
+    <Carousel interval={5000}>
       {serviceCardDisplay.map((serviceCard, indexArr) => {
         return (
           <Carousel.Item key={indexArr}>
@@ -57,18 +57,22 @@ export const Carousal = ({ clickEvent, serviceCardDisplay }) => {
                           <div className="col ml-1 titles service-tile-content">
                             {service.serviceName}
                           </div>
-                          <div className="col-3 text-center service-tile-content">
-                            <img
-                              className="img-fluid"
-                              src={service.img.src}
-                              alt={service.img.alt}
-                              style={
-                                typeof service.img.style == "object"
-                                  ? service.img.style
-                                  : {}
-                              }
-                            />
-                          </div>
+                          {service.hasOwnProperty("img") ? (
+                              <div className="col-3 text-center service-tile-content">
+                                <img
+                                  className="img-fluid"
+                                  src={service.img.src}
+                                  alt={service.img.alt}
+                                  style={
+                                    typeof service.img.style == "object"
+                                      ? service.img.style
+                                      : {}
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              ""
+                            )}
                         </div>
                       </Link>
                       <div className="row service-details">
@@ -80,34 +84,52 @@ export const Carousal = ({ clickEvent, serviceCardDisplay }) => {
                                 key={index}
                               >
                                 {key
-                                  .replace("$date", date)
-                                  .replace("$month", month)}
-                                :{" "}
-                                {DOLLARREGEX.exec(value) !== null
-                                  ? value.replace(/[$].+/gm, " ")
-                                  : value}
-                                {value == "Healthy $status" ? (
-                                  <span className="greenDot"></span>
-                                ) : value == "Restarting $status" ? (
-                                  <span className="yellowDot"></span>
-                                ) : typeof value == "string" &&
-                                  value.includes("$open") ? (
-                                  <a href="#">
-                                    <LaunchIcon className="m-1" />
-                                  </a>
-                                ) : typeof value == "string" &&
-                                  value.includes("$snowimg") ? (
-                                  <a href="#">
-                                    <img
-                                      className="img-fluid m-1"
-                                      src={Icon_Snow}
-                                      alt="Open-Icon"
-                                      style={{ width: "5%" }}
-                                    />
-                                  </a>
-                                ) : (
-                                  ""
-                                )}
+                                    .replace("$date", date)
+                                    .replace("$month", month)}
+                                  :{" "}
+                                  {typeof value == "string" &&
+                                  value.includes("Healthy") ? (
+                                    value === "Healthy $partial" ? (
+                                      <span className="yellowDot"></span>
+                                    ) : (
+                                      <span className="greenDot"></span>
+                                    )
+                                  ) : value === "Restarting" ? (
+                                    <span className="yellowDot"></span>
+                                  ) : value === "Stopped" ? (
+                                    <span className="redDot"></span>
+                                  ) : (
+                                    value
+                                  )}
+                                  {/* {key
+                                    .replace("$date", this.state.date)
+                                    .replace("$month", this.state.month)}
+                                  :{" "}
+                                  {DOLLARREGEX.exec(value) !== null
+                                    ? value.replace(/[$].+/gm, " ")
+                                    : value}
+                                  {value == "Healthy $status" ? (
+                                    <span className="greenDot"></span>
+                                  ) : value == "Restarting $status" ? (
+                                    <span className="yellowDot"></span>
+                                  ) : typeof value == "string" &&
+                                    value.includes("$open") ? (
+                                    <a href="#">
+                                      <LaunchIcon className="m-1" />
+                                    </a>
+                                  ) : typeof value == "string" &&
+                                    value.includes("$snowimg") ? (
+                                    <a href="#">
+                                      <img
+                                        className="img-fluid m-1"
+                                        src={Icon_Snow}
+                                        alt="Open-Icon"
+                                        style={{ width: "5%" }}
+                                      />
+                                    </a>
+                                  ) : (
+                                    ""
+                                  )} */}
                               </div>
                             );
                           }
@@ -143,8 +165,7 @@ export const Carousal = ({ clickEvent, serviceCardDisplay }) => {
                                     </Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Dropdown.Item
-                                      onClick={buttonData.onClick.showPopUpModal.bind(
-                                        this,
+                                      onClick={()=>buttonData.onClick.displayPopUpModal(
                                         {
                                           show: true,
                                           buttonName: "Integration Versions",
@@ -162,19 +183,16 @@ export const Carousal = ({ clickEvent, serviceCardDisplay }) => {
                                   className="btn btn-secondary btn-sm"
                                   onClick={
                                     buttonData.type == "popup" ? 
-                                      buttonData.onClick.showPopUpModal.bind(
-                                          this,
+                                      ()=>buttonData.onClick.displayPopUpModal(
                                           {
                                             show: true,
                                             buttonName: buttonData.buttonName,
                                           }
                                         )
-                                      : buttonData.type == "external"
-                                      ? handleExternalLink(buttonData.onClick.url)
-                                      : ""
+                                      : ()=>handleExternalLink(buttonData.onClick.url)
                                   }
                                 >
-                                  {buttonData.buttonName == "Open" ? (
+                                  {/* {buttonData.buttonName == "Open" ? (
                                     <img
                                       className="img-fluid"
                                       src={Icon_Open}
@@ -183,7 +201,7 @@ export const Carousal = ({ clickEvent, serviceCardDisplay }) => {
                                     />
                                   ) : (
                                     ""
-                                  )}
+                                  )} */}
                                   {buttonData.type == "internal" ? (
                                     <Link className="" to={buttonData.path}>
                                       {buttonData.buttonName}

@@ -171,4 +171,95 @@ export const Dashboard = ({ setPersonaHandler }) => {
       ],
     });
   }
+  return (
+    <Fragment>
+      <div className="container-lg w-100 p-3 borderStyle mb-3 tc-dashboard">
+        <div className="row mx-1">
+          <div className="col m-1 borderStyle">
+            <div className="card border-0">
+              <div className="card-body p-0">
+                <select
+                  className="col-sm-4 borderStyle service-details"
+                  name=""
+                  id="highChartFilter"
+                  onChange={handleHighChartFilter}
+                >
+                  <option value="" defaultValue>
+                    filter
+                  </option>
+                  <option value="3 Months">3 Months</option>
+                  <option value="6 Months">6 Months</option>
+                  <option value="9 Months">9 Months</option>
+                  <option value="12 Months">12 Months</option>
+                </select>
+                <div id="columnContainer" style={{ height: "15rem" }}></div>
+              </div>
+            </div>
+          </div>
+          <div className="col m-1 borderStyle">
+            <div className="card border-0">
+              <div className="card-body p-0">
+                <select
+                  className="col-sm-4 borderStyle service-details"
+                  name=""
+                  id="highChartFilter"
+                  onChange={handleHighChartFilter}
+                >
+                  <option value="" defaultValue>
+                    filter
+                  </option>
+                  <option value="3 Months">3 Months</option>
+                  <option value="6 Months">6 Months</option>
+                  <option value="9 Months">9 Months</option>
+                  <option value="12 Months">12 Months</option>
+                </select>
+                <div id="donutContainer" style={{ height: "15rem" }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row mx-2 mt-2">
+          <div className="col-4 borderStyle">
+            <div className="text-left titles mb-3">INTEGRATION VERSIONS</div>
+            <ul className="list-unstyled service-details m-0">
+              <li>Example 1: v1</li>
+            </ul>
+          </div>
+        </div>
+        <div className="row mx-1 mt-2">
+          <div className="col p-0 d-flex align-items-center">
+            <button type="button" className="btn btn-secondary btn-sm">
+              Add User(s)
+            </button>
+            <button type="button" className="btn btn-secondary btn-sm">
+              View/Modify Users
+            </button>
+            <button type="button" className="btn btn-secondary btn-sm">
+              View Logs
+            </button>
+            <button type="button" className="btn btn-secondary btn-sm">
+              Compare and Merge Flow
+            </button>
+          </div>
+          <div className="col">
+            <div className="row">
+              <div className="col text-right">
+                System Health <span className="greenDot"></span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col text-right">
+                Last Restart- {date}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="container-lg w-100 p-3 borderStyle">
+        <div className="row service-text">           
+          
+        </div>
+      </div> */}
+    </Fragment>
+  );
 };

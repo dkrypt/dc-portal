@@ -29,14 +29,14 @@ export default function Sidebar(props) {
 
   return (
     <div className="col-3 p-0" id="sidebar-wrapper">
-      <div className="sidebar-heading px-3 py-2">
-        <div className="d-flex flex-row px-3 py-2">
-          <div className="col-3 p-0">
+      <div className="sidebar-heading px-5">
+        <div className="d-flex flex-row px-3">
+          <div className="col-3 p-0 text-center">
             <Link to="/">
               <img className="img-fluid GE-Logo" alt="" src={Logo_GE} />
             </Link>
           </div>
-          <div className="col-9 px-0 pt-1">
+          <div className="col-9 px-0">
             <div className="text-center GE-header">
               <Link to="/">
                 <b>DIGITAL CONNECT</b>
@@ -94,10 +94,8 @@ export default function Sidebar(props) {
       <div className="list-group list-group-flush p-0 mt-2">
         <span className="sidebarMenu">
           <Link className="list-group-item list-group-item-action" to="/">
-            <div className="navlink-wrapper">
-              <img className="img-fluid" alt="" src={Icon_Dashboard} />
-              <span>DASHBOARD</span>
-            </div>
+            <img className="img-fluid" alt="" src={Icon_Dashboard} />
+            <span>DASHBOARD</span>
           </Link>
         </span>
         <span className="sidebarMenu">
@@ -107,20 +105,21 @@ export default function Sidebar(props) {
             className="list-group-item list-group-item-action"
           >
             <img className="img-fluid" alt="" src={Icon_Products} />
-            PRODUCTS & SERVICES
+            <span>PRODUCTS & SERVICES</span>
           </a>
         </span>
         {persona === "OWNER" ? (
           <span className="sidebarMenu dropright">
           <Link
             className="list-group-item list-group-item-action dropdown-toggle"
+            to="/manage"
             role="button"
             id="dropdownMenuLink"
-            data-toggle="dropdown"
+            // data-toggle="dropdown"
             aria-expanded="false"
           >
              <img className="img-fluid" alt="" src={Icon_Subscriptions} />
-              MANAGE
+             <span>MANAGE</span>
           </Link>
           <div className="dropdown-menu dropdown-content">
             <Link className="dropdown-item" to="/manage/managesubscription">SUBSCRIPTION</Link>
@@ -141,7 +140,7 @@ export default function Sidebar(props) {
               }
             >
               <img className="img-fluid" alt="" src={Icon_Subscriptions} />
-              MANAGE
+              <span>MANAGE</span>
             </Link> */}
           </span>
         ) : (
@@ -160,7 +159,7 @@ export default function Sidebar(props) {
             }
           >
             <img className="img-fluid" alt="" src={Icon_Announcements} />
-            ANNOUNCEMENTS & EVENTS
+            <span>ANNOUNCEMENTS & EVENTS</span>
           </Link>
         </span>
         <span className="sidebarMenu dropright">
@@ -169,11 +168,11 @@ export default function Sidebar(props) {
             to="#"
             role="button"
             id="dropdownMenuLink"
-            data-toggle="dropdown"
+            // data-toggle="dropdown"
             aria-expanded="false"
           >
             <img className="img-fluid" alt="" src={Icon_Engagement_Requests} />
-            ENGAGEMENT REQUESTS
+            <span>ENGAGEMENT REQUESTS</span>
           </Link>
           <div className="dropdown-menu dropdown-content">
             <Link className="dropdown-item" to="/new-engagement-request">NEW ENGAGEMENT REQUEST</Link>
@@ -195,7 +194,7 @@ export default function Sidebar(props) {
             }
           >
             <img className="img-fluid" alt="" src={Icon_Support} />
-            SUPPORT
+            <span>SUPPORT</span>
           </Link>
         </span>
         <span className="sidebarMenu">
@@ -211,7 +210,7 @@ export default function Sidebar(props) {
             }
           >
             <img className="img-fluid" alt="" src={Icon_Settings} />
-            PREFERENCES
+            <span>PREFERENCES</span>
           </Link>
         </span>
         {persona === "OWNER" ? (
@@ -228,7 +227,7 @@ export default function Sidebar(props) {
               }
             >
               <img className="img-fluid" alt="" src={Icon_Administration} />
-              ADMINISTRATION
+              <span>ADMINISTRATION</span>
             </Link>
           </span>
         ) : (

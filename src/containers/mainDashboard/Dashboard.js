@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import {Carousal as CustomCarousel} from "../../components/Carousal.js";
+import {CustomCarousel} from "../../components/CustomCarousel.js";
 
 import Icon_TC from "../../assets/images/Icon-TC.png";
 import Icon_EC from "../../assets/images/Icon-EC.svg";

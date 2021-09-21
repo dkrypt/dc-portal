@@ -2,27 +2,179 @@ import React, { Fragment, useState, useEffect } from "react";
 import LaunchIcon from "@material-ui/icons/Launch";
 import moment from "moment";
 
-import {Carousal as CarouselItem} from "../../components/Carousal.js";
+import { CustomCarousel } from "../../components/CustomCarousel.js";
 import PopUpModal from "../../components/PopUpModal";
 
 import Icon_Snow from "../../assets/images/Icon-Snow.png";
 import Icon_Dive from "../../assets/images/Icon-Dive.svg";
 
 export const Dive = ({persona, clickEvent, setPersonaHandler}) => {
-  const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
-  const [month, setMonth] = useState(moment().format('MMMM'));
-  const [serviceCardDisplay, setServiceCardDisplay] = useState([]);
-  const [firstTimeLoad, setFirstTimeLoad] = useState([]);
   const [showPopUpModal, setShowPopUpModal] = useState(false);
   const [modalName, setModalName] = useState('');
-  const [serviceCards, setServiceCards] = useState([]);
+
+  const showPopUpModal2 = (clickValue) => {
+    setShowPopUpModal(clickValue.show);
+    setModalName(clickValue.buttonName);
+  }
+
+  const serviceCardInitialState = [
+    {
+      serviceName: "GE POWER PMx E2E",
+      style: {
+        display: "block",
+      },
+      from: "/dive",
+      onClick: {
+        pageName: "GE Power PMx E2E",
+        headerText: "GE POWER PMx E2E",
+      },
+      img: {
+        src: Icon_Dive,
+        alt: "Dive-Icon",
+        style: {width: "60%"},
+      },
+      serviceInfo: {
+        "Data Ingestion": "Healthy $status",
+        "User Management": `${21} active users out of ${200}`,
+        "Number of Flows": 22,
+      },
+      displayPermissions: {
+        displayCard: true,
+      },
+      buttons: {
+        displayButtons: false,
+        buttonInfo: [
+          {
+            buttonName: "Open",
+            type: "external",
+            onClick: {
+              url: "#",
+            },
+          },
+          {
+            buttonName: "Users",
+            type: "popup",
+            onClick: {
+              showPopUpModal: ()=>showPopUpModal2,
+            },
+          },
+          {
+            buttonName: "APIs",
+            type: "popup",
+            onClick: {
+              showPopUpModal: ()=>showPopUpModal2,
+            },
+          },
+          {
+            buttonName: "Dashboard",
+            type: "internal",
+            path: "/threadconnect/dashboard",
+            onClick: {
+              pageName: "TCDashboard",
+              headerText: "",
+            },
+          },
+          {
+            buttonName: "Remove",
+            type: "internal",
+            path: "/threadconnect/dashboard",
+            onClick: {
+              pageName: "TCDashboard",
+              headerText: "",
+            },
+          },
+          {
+            buttonName: "dots",
+            onClick: "",
+          },
+        ],
+      },
+    },
+    {
+      serviceName: "GE CORPORATE",
+      style: {
+        display: "block",
+      },
+      from: "/threadconnect",
+      onClick: {
+        pageName: "GE CORPORATE",
+        headerText: "GE CORPORATE",
+      },
+      img: {
+        src: Icon_Dive,
+        alt: "Dive-Icon",
+        style: {width: "60%"},
+      },
+      serviceInfo: {
+        "Data Ingestion": "Healthy $status",
+        "User Management": `${9} active users out of ${25}`,
+        "Number of Flows": 52,
+      },
+      displayPermissions: {
+        displayCard: true,
+      },
+      buttons: {
+        displayButtons: false,
+        buttonInfo: [
+          {
+            buttonName: "Open",
+            type: "external",
+            onClick: {
+              url: "#",
+            },
+          },
+          {
+            buttonName: "Users",
+            type: "popup",
+            onClick: {
+              showPopUpModal: ()=>showPopUpModal2,
+            },
+          },
+          {
+            buttonName: "APIs",
+            type: "popup",
+            onClick: {
+              showPopUpModal: ()=>showPopUpModal2,
+            },
+          },
+          {
+            buttonName: "Dashboard",
+            type: "internal",
+            path: "/tcdashboard",
+            onClick: {
+              pageName: "TCDashboard",
+              headerText: "",
+            },
+          },
+          {
+            buttonName: "Remove",
+            type: "internal",
+            path: "/tcdashboard",
+            onClick: {
+              pageName: "TCDashboard",
+              headerText: "",
+            },
+          },
+          {
+            buttonName: "dots",
+            onClick: "",
+          },
+        ],
+      },
+    },
+  ]
+
+  const [serviceCardDisplay, setServiceCardDisplay] = useState([]);
+  const [firstTimeLoad, setFirstTimeLoad] = useState([]);
+  
+  const [serviceCards, setServiceCards] = useState(serviceCardInitialState);
   
   // componentDidMount
   useEffect(() => {
     clickEvent({
       pageName: "Dive",
       headerText: "MY DIVE SERVICE",
-      subHeaderText: "GLOBAL",
+      subHeaderText: persona,
     })
     var serviceNames = [];
     // var serviceNames = serviceCards.map(service => service.serviceName);
@@ -30,6 +182,7 @@ export const Dive = ({persona, clickEvent, setPersonaHandler}) => {
       serviceNames.push(service.serviceName);
     });
     setPersonaHandler(serviceNames);
+
     let serviceArray = Object.assign([], serviceCards);
     let tempArr = [];
     let modeRan = serviceArray.length / 3;
@@ -53,6 +206,7 @@ export const Dive = ({persona, clickEvent, setPersonaHandler}) => {
       setFirstTimeLoad(tempArr);
     }, 100);
   }, []);
+  
   useEffect(() => {
     let updateServiceCards = Object.assign([], serviceCards);
     let tempCard = [[]];
@@ -68,122 +222,71 @@ export const Dive = ({persona, clickEvent, setPersonaHandler}) => {
     }
   }, [persona]);
 
-  const showPopUpModal2 = (clickValue) => {
-    setShowPopUpModal(clickValue.show);
-    setModalName(clickValue.buttonName);
-  }
   return (
     <Fragment>
-      <div className="container-lg w-100 p-3 borderStyle mb-3">
-        <div className="row mx-1">
-          <div className="col service-tile-content m-1 borderStyle p-2 titles">
-          <div className="text-center titles mb-1">DIVE HEALTH</div>
-            <div className="row p-1 m-1">
-              <div className="col m-1 text-center service-tile-content">
-                Dashboard: <span className="greenDot"></span>
-                <a href="#">
-                  <LaunchIcon className="m-1" />
-                </a>
-                <a href="#">
-                  <img
-                    className="img-fluid m-1"
-                    src={Icon_Snow}
-                    alt="Open-Icon"
-                    style={{ width: "10%" }}
-                  />
-                </a>
-              </div>
-              <div className="col m-1 text-center service-tile-content">
-                Admin Console: <span className="redDot"></span>
-                <a href="#">
-                  <LaunchIcon className="m-1" />
-                </a>
-                <a href="#">
-                  <img
-                    className="img-fluid m-1"
-                    src={Icon_Snow}
-                    alt="Open-Icon"
-                    style={{ width: "10%" }}
-                  />
-                </a>
-              </div>
-              <div className="col m-1 text-center service-tile-content">
-                Customer: <span className="greenDot"></span>
-                <a href="#">
-                  <LaunchIcon className="m-1" />
-                </a>
-                <a href="#">
-                  <img
-                    className="img-fluid m-1"
-                    src={Icon_Snow}
-                    alt="Open-Icon"
-                    style={{ width: "10%" }}
-                  />
-                </a>
-              </div>
-            </div>
-            <div className="row p-1 m-1">
-              <div className="col m-1 text-center service-tile-content">
-                Elasticsearch: <span className="yellowDot"></span>
-                <a href="#">
-                  <LaunchIcon className="m-1" />
-                </a>
-                <a href="#">
-                  <img
-                    className="img-fluid m-1"
-                    src={Icon_Snow}
-                    alt="Open-Icon"
-                    style={{ width: "10%" }}
-                  />
-                </a>
-              </div>
-              <div className="col m-1 text-center service-tile-content">
-                TRF: <span className="greenDot"></span>
-                <a href="#">
-                  <LaunchIcon className="m-1" />
-                </a>
-                <a href="#">
-                  <img
-                    className="img-fluid m-1"
-                    src={Icon_Snow}
-                    alt="Open-Icon"
-                    style={{ width: "10%" }}
-                  />
-                </a>
-              </div>
-              <div className="col m-1 text-center service-tile-content">
-                Product TC: <span className="greenDot"></span>
-                <a href="#">
-                  <LaunchIcon className="m-1" />
-                </a>
-                <a href="#">
-                  <img
-                    className="img-fluid m-1"
-                    src={Icon_Snow}
-                    alt="Open-Icon"
-                    style={{ width: "10%" }}
-                  />
-                </a>
-              </div>
-            </div>              
-        </div>
-      </div>          
-      </div>
       <div
-        className="container-lg w-100 p-3 borderStyle"
-        id="carousel-container"
-      >
-        <div className="text-center titles mb-3">DIVE ORG</div>
-        <CarouselItem
-          serviceCardDisplay={serviceCardDisplay}
-          clickEvent={clickEvent}
-        />
-        <PopUpModal
-          showModal={showPopUpModal}
-          onClose={showPopUpModal2}
-          modalName={modalName}
-        />
-      </div>
-    </Fragment>
+          className="container-lg w-100 p-3 borderStyle mb-3"
+          id="carousel-container"
+        >
+          <div className="text-center titles mb-3">MY SUBSCRIPTIONS</div>
+          <CustomCarousel
+            serviceCardDisplay={serviceCardDisplay}
+            clickEvent={clickEvent}
+          />
+          <PopUpModal
+            showModal={showPopUpModal}
+            onClose={()=>showPopUpModal2}
+            modalName={modalName}
+          />
+        </div>
+        <div className="container-lg w-100 p-3 borderStyle ">
+          <div className="row mx-1">
+            <div className="col service-tile-content m-1 borderStyle p-2 titles">
+            <div className="text-center titles mb-1">DIVE HEALTH</div>
+              <div className="row p-1 m-1">
+                <div className="col m-1 text-center service-tile-content">
+                  Dashboard: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  Admin Console: <span className="redDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  Customer: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                </div>
+              </div>
+              <div className="row p-1 m-1">
+                <div className="col m-1 text-center service-tile-content">
+                  Elasticsearch: <span className="yellowDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  TRF: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                </div>
+                <div className="col m-1 text-center service-tile-content">
+                  Product TC: <span className="greenDot"></span>
+                  <a href="#">
+                    <LaunchIcon className="m-1" />
+                  </a>
+                </div>
+              </div>              
+          </div>
+        </div>          
+        </div>
+        
+      </Fragment>
   );
 };
