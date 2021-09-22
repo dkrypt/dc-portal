@@ -1,6 +1,5 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-
 import { Dashboard as MainDashboard } from "../containers/mainDashboard/Dashboard.js";
 import { ThreadConnect } from "../containers/threadConnect/ThreadConnect.js";
 import { EnterpriseConnect } from "../containers/enterpriseConnect/EnterpriseConnect.js";
@@ -13,11 +12,10 @@ import Manage from "../containers/manage/Manage.js";
 import ManageTC from "../containers/manage/threadConnect/ManageTC.js";
 import ManageSubscription from "../containers/manage/subscription/ManageSubscription.js";
 import ManageUser from "../containers/manage/user/ManageUser.js";
-import { EventList } from "../containers/globalScape/eventManagement/EventList.js";
-import { EnableAccount } from "../containers/globalScape/EnableAccount.js";
-import { DelegatePriToSso } from "../containers/globalScape/DelegatePriToSso.js";
-import { RevokeSso } from "../containers/globalScape/RevokeSso.js";
-import { RemoveIP } from "../containers/globalScape/RemoveIP.js";
+import {EventList} from "../containers/globalScape/eventManagement/EventList.js";
+import {DelegatePriToSso} from "../containers/globalScape/DelegatePriToSso.js";
+import {RevokeSso} from "../containers/globalScape/RevokeSso.js";
+import {RemoveIP} from "../containers/globalScape/RemoveIP.js";
 import MaintainGroup from "../containers/globalScape/MaintainGroup.js";
 import ManageAccount from "../containers/globalScape/ManageAccount.js";
 import ManageEc from "../containers/manage/enterpriseConnect/ManageEc.js";
@@ -167,7 +165,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/globalscape/eventmanagement">
+      <Route exact path="/globalscape/event-management">
         <EventList
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -177,7 +175,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/globalscape/delegatepriviledgestosso">
+      <Route exact path="/globalscape/delegate-priviledges">
         <DelegatePriToSso
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -187,7 +185,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/globalscape/revokesso">
+      <Route exact path="/globalscape/revoke-sso">
         <RevokeSso
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -196,18 +194,8 @@ export default function Router(props) {
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
-      </Route>
-      <Route exact path="/globalscape/enableaccount">
-        <EnableAccount
-          clickEvent={props.clickEvent}
-          persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler}
-          baseUrl={props.baseUrl}
-          authToken={props.authToken}
-          isLoader={props.isLoader}
-        />
-      </Route>
-      <Route exact path="/globalscape/removeip">
+      </Route>           
+      <Route exact path="/globalscape/remove-ip">
         <RemoveIP
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -218,18 +206,18 @@ export default function Router(props) {
         />
       </Route>
 
-      <Route exact path="/globalscape/maintaingroup">
+      <Route exact path="/globalscape/maintain-group">
         <MaintainGroup
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler.bind(this)}
+          setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
         />
       </Route>
-      <Route exact path="/globalscape/manageaccount">
+      <Route exact path="/globalscape/manage-account">
         <ManageAccount
-          clickEvent={props.clickEvent.bind(this)}
+          clickEvent={props.clickEvent}
           persona={props.persona}
           setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}
