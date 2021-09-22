@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tab,
   Nav,
@@ -13,6 +13,7 @@ import Orgspaceinstance from "../orgSpaceInstance/OrgSpaceInstance.js";
 import EcNewProvisioning from "./EcNewProvisioning.js";
 import EcUpdateProvisioning from "./EcUpdateProvisioning.js";
 function ManageEc(props) {
+  const [OrgSpaceValue, setOrgSpaceValue] = useState({});
   useEffect(() => {
     props.clickEvent({
       pageName: "ManageEC",
@@ -20,10 +21,13 @@ function ManageEc(props) {
       subHeaderText: "GLOBAL",
     });
   }, []);
+  const getOrgSpaceValue = (data) => {
+    setOrgSpaceValue(data);
+  };
   return (
     <>
       <div className="container-lg w-100 p-3 mb-3 tc-manage">
-        <Orgspaceinstance />
+        <Orgspaceinstance getOrgspaceValue={getOrgSpaceValue} />
         <Tab.Container id="left-tabs-example" defaultActiveKey="first">
           <Card className="tc-manage">
             <Card.Header className="tc-manage">
@@ -61,10 +65,10 @@ function ManageEc(props) {
             <Card.Body className="tc-manage">
               <Tab.Content className="tc-manage">
                 <Tab.Pane eventKey="first" className="tc-manage">
-                  <EcNewProvisioning />
+                  <EcNewProvisioning OrgSpaceValue={OrgSpaceValue} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="second" className="tc-manage">
-                  <EcUpdateProvisioning />
+                  <EcUpdateProvisioning OrgSpaceValue={OrgSpaceValue} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="third" className="tc-manage">
                   {" "}

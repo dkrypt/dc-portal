@@ -3,21 +3,21 @@ import { Switch, Route } from "react-router-dom";
 
 import { Dashboard as MainDashboard } from "../containers/mainDashboard/Dashboard.js";
 import { ThreadConnect } from "../containers/threadConnect/ThreadConnect.js";
-import {EnterpriseConnect} from "../containers/enterpriseConnect/EnterpriseConnect.js";
-import {Dive} from "../containers/dive/Dive.js";
-import {DivePower} from "../containers/dive/DivePower.js";
-import {NewEngagementRequest} from "../containers/engagementRequest/NewEngagementRequest.js";
-import {Dashboard as TCDashboard} from "../containers/threadConnect/Dashboard.js";
-import {GlobalScape} from "../containers/globalScape/GlobalScape.js";
+import { EnterpriseConnect } from "../containers/enterpriseConnect/EnterpriseConnect.js";
+import { Dive } from "../containers/dive/Dive.js";
+import { DivePower } from "../containers/dive/DivePower.js";
+import { NewEngagementRequest } from "../containers/engagementRequest/NewEngagementRequest.js";
+import { Dashboard as TCDashboard } from "../containers/threadConnect/Dashboard.js";
+import { GlobalScape } from "../containers/globalScape/GlobalScape.js";
 import Manage from "../containers/manage/Manage.js";
 import ManageTC from "../containers/manage/threadConnect/ManageTC.js";
 import ManageSubscription from "../containers/manage/subscription/ManageSubscription.js";
 import ManageUser from "../containers/manage/user/ManageUser.js";
-import {EventList} from "../containers/globalScape/eventManagement/EventList.js";
-import {EnableAccount} from "../containers/globalScape/EnableAccount.js";
-import {DelegatePriToSso} from "../containers/globalScape/DelegatePriToSso.js";
-import {RevokeSso} from "../containers/globalScape/RevokeSso.js";
-import {RemoveIP} from "../containers/globalScape/RemoveIP.js";
+import { EventList } from "../containers/globalScape/eventManagement/EventList.js";
+import { EnableAccount } from "../containers/globalScape/EnableAccount.js";
+import { DelegatePriToSso } from "../containers/globalScape/DelegatePriToSso.js";
+import { RevokeSso } from "../containers/globalScape/RevokeSso.js";
+import { RemoveIP } from "../containers/globalScape/RemoveIP.js";
 import MaintainGroup from "../containers/globalScape/MaintainGroup.js";
 import ManageAccount from "../containers/globalScape/ManageAccount.js";
 import ManageEc from "../containers/manage/enterpriseConnect/ManageEc.js";
@@ -127,7 +127,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/manage/managetc">
+      <Route exact path="/manage/manage-tc">
         <ManageTC
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -137,7 +137,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/manage/manage_ec">
+      <Route exact path="/manage/manage-ec">
         <ManageEc
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -147,7 +147,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/manage/managesubscription">
+      <Route exact path="/manage/manage-subscription">
         <ManageSubscription
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -157,7 +157,7 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/manage/manageuser">
+      <Route exact path="/manage/manage-user">
         <ManageUser
           clickEvent={props.clickEvent}
           persona={props.persona}
@@ -206,7 +206,7 @@ export default function Router(props) {
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
-      </Route>      
+      </Route>
       <Route exact path="/globalscape/removeip">
         <RemoveIP
           clickEvent={props.clickEvent}
@@ -216,7 +216,7 @@ export default function Router(props) {
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
-      </Route>    
+      </Route>
 
       <Route exact path="/globalscape/maintaingroup">
         <MaintainGroup

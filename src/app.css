@@ -1,7 +1,7 @@
 @import-normalize;
 
-:root{
-  --ge-lightblue: #005eb8;   
+:root {
+  --ge-lightblue: #005eb8;
   --ge-skyblue: #59cbe8;
   --ge-darkblue: #002e5d;
   --ge-darkgrey: #333f48;
@@ -61,7 +61,13 @@ html::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
-img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
+img,
+.titles,
+.headers,
+.GE-header,
+.user-details,
+.list-group-item,
+.footer {
   user-select: none;
 }
 
@@ -88,8 +94,8 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
 
 .dropdown-content {
   display: none;
-  top:0px !important;
-  padding: 0!important;
+  top: 0px !important;
+  padding: 0 !important;
   margin-left: 0 !important;
   position: absolute;
   background-color: var(--ge-darkblue);
@@ -133,7 +139,7 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
   font-weight: bold;
 }
 
-.center-header{  
+.center-header {
   width: 75% !important;
   position: fixed !important;
   padding: 1rem 1rem !important;
@@ -141,33 +147,34 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
   height: var(--headerbar-height);
 }
 
-.headers, .GE-header {
+.headers,
+.GE-header {
   font-size: var(--fs-mid-2x);
   font-weight: bold;
   flex-flow: column;
   padding-top: 1vh;
 }
 
-.headers{
+.headers {
   padding: 2.5vh 0 !important;
 }
 
-.ge-logo-col{
+.ge-logo-col {
   display: flex;
   align-items: center;
 }
 
-.headers{
+.headers {
   padding: 2.5vh 0 !important;
 }
 
-
-.GE-Logo{
+.GE-Logo {
   width: 9vh;
 }
 
-.GE-header a, .GE-header a:hover{
-  color: #fff!important;
+.GE-header a,
+.GE-header a:hover {
+  color: #fff !important;
 }
 
 .user-details {
@@ -191,7 +198,8 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
   margin: 0 0.5rem;
 }
 
-.global-icon .search>.dropdown-item:focus, .global-icon .search>.dropdown-item:hover{
+.global-icon .search > .dropdown-item:focus,
+.global-icon .search > .dropdown-item:hover {
   background-color: #fff !important;
 }
 
@@ -200,7 +208,8 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
   color: var(--ge-darkgrey);
 }
 
-.dropdown-toggle, .dropdown-item {
+.dropdown-toggle,
+.dropdown-item {
   color: var(--ge-darkgrey);
 }
 
@@ -214,17 +223,17 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .footer{
   color: white;
 }
 
-.list-group-item{
+.list-group-item {
   padding: 17px 0;
   padding-left: 70px !important;
 }
 
-.dropdown-content .dropdown-item{
+.dropdown-content .dropdown-item {
   padding: 17px 7px;
   text-align: left;
 }
 
-.dropdown-content .dropdown-item{
+.dropdown-content .dropdown-item {
   padding: 1.23rem 0.78rem;
   text-align: left;
 }
@@ -263,11 +272,11 @@ a:hover {
   font-size: var(--fs-mid);
 }
 
-.social-media img{
+.social-media img {
   width: 11%;
 }
 
-.social-media .confluence-icon{
+.social-media .confluence-icon {
   width: 9%;
 }
 
@@ -406,7 +415,7 @@ a:hover {
   display: flex;
   justify-content: center;
   width: 100%;
-  position: unset!important;
+  position: unset !important;
   line-height: 1;
   margin-top: 1rem;
   margin-bottom: 0 !important;
@@ -511,7 +520,7 @@ a:hover {
   border-radius: 5px;
   padding: 5px 20px;
   cursor: pointer;
-  margin-top: 12px;  
+  margin-top: 12px;
   font-size: 18px;
 }
 #cookieConsent a.cookieConsentOK:hover {
@@ -519,31 +528,31 @@ a:hover {
 }
 /*Cookie Consent End*/
 
-.logoutWarningModal .modal-header{
+.logoutWarningModal .modal-header {
   background-color: #f55e06;
 }
 
-.logoutWarningModal .modal-body, .logoutWarningModal .modal-footer {
+.logoutWarningModal .modal-body,
+.logoutWarningModal .modal-footer {
   background-color: #ffebeb;
 }
 
-.logoutWarningModal .modal-footer{
+.logoutWarningModal .modal-footer {
   border-top: 0;
   padding: 0 1rem 0.5rem 1rem;
 }
 
-.healthStatusRed{
-  color:#ff0000
+.healthStatusRed {
+  color: #ff0000;
 }
 
-.healthStatusYellow{
-  color: #ede728
+.healthStatusYellow {
+  color: #ede728;
 }
 
-.healthStatusGreen{
-  color:rgb(4, 240, 4)
+.healthStatusGreen {
+  color: rgb(4, 240, 4);
 }
-
 
 /* <--------chittaranjan css ---> */
 .Card {
@@ -559,7 +568,7 @@ a:hover {
 }
 
 .Card:hover {
-  transform: scale(1.05);
+  transform: scale(0.09);
   box-shadow: 0 10px 5px 5px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
   /* background-color: #1f78b4; */
   /* color: white; */
@@ -602,6 +611,9 @@ a:hover {
   /* background-repeat: no-repeat;
     background-position: right;
     background-size: 80px; */
+}
+.updateMultiBtn {
+  margin-left: 92%;
 }
 
 .nav-pills .nav-link.active,
@@ -659,9 +671,9 @@ a:hover {
 }
 
 .Card:hover {
-  transform: scale(0.9, 0.9);
+  transform: scale(1.1);
   box-shadow: 2px 2px 20px 5px rgba(0, 0, 0, 0.25),
-    -2px -2px 10px 5px rgba(0, 0, 0, 0.22);
+    -2px -2px 10px 5px rgba(0, 0, 0, 0.15);
 }
 
 .form-check {

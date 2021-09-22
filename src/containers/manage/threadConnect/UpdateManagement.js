@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Form, Row, Col, Button, Modal, Alert } from "react-bootstrap";
+import { Form, Row, Col, Button, Modal, Alert, Spinner } from "react-bootstrap";
 import BucAdnComponent from "./BucAdnComponent.js";
-import DataTable from "react-data-table-component";
+// import DataTable from "react-data-table-component";
 import Api from "../../../middleware/ManageApi.js";
-import Select from "react-select";
+// import Select from "react-select";
 import BootstrapTable from "react-bootstrap-table-next";
-import cellEditFactory from "react-bootstrap-table2-editor";
-let regExp = /^([a-zA-Z0-9_-]){3,5}$/;
+import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
+import paginationFactory from "react-bootstrap-table2-paginator";
+
+// let regExp = /^([a-zA-Z0-9_-]){3,5}$/;
 let initialValues = {
   projectName: "",
   ShortDescription: "",
@@ -56,14 +58,17 @@ const UpdateManagement = (props) => {
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
   const [message, setMessage] = useState("");
-  const [editData, setEditData] = useState({});
+  // const [editData, setEditData] = useState({});
   const [ProjectList, setProjectList] = useState([]);
   const [MultiinstanceData, setMultiinstanceData] = useState([]);
+  const [editRowData, seteditRowData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tcHelmVersion, setTecHelmVersion] = useState([]);
 
-  const handleChangeProject = (env) => {
-    // setenv(env);
-    // handleShow();
-  };
+  // const handleChangeProject = (env) => {
+  //   // setenv(env);
+  //   // handleShow();
+  // };
   const resetForm = () => {
     setinitialData({
       projectName: "",
@@ -90,11 +95,18 @@ const UpdateManagement = (props) => {
       gitRepo:
         "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
     });
+    seteditRowData([]);
   };
+  useEffect(() => {
+    resetForm();
+    projectListdata();
+    handelTcHelmVersionListdata();
+  }, [props.update === true]);
 
   const handelInputChange = (event) => {
     const { name, value } = event.target;
     setinitialData({ ...updateInitialData, [name]: value });
+
     setError(Initialerror);
     if (name == "environment") {
       const obj = {
@@ -112,6 +124,7 @@ const UpdateManagement = (props) => {
         user: "single",
       };
       setinitialData(obj);
+      seteditRowData([]);
     }
 
     if (name == "user") {
@@ -129,7 +142,17 @@ const UpdateManagement = (props) => {
         user: value,
       };
       setinitialData(obj);
+      seteditRowData([]);
     }
+  };
+
+  const bucadnvalidate = (data) => {
+    const obj = {
+      ...updateInitialData,
+      BUC: data.BUC,
+      ADN: data.ADN,
+    };
+    setinitialData(obj);
   };
   if (successStatus === true || errorStatus === true) {
     setInterval(function () {
@@ -137,17 +160,21 @@ const UpdateManagement = (props) => {
       seterrorStatus(false);
     }, 4000);
   }
-  useEffect(() => {
+
+  const projectListdata = () => {
     let data = {
       environment: updateInitialData.environment.toLowerCase(),
       action: "updation",
     };
     let projectList = [];
+    setIsLoading(true);
     Api.ProjectNameList(data)
       .then((res) => {
-        if (res.status === "error") {
+        if (res.data.status === "FAIL") {
+          setIsLoading(false);
         }
         if (res.status === 200) {
+          setIsLoading(false);
           res.data.results &&
             res.data.results.forEach((p) => {
               projectList.push({ label: p.project_name, value: p.id });
@@ -162,11 +189,49 @@ const UpdateManagement = (props) => {
           }
         }
       });
+  };
+
+  const handelTcHelmVersionListdata = () => {
+    setIsLoading(true);
+    Api.getHelmVersion()
+      .then((res) => {
+        if (res.data.status === "FAIL") {
+          setIsLoading(false);
+        }
+        if (res.status === 200) {
+          setIsLoading(false);
+          setTecHelmVersion(res.data.results);
+          const obj = {
+            ...updateInitialData,
+            version: res.data.results[0],
+          };
+          setinitialData(obj);
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.data.status === "FAIL") {
+            setProjectList(err.response.data.results);
+          }
+        }
+      });
+  };
+  useEffect(() => {
+    projectListdata();
   }, [updateInitialData.environment]);
 
   useEffect(() => {
     getmultiInstanceData();
   }, [updateInitialData.user === "multiple"]);
+  let helmArray = [];
+  tcHelmVersion.map((e) => {
+    let obj = {
+      value: e,
+      label: e,
+    };
+    helmArray.push(obj);
+    return helmArray;
+  });
 
   const columns = [
     {
@@ -178,15 +243,6 @@ const UpdateManagement = (props) => {
       dataField: "project_name",
       text: "Instance Name",
       editable: false,
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Instance Name Required",
-          };
-        }
-        return true;
-      },
     },
     {
       dataField: "buc",
@@ -295,21 +351,18 @@ const UpdateManagement = (props) => {
     {
       dataField: "version",
       text: "Version",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Version Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      text: "Action",
-      editable: false,
-      formatter: (id, row) => {
-        return <Button onClick={() => handleMultipleSubmit(row)}>save</Button>;
+      // validator: (newValue, row, column) => {
+      //   if (newValue === "") {
+      //     return {
+      //       valid: false,
+      //       message: "Version Required",
+      //     };
+      //   }
+      //   return true;
+      // },
+      editor: {
+        type: Type.SELECT,
+        options: helmArray,
       },
     },
   ];
@@ -326,13 +379,13 @@ const UpdateManagement = (props) => {
     };
     Api.projectData(data)
       .then((res) => {
-        if (res.status === "error") {
+        if (res.data.status === "FAIL") {
           seterrorStatus(true);
           setMessage(res.data.message);
-        }
-        if (res.status === 200 || res.status === 201) {
+        } else if (res.status === 200 || res.status === 201) {
           const data = res.data.results[0];
-
+          console.log("data", data);
+          projectListdata();
           const obj = {
             host: data.host,
             ShortDescription: data.description,
@@ -344,7 +397,7 @@ const UpdateManagement = (props) => {
             InstanceName: e.target.value,
             environment: updateInitialData.environment,
             accessPoint: data.access_point,
-            maxSize: "2g",
+            maxSize: "16g",
             initialSize: data.initial_size,
             projectName: data.project_name,
             minCpu: data.min_cpu,
@@ -377,17 +430,19 @@ const UpdateManagement = (props) => {
           ? "prod"
           : "dev",
     };
+    setIsLoading(true);
     Api.projectData(data)
       .then((res) => {
-        if (res.status === "error") {
+        if (res.data.status === "FAIL") {
+          setIsLoading(false);
           seterrorStatus(true);
           setMessage(res.data.message);
-        }
-        if (res.status === 200 || res.status === 201) {
+        } else if (res.status === 200 || res.status === 201) {
+          setIsLoading(false);
           const data = res.data.results;
 
           setMultiinstanceData(data);
-
+          projectListdata();
           if (res.data.message === "") {
           } else {
           }
@@ -406,10 +461,10 @@ const UpdateManagement = (props) => {
     let errorData = {
       ...error,
     };
-
     event.preventDefault();
-    // debugger;
-
+    if (updateInitialData.InstanceName === "SelectInstanceName") {
+      errorData.InstanceName = "InstanceName required";
+    }
     if (updateInitialData.projectName === "") {
       errorData.projectName = "Project Name required";
     }
@@ -443,6 +498,7 @@ const UpdateManagement = (props) => {
       updateInitialData.replicaCount === "" ||
       updateInitialData.version === "" ||
       updateInitialData.VLan === "" ||
+      error.InstanceName !== "" ||
       error.projectName !== "" ||
       error.minCpu !== "" ||
       error.maxCpu !== "" ||
@@ -454,34 +510,36 @@ const UpdateManagement = (props) => {
     ) {
       setError(errorData);
     } else {
+      setIsLoading(true);
       let data = {
         projectid: updateInitialData.InstanceName,
-        initialSize: "1g",
-        maxSize: "2g",
+        initialSize: "6g",
+        maxSize: "16g",
         version: updateInitialData.version,
-        host: updateInitialData.host,
+        // host: updateInitialData.host,
         minMemory: updateInitialData.minMemory,
         minCpu: updateInitialData.minCpu,
         maxMemory: updateInitialData.maxMemory,
         maxCpu: updateInitialData.maxCpu,
-        fileSystemId: "12e51190",
-        accessPoint: updateInitialData.accessPoint,
-        gitRepo: updateInitialData.gitRepo,
+        // fileSystemId: "12e51190",
+        // accessPoint: updateInitialData.accessPoint,
+        // gitRepo: updateInitialData.gitRepo,
         environment: updateInitialData.environment.toLowerCase(),
         replicaCount: updateInitialData.replicaCount,
         description: updateInitialData.ShortDescription,
         vlan:
           updateInitialData.VLan === null ? "0.0.0.1" : updateInitialData.VLan,
       };
-      Api.UpdateTcNewProvisioning(data)
+      Api.singleTcNewProvisioning(data)
         .then((res) => {
-          if (res.status === "error") {
+          if (res.data.status === "FAIL") {
+            setIsLoading(false);
             seterrorStatus(true);
             setMessage(res.data.message);
-          }
-          if (res.status === 200 || res.status === 201) {
+          } else if (res.status === 200 || res.status === 201) {
+            setIsLoading(false);
             setsuccessStatus(true);
-            // setShow(true);
+            projectListdata();
             if (res.data.message === "") {
               setMessage("Successfully Updated");
             } else {
@@ -515,35 +573,40 @@ const UpdateManagement = (props) => {
     }
   };
 
-  const handleMultipleSubmit = (senddata) => {
+  const handleMultipleSubmit = async () => {
+    let arr = [];
+    editRowData &&
+      editRowData.map((e) => {
+        let obj = {
+          projectid: e.id,
+          initialSize: "1g",
+          maxSize: "2g",
+          version: e.version,
+          minMemory: e.min_memory,
+          minCpu: e.min_cpu,
+          maxMemory: e.max_memory,
+          maxCpu: e.max_cpu,
+          environment: updateInitialData.environment.toLowerCase(),
+          replicaCount: e.replica_count,
+          vlan: e.vlan,
+          description: e.description,
+        };
+        return arr.push(obj);
+      });
+
     let data = {
-      projectid: senddata.id,
-      initialSize: "1g",
-      maxSize: "2g",
-      version: senddata.version,
-      host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-      minMemory: senddata.min_memory,
-      minCpu: senddata.min_cpu,
-      maxMemory: senddata.max_memory,
-      maxCpu: senddata.max_cpu,
-      fileSystemId: "12e51190",
-      accessPoint: "0f259ecad065aa92d",
-      gitRepo:
-        "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
-      environment: updateInitialData.environment.toLowerCase(),
-      replicaCount: senddata.replica_count,
-      description: senddata.description,
-      vlan: senddata.vlan,
+      data: arr,
     };
-    Api.UpdateTcNewProvisioning(data)
+    setIsLoading(true);
+    await Api.UpdateTcNewProvisioning(data)
       .then((res) => {
-        if (res.status === "error") {
+        if (res.data.status === "FAIL") {
+          setIsLoading(false);
           seterrorStatus(true);
           setMessage(res.data.message);
-        }
-        if (res.status === 200 || res.status === 201) {
+        } else if (res.status === 200 || res.status === 201) {
+          setIsLoading(false);
           setsuccessStatus(true);
-          // setShow(true);
           if (res.data.message === "") {
             setMessage("Successfully Updated");
           } else {
@@ -564,6 +627,7 @@ const UpdateManagement = (props) => {
             user: updateInitialData.user,
           };
           setinitialData(obj);
+          seteditRowData([]);
           getmultiInstanceData();
         }
       })
@@ -575,343 +639,472 @@ const UpdateManagement = (props) => {
           }
         }
       });
+    // });
   };
 
+  const handelnewEdit = (row) => {
+    let data = editRowData;
+    if (editRowData.length === 0) {
+      data.push(row);
+      seteditRowData(data);
+    } else {
+      let neweditRow =
+        editRowData &&
+        editRowData.filter((e) => {
+          return e.id === row.id;
+        });
+      data.push(row);
+      seteditRowData(...editRowData, data);
+    }
+    let uniqueArray = editRowData.reduce((filter, current) => {
+      let dk = filter.find((item) => item.id === current.id);
+      if (!dk) {
+        return filter.concat([current]);
+      } else {
+        return filter;
+      }
+    }, []);
+    seteditRowData(uniqueArray);
+  };
+  const pagination = paginationFactory({
+    page: 1,
+    sizePerPage: 5,
+    sizePerPageList: [
+      {
+        text: "5",
+        value: 5,
+      },
+      {
+        text: "10",
+        value: 10,
+      },
+    ],
+  });
+  console.log("updateInitialData", updateInitialData);
   return (
     <>
-      {" "}
-      {successStatus == true ? (
-        <Alert
-          variant="success"
-          onClose={() => setsuccessStatus(false)}
-          dismissible
-        >
-          <p>{message}</p>
-        </Alert>
-      ) : (
-        ""
-      )}
-      {errorStatus == true ? (
-        <Alert
-          variant="danger"
-          onClose={() => seterrorStatus(false)}
-          dismissible
-        >
-          <p>{message}</p>
-        </Alert>
-      ) : (
-        ""
-      )}
-      <Row className="align-row tc-manage">
-        <Form.Group
-          as={Row}
-          className="mb-3 form-mar"
-          onChange={handelInputChange}
-        >
-          <span className="radioselect">Environment</span>
-          <Col sm={6} className="col-radio">
-            <Form.Check
-              type="radio"
-              label="Dev"
-              name="environment"
-              id="environment"
-              value="Dev"
-              // defaultValue
-              defaultChecked
-              // checked={updateInitialData.environment === "Dev"}
-            />
-            <Form.Check
-              type="radio"
-              label="Stage"
-              name="environment"
-              id="environment"
-              value="Stage"
-              // checked={updateInitialData.environment === "Stage"}
-            />
-            <Form.Check
-              type="radio"
-              label="Prod"
-              name="environment"
-              id="environment"
-              value="Prod"
-              // checked={updateInitialData.environment === "Prod"}
-            />
-          </Col>
-        </Form.Group>
-      </Row>
-      <Row className="align-row tc-manage">
-        <Form.Group
-          as={Row}
-          className="mb-3 form-mar"
-          onChange={handelInputChange}
-        >
-          <span className="radioselect">InstanceName</span>
-          <Col sm={6} className="col-radio">
-            <Form.Check
-              type="radio"
-              label="Single"
-              name="user"
-              id="user"
-              value="single"
-              checked={updateInitialData.user === "single"}
-            />
-            <Form.Check
-              type="radio"
-              label="Multiple"
-              name="user"
-              id="user"
-              value="multiple"
-              checked={updateInitialData.user === "multiple"}
-            />
-          </Col>
-        </Form.Group>
-        {updateInitialData.user === "single" ? (
-          <Form.Group as={Col} md="6">
-            <select
-              className="form-select classic select-height"
-              onChange={(e) => {
-                handelInputChange(e);
-                if (e.target.value === "SelectInstanceName") {
-                  resetForm();
-                } else {
-                  getSingleInstanceData(e);
-                }
-              }}
-              // sele
-              style={{ height: "40px" }}
-              id="InstanceName"
-              name="InstanceName"
-              value={updateInitialData.InstanceName}
-            >
-              <option value="SelectInstanceName">Select InstanceName</option>
-              {ProjectList &&
-                ProjectList.map((e, i) => {
-                  return (
-                    <option value={e.value} key={i}>
-                      {e.label}
-                    </option>
-                  );
-                })}
-            </select>
-            <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
-          </Form.Group>
-        ) : (
-          ""
-        )}
-      </Row>
-      {updateInitialData.user === "single" ? (
+      {props.OrgSpaceValue.Org !== "" && props.OrgSpaceValue.Space !== "" ? (
         <div>
-          <Row className="alignupdateRow tc-manage">
-            <Form.Group as={Col} md="3">
-              <Form.Label className="select-label">Project Name</Form.Label>{" "}
-              <Form.Control
-                disabled={true}
-                type="text"
-                placeholder="Project Name"
-                id="projectName"
-                name="projectName"
-                value={updateInitialData.projectName}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.projectName === "" &&
-                  error.projectName !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.projectName ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.projectName === "" &&
-                error.projectName !== ""
-                  ? error.projectName
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group as={Col} md="3" className="fieldhelm">
-              <Form.Label className="select-label">Helm version</Form.Label>
-              <br></br>
-              <Form.Control
-                type="text"
-                placeholder="Version"
-                id="version"
-                name="version"
-                value={updateInitialData.version}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.version === "" && error.version !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.version ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.version === "" && error.version !== ""
-                  ? error.version
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md="3" className="vlanfield">
-              <Form.Label>VLAN</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="VLAN"
-                name="VLan"
-                id="VLan"
-                onChange={handelInputChange}
-                value={updateInitialData.VLan}
-                isInvalid={
-                  updateInitialData.VLan === "" && error.VLan !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.VLan ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.VLan === "" && error.VLan !== ""
-                  ? error.VLan
-                  : ""}
-              </Form.Control.Feedback>
+          {isLoading === true ? (
+            <div
+              style={{
+                display: "block",
+                position: "fixed",
+                zIndex: "900",
+                width: "100%",
+                height: "100%",
+                overflow: "auto",
+                // position: "absolute",
+                left: "50%",
+                top: "50%",
+              }}
+            >
+              <Spinner animation="border" role="status"></Spinner>
+            </div>
+          ) : (
+            ""
+          )}{" "}
+          {successStatus == true ? (
+            <Alert
+              variant="success"
+              onClose={() => setsuccessStatus(false)}
+              dismissible
+            >
+              <p>{message}</p>
+            </Alert>
+          ) : (
+            ""
+          )}
+          {errorStatus == true ? (
+            <Alert
+              variant="danger"
+              onClose={() => seterrorStatus(false)}
+              dismissible
+            >
+              <p>{message}</p>
+            </Alert>
+          ) : (
+            ""
+          )}
+          <Row className="align-row tc-manage">
+            <Form.Group
+              as={Row}
+              className="mb-3 form-mar"
+              onChange={(e) => handelInputChange(e)}
+            >
+              <span className="radioselect">Environment</span>
+              <Col sm={6} className="col-radio">
+                <Form.Check
+                  type="radio"
+                  label="Dev"
+                  name="environment"
+                  value="Dev"
+                  defaultChecked
+                />
+                <Form.Check
+                  type="radio"
+                  label="Stage"
+                  name="environment"
+                  value="Stage"
+                />
+                <Form.Check
+                  type="radio"
+                  label="Prod"
+                  name="environment"
+                  value="Prod"
+                />
+              </Col>
             </Form.Group>
           </Row>
-
-          <Row className="mb-3 bucAdnCom tc-manage">
-            <BucAdnComponent />
+          <Row className="align-row tc-manage">
+            <Form.Group
+              as={Row}
+              className="mb-3 form-mar"
+              onChange={handelInputChange}
+            >
+              <span className="radioselect">InstanceName</span>
+              <Col sm={6} className="col-radio">
+                <Form.Check
+                  type="radio"
+                  label="Single"
+                  name="user"
+                  id="user"
+                  value="single"
+                  defaultChecked
+                  checked={updateInitialData.user === "single"}
+                  readOnly
+                />
+                <Form.Check
+                  type="radio"
+                  label="Multiple"
+                  name="user"
+                  id="user"
+                  value="multiple"
+                  checked={updateInitialData.user === "multiple"}
+                  readOnly
+                />
+              </Col>
+            </Form.Group>
+            {updateInitialData.user === "single" ? (
+              <Form.Group as={Col} md="6">
+                <select
+                  className="form-select classic select-height"
+                  onChange={(e) => {
+                    handelInputChange(e);
+                    if (e.target.value === "SelectInstanceName") {
+                      resetForm();
+                    } else {
+                      getSingleInstanceData(e);
+                    }
+                  }}
+                  // sele
+                  style={{ height: "40px" }}
+                  id="InstanceName"
+                  name="InstanceName"
+                  value={updateInitialData.InstanceName}
+                >
+                  <option value="SelectInstanceName">
+                    Select InstanceName
+                  </option>
+                  {ProjectList &&
+                    ProjectList.map((e, i) => {
+                      return (
+                        <option value={e.value} key={i}>
+                          {e.label}
+                        </option>
+                      );
+                    })}
+                </select>
+                <br></br>
+                <span style={{ color: "red", marginLeft: "30px" }}>
+                  {updateInitialData.InstanceName === "SelectInstanceName" &&
+                  error.InstanceName !== ""
+                    ? error.InstanceName
+                    : ""}
+                </span>
+              </Form.Group>
+            ) : (
+              ""
+            )}
           </Row>
-          <hr />
-          <Row className="mb-3 alignupdateRow tc-manage">
-            <Form.Group as={Col} md="2">
-              <Form.Label>Min Memory</Form.Label>
-              <Form.Control
-                type="Number"
-                name="minMemory"
-                id="minMemory"
-                value={updateInitialData.minMemory}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.minMemory === "" && error.minMemory !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.minMemory ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.minMemory === "" && error.minMemory !== ""
-                  ? error.minMemory
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md="2">
-              <Form.Label>Max Memory</Form.Label>
-              <Form.Control
-                type="Number"
-                name="maxMemory"
-                id="maxMemory"
-                value={updateInitialData.maxMemory}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.maxMemory === "" && error.maxMemory !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.maxMemory ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.maxMemory === "" && error.maxMemory !== ""
-                  ? error.maxMemory
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
+          {updateInitialData.user === "single" ? (
+            <div>
+              <Row className="alignupdateRow tc-manage">
+                <Form.Group as={Col} md="3">
+                  <Form.Label className="select-label">Project Name</Form.Label>{" "}
+                  <Form.Control
+                    disabled={true}
+                    type="text"
+                    placeholder="Project Name"
+                    id="projectName"
+                    name="projectName"
+                    value={updateInitialData.projectName}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.projectName === "" &&
+                      error.projectName !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.projectName ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.projectName === "" &&
+                    error.projectName !== ""
+                      ? error.projectName
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
-            <Form.Group as={Col} md="2">
-              <Form.Label>Min Cpu</Form.Label>
-              <Form.Control
-                type="Number"
-                name="minCpu"
-                id="minCpu"
-                value={updateInitialData.minCpu}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.minCpu === "" && error.minCpu !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.minCpu ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.minCpu === "" && error.minCpu !== ""
-                  ? error.minCpu
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md="2">
-              <Form.Label>Max Cpu</Form.Label>
-              <Form.Control
-                type="Number"
-                name="maxCpu"
-                id="maxCpu"
-                value={updateInitialData.maxCpu}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.maxCpu === "" && error.maxCpu !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.maxCpu ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.maxCpu === "" && error.maxCpu !== ""
-                  ? error.maxCpu
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md="2">
-              <Form.Label>Replica Count</Form.Label>
-              <Form.Control
-                type="Number"
-                name="replicaCount"
-                id="replicaCount"
-                value={updateInitialData.replicaCount}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.replicaCount === "" &&
-                  error.replicaCount !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.replicaCount ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.replicaCount === "" &&
-                error.replicaCount !== ""
-                  ? error.replicaCount
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
-          <div style={{ marginLeft: "18px" }} className="tc-manage">
-            <Button type="submit" onClick={(e) => handleFormSubmit(e)}>
-              Submit
-            </Button>
-          </div>
+                <Form.Group as={Col} md="3" className="fieldhelm">
+                  <Form.Label className="select-label">Helm version</Form.Label>
+                  <br></br>
+                  {/* <Form.Control
+                    type="text"
+                    placeholder="Version"
+                    id="version"
+                    name="version"
+                    value={updateInitialData.version}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.version === "" && error.version !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.version ? true : false}
+                  /> */}
+
+                  <select
+                    className="form-select classic select-height"
+                    onChange={(e) => {
+                      handelInputChange(e);
+                    }}
+                    style={{ height: "40px" }}
+                    id="version"
+                    name="version"
+                    value={tcHelmVersion.includes(updateInitialData.version)}
+                  >
+                    {tcHelmVersion &&
+                      tcHelmVersion.map((e, i) => {
+                        return (
+                          <option value={e} key={i}>
+                            {e}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  <br></br>
+                  <span style={{ color: "red", marginLeft: "30px" }}>
+                    {updateInitialData.version === "" && error.version !== ""
+                      ? error.version
+                      : ""}
+                  </span>
+                  {/* <Form.Control.Feedback type="invalid">
+                    {updateInitialData.version === "" && error.version !== ""
+                      ? error.version
+                      : ""}
+                  </Form.Control.Feedback> */}
+                </Form.Group>
+                <Form.Group as={Col} md="3" className="vlanfield">
+                  <Form.Label>VLAN</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="VLAN"
+                    name="VLan"
+                    id="VLan"
+                    onChange={handelInputChange}
+                    value={updateInitialData.VLan}
+                    isInvalid={
+                      updateInitialData.VLan === "" && error.VLan !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.VLan ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.VLan === "" && error.VLan !== ""
+                      ? error.VLan
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+
+              <Row className="mb-3 bucAdnCom tc-manage">
+                {/* <BucAdnComponent /> */}
+                <BucAdnComponent
+                  bucadnvalidate={bucadnvalidate}
+                  bucAdnValue={updateInitialData}
+                />
+              </Row>
+              <hr />
+              <Row className="mb-3 alignupdateRow tc-manage">
+                <Form.Group as={Col} md="2">
+                  <Form.Label>Min Memory</Form.Label>
+                  <Form.Control
+                    type="Number"
+                    name="minMemory"
+                    id="minMemory"
+                    value={updateInitialData.minMemory}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.minMemory === "" &&
+                      error.minMemory !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.minMemory ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.minMemory === "" &&
+                    error.minMemory !== ""
+                      ? error.minMemory
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="2">
+                  <Form.Label>Max Memory</Form.Label>
+                  <Form.Control
+                    type="Number"
+                    name="maxMemory"
+                    id="maxMemory"
+                    value={updateInitialData.maxMemory}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.maxMemory === "" &&
+                      error.maxMemory !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.maxMemory ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.maxMemory === "" &&
+                    error.maxMemory !== ""
+                      ? error.maxMemory
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group as={Col} md="2">
+                  <Form.Label>Min Cpu</Form.Label>
+                  <Form.Control
+                    type="Number"
+                    name="minCpu"
+                    id="minCpu"
+                    value={updateInitialData.minCpu}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.minCpu === "" && error.minCpu !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.minCpu ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.minCpu === "" && error.minCpu !== ""
+                      ? error.minCpu
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="2">
+                  <Form.Label>Max Cpu</Form.Label>
+                  <Form.Control
+                    type="Number"
+                    name="maxCpu"
+                    id="maxCpu"
+                    value={updateInitialData.maxCpu}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.maxCpu === "" && error.maxCpu !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.maxCpu ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.maxCpu === "" && error.maxCpu !== ""
+                      ? error.maxCpu
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="2">
+                  <Form.Label>Replica Count</Form.Label>
+                  <Form.Control
+                    type="Number"
+                    name="replicaCount"
+                    id="replicaCount"
+                    value={updateInitialData.replicaCount}
+                    onChange={handelInputChange}
+                    isInvalid={
+                      updateInitialData.replicaCount === "" &&
+                      error.replicaCount !== ""
+                        ? true
+                        : false
+                    }
+                    isValid={updateInitialData.replicaCount ? true : false}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {updateInitialData.replicaCount === "" &&
+                    error.replicaCount !== ""
+                      ? error.replicaCount
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+              <div style={{ marginLeft: "18px" }} className="tc-manage">
+                <Button type="submit" onClick={(e) => handleFormSubmit(e)}>
+                  Submit
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <BootstrapTable
+              bootstrap4
+              key="id"
+              keyField="id"
+              data={MultiinstanceData}
+              columns={columns}
+              bodyClasses="foo"
+              className="tc-manage"
+              noDataIndication="Table is Empty"
+              cellEdit={cellEditFactory({
+                mode: "dbclick",
+                // mode: "click",
+                // onMouseLeave: true,
+                blurToSave: true,
+                autoSelectText: true,
+
+                clickToSelect: { mode: "dbclick" ? true : false },
+                // style: { backgroundColor: "#c8e6c9" },
+                afterSaveCell: (oldValue, newValue, row, column) => {
+                  if (oldValue !== newValue) {
+                    handelnewEdit(row);
+                  } else {
+                  }
+                },
+                bgColor: (row, rowIndex) => {
+                  return row ? "#c8e6c9" : "blue"; // return a color code
+                },
+              })}
+              pagination={pagination}
+            />
+          )}
         </div>
       ) : (
-        <BootstrapTable
-          keyField="id"
-          data={MultiinstanceData}
-          columns={columns}
-          className="tc-manage"
-          cellEdit={cellEditFactory({
-            mode: "dbclick",
-            blurToSave: true,
-            autoSelectText: true,
-            clickToSelect: { mode: "dbclick" ? true : false },
-            style: { backgroundColor: "#c8e6c9" },
-            bgColor: (row, rowIndex) => {
-              return row ? "#c8e6c9" : "blue"; // return a color code
-            },
-          })}
-        />
+        ""
+      )}
+      {updateInitialData.user == "multiple" ? (
+        <div>
+          <Button
+            className="updateMultiBtn"
+            disabled={editRowData.length === 0 ? true : false}
+            onClick={() => handleMultipleSubmit()}
+          >
+            Update
+          </Button>
+        </div>
+      ) : (
+        ""
       )}
     </>
   );

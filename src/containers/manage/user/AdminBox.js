@@ -9,7 +9,7 @@ let AdminBox = (props) => {
   console.log("Admin BOx=", props.adminData);
   return (
     <Row>
-      <Form.Group as={Col} md="12" controlId="validationFormik01">
+      <Form.Group as={Col} md="12">
         <Form.Label className="select-label">{props.label}</Form.Label>
         <br />
         <select

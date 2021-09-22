@@ -110,24 +110,32 @@ export default function Sidebar(props) {
         </span>
         {persona === "OWNER" ? (
           <span className="sidebarMenu dropright">
-          <Link
-            className="list-group-item list-group-item-action dropdown-toggle"
-            to="/manage"
-            role="button"
-            id="dropdownMenuLink"
-            // data-toggle="dropdown"
-            aria-expanded="false"
-          >
-             <img className="img-fluid" alt="" src={Icon_Subscriptions} />
-             <span>MANAGE</span>
-          </Link>
-          <div className="dropdown-menu dropdown-content">
-            <Link className="dropdown-item" to="/manage/managesubscription">SUBSCRIPTION</Link>
-            <Link className="dropdown-item " to="/manage/manageuser">USER</Link>
-            <Link className="dropdown-item" to="/manage/managetc">THREAD CONNECT</Link>
-            <Link className="dropdown-item" to="/manage/manage_ec">ENTERPRISE CONNECT</Link>
-            <Link className="dropdown-item" >DIVE</Link>
-          </div>
+            <Link
+              className="list-group-item list-group-item-action dropdown-toggle"
+              to="/manage"
+              role="button"
+              id="dropdownMenuLink"
+              // data-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img className="img-fluid" alt="" src={Icon_Subscriptions} />
+              <span>MANAGE</span>
+            </Link>
+            <div className="dropdown-menu dropdown-content">
+              <Link className="dropdown-item" to="/manage/manage-subscription">
+                SUBSCRIPTION
+              </Link>
+              <Link className="dropdown-item " to="/manage/manage-user">
+                USER
+              </Link>
+              <Link className="dropdown-item" to="/manage/manage-tc">
+                THREAD CONNECT
+              </Link>
+              <Link className="dropdown-item" to="/manage/manage-ec">
+                ENTERPRISE CONNECT
+              </Link>
+              <Link className="dropdown-item">DIVE</Link>
+            </div>
             {/* <Link
               className="list-group-item list-group-item-action"
               to="/manage"
@@ -175,11 +183,16 @@ export default function Sidebar(props) {
             <span>ENGAGEMENT REQUESTS</span>
           </Link>
           <div className="dropdown-menu dropdown-content">
-            <Link className="dropdown-item" to="/new-engagement-request">NEW ENGAGEMENT REQUEST</Link>
-            <Link className="dropdown-item " to="/new-engagement-request">ENHANCEMENT REQUEST</Link>
-            <Link className="dropdown-item" to="/new-engagement-request">OPTIONAL</Link>
+            <Link className="dropdown-item" to="/new-engagement-request">
+              NEW ENGAGEMENT REQUEST
+            </Link>
+            <Link className="dropdown-item " to="/new-engagement-request">
+              ENHANCEMENT REQUEST
+            </Link>
+            <Link className="dropdown-item" to="/new-engagement-request">
+              OPTIONAL
+            </Link>
           </div>
-          
         </span>
         <span className="sidebarMenu">
           <Link

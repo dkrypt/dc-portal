@@ -36,17 +36,8 @@ let SearchModal = (props) => {
     // let AdminList = Admin;
     console.log("Old Admin", Admin);
     if (event.target.checked) {
-      // let newAdmin = { Id: admin.Id, Mail: admin.Mail };
-      // AdminList.push(newAdmin);
-      // console.log("new Admin List", AdminList);
       setAdmin(admin);
     } else {
-      // let index = 0;
-      // if (Admin.length > 0) {
-      //   let newAdmin = Admin.filter((item) => item.Id !== admin.Id);
-      //   console.log("Before Value", Admin);
-      //   setAdmin(newAdmin);
-      // }
     }
   };
 

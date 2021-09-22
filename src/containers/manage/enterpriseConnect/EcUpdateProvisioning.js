@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Form, Row, Col, Button, Modal, Alert } from "react-bootstrap";
+import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 import BucAdnComponent from "../threadConnect/BucAdnComponent.js";
-import DataTable from "react-data-table-component";
 import Api from "../../../middleware/ManageApi.js";
-import Select from "react-select";
-import BootstrapTable from "react-bootstrap-table-next";
-import cellEditFactory from "react-bootstrap-table2-editor";
-let regExp = /^([a-zA-Z0-9_-]){3,5}$/;
+import Creatable, { makeCreatableSelect } from "react-select/creatable";
 let initialValues = {
   projectName: "",
   ShortDescription: "",
-  ShortName: "",
-  Ci_Name: "",
+  Gateway: "",
+  EcClient: "",
+  OperatingSystem: "",
+  SystemType: "",
+  SystemPort: "",
+  SystemIp: "",
+  AttachFile: "",
   VLan: "",
   BUC: "",
   ADN: "",
@@ -21,138 +22,125 @@ let initialValues = {
   minCpu: "4",
   maxCpu: "5",
   replicaCount: "1",
-  InstanceName: "SelectInstanceName",
+  InstanceName: "",
   maxSize: "2g",
   initialSize: "1g",
-  version: "",
+  version: "0.0.7",
   host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
   fileSystemId: "12e51190",
   accessPoint: "0f259ecad065aa92d",
-  user: "single",
   gitRepo:
     "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
 };
+
 const Initialerror = {
   projectName: "",
   ShortDescription: "",
-  ShortName: "",
-  Ci_Name: "",
+  OperatingSystem: "",
+  SystemType: "",
+  SystemPort: "",
+  SystemIp: "",
+  AttachFile: "",
+  Gateway: "",
+  EcClient: "",
   VLan: "",
   BUC: "",
   ADN: "",
-  environment: "Dev",
-  minMemory: "",
-  maxMemory: "",
-  minCpu: "",
-  maxCpu: "",
-  replicaCount: "",
+  environment: "",
+  minMemory: "8",
+  maxMemory: "12",
+  minCpu: "4",
+  maxCpu: "5",
+  replicaCount: "1",
   InstanceName: "",
-  version: "",
 };
+let regExp = /^([a-zA-Z0-9_-]){3,5}$/;
 const EcUpdateProvisioning = (props) => {
-  // const [env, setenv] = useState("Dev");
-  const [updateInitialData, setinitialData] = useState(initialValues);
+  const [advanceOption, setadvanceOption] = useState(false);
+  const [initialData, setinitialData] = useState(initialValues);
   const [error, setError] = useState(Initialerror);
+  const [env, setenv] = useState("Dev");
+  const [ProjectList, setProjectList] = useState([]);
+  const [show, setShow] = useState(false);
+  const [message, setMessage] = useState("");
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
-  const [message, setMessage] = useState("");
-  const [editData, setEditData] = useState({});
-  const [ProjectList, setProjectList] = useState([]);
-  const [MultiinstanceData, setMultiinstanceData] = useState([]);
-
+  const [TcsOption, setTcsOption] = useState(false);
   const handleChangeProject = (env) => {
-    // setenv(env);
-    // handleShow();
+    setenv(env);
+    // resetValue();
   };
   const resetForm = () => {
-    setinitialData({
-      projectName: "",
-      ShortDescription: "",
-      ShortName: "",
-      Ci_Name: "",
-      VLan: "",
-      BUC: "",
-      ADN: "",
-      environment: "Dev",
-      minMemory: "7",
-      maxMemory: "11",
-      minCpu: "4",
-      maxCpu: "5",
-      replicaCount: "1",
-      InstanceName: "",
-      maxSize: "2g",
-      initialSize: "1g",
-      version: "",
-      host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-      fileSystemId: "12e51190",
-      accessPoint: "0f259ecad065aa92d",
-      user: "single",
-      gitRepo:
-        "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
-    });
+    setinitialData(initialValues);
   };
-
   const handelInputChange = (event) => {
     const { name, value } = event.target;
-    setinitialData({ ...updateInitialData, [name]: value });
-    setError(Initialerror);
-    if (name == "environment") {
-      const obj = {
-        ...updateInitialData,
-        environment: value,
-        InstanceName: "",
-        projectName: "",
-        minCpu: "",
-        maxCpu: "",
-        minMemory: "",
-        maxMemory: "",
-        version: "",
-        VLan: "",
-        replicaCount: "",
-        user: "single",
-      };
-      setinitialData(obj);
-    }
+    setinitialData({ ...initialData, [name]: value });
 
-    if (name == "user") {
-      const obj = {
-        ...updateInitialData,
-        InstanceName: "",
+    if (name == "environment") {
+      setinitialData({
         projectName: "",
-        minCpu: "4",
-        maxCpu: "5",
+        ShortDescription: "",
+        OperatingSystem: "",
+        SystemType: "",
+        SystemPort: "",
+        SystemIp: "",
+        AttachFile: "",
+        Gateway: "",
+        EcClient: "",
+        VLan: "",
+        BUC: "",
+        ADN: "",
+        environment: value,
         minMemory: "7",
         maxMemory: "11",
-        version: "",
-        VLan: "",
+        minCpu: "4",
+        maxCpu: "5",
         replicaCount: "1",
-        user: value,
-      };
-      setinitialData(obj);
+        InstanceName: "",
+        maxSize: "2g",
+        initialSize: "1g",
+        version: "0.0.7",
+        host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
+        fileSystemId: "12e51190",
+        accessPoint: "0f259ecad065aa92d",
+        gitRepo:
+          "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
+      });
     }
   };
-  if (successStatus === true || errorStatus === true) {
-    setInterval(function () {
-      setsuccessStatus(false);
-      seterrorStatus(false);
-    }, 4000);
-  }
+
+  const advanceHandelChange = () => {
+    setadvanceOption(!advanceOption);
+  };
+  const TcsHandelChange = () => {
+    setTcsOption(!TcsOption);
+  };
+
+  const bucadnvalidate = (data) => {
+    const obj = {
+      ...initialData,
+      BUC: data.BUC,
+      ADN: data.ADN,
+    };
+    setinitialData(obj);
+  };
+
+  useEffect(() => {
+    resetForm();
+  }, []);
+
   useEffect(() => {
     let data = {
-      environment: updateInitialData.environment.toLowerCase(),
-      action: "updation",
+      environment: initialData.environment.toLowerCase(),
+      action: "creation",
     };
-    let projectList = [];
     Api.ProjectNameList(data)
       .then((res) => {
         if (res.status === "error") {
         }
         if (res.status === 200) {
-          res.data.results &&
-            res.data.results.forEach((p) => {
-              projectList.push({ label: p.project_name, value: p.id });
-            });
-          setProjectList(projectList);
+          setProjectList(res.data.results);
         }
       })
       .catch((err) => {
@@ -162,318 +150,104 @@ const EcUpdateProvisioning = (props) => {
           }
         }
       });
-  }, [updateInitialData.environment]);
+  }, [initialData.environment]);
 
-  useEffect(() => {
-    getmultiInstanceData();
-  }, [updateInitialData.user === "multiple"]);
-
-  const columns = [
-    {
-      dataField: "id",
-      text: "ID",
-      editable: false,
-    },
-    {
-      dataField: "project_name",
-      text: "Instance Name",
-      editable: false,
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Instance Name Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "buc",
-      text: "BUC",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "BUC Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "adn",
-      text: "ADN",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "ADN Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "min_memory",
-      text: "Min Memory",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Min Memory Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "max_memory",
-      text: "Max Memory",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Max Memory Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "min_cpu",
-      text: "Min Cpu",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Min Cpu Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "max_cpu",
-      text: "Max Cpu",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Max Cpu Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "replica_count",
-      text: "ReplicaCount",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "ReplicaCount Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "vlan",
-      text: "Vlan",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Vlan Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      dataField: "version",
-      text: "Version",
-      validator: (newValue, row, column) => {
-        if (newValue === "") {
-          return {
-            valid: false,
-            message: "Version Required",
-          };
-        }
-        return true;
-      },
-    },
-    {
-      text: "Action",
-      editable: false,
-      formatter: (id, row) => {
-        return <Button onClick={() => handleMultipleSubmit(row)}>save</Button>;
-      },
-    },
-  ];
-
-  const getSingleInstanceData = (e) => {
-    let data = {
-      environment:
-        updateInitialData.environment === "Stage"
-          ? "stage"
-          : updateInitialData.environment === "Prod"
-          ? "prod"
-          : "dev",
-      projectId: e.target.value,
-    };
-    Api.projectData(data)
-      .then((res) => {
-        if (res.status === "error") {
-          seterrorStatus(true);
-          setMessage(res.data.message);
-        }
-        if (res.status === 200 || res.status === 201) {
-          const data = res.data.results[0];
-
-          const obj = {
-            host: data.host,
-            ShortDescription: data.description,
-            ShortName: "",
-            Ci_Name: "",
-            gitRepo: data.git_repository,
-            BUC: data.buc,
-            ADN: data.adn,
-            InstanceName: e.target.value,
-            environment: updateInitialData.environment,
-            accessPoint: data.access_point,
-            maxSize: "2g",
-            initialSize: data.initial_size,
-            projectName: data.project_name,
-            minCpu: data.min_cpu,
-            maxCpu: data.max_cpu,
-            minMemory: data.min_memory,
-            maxMemory: data.max_memory,
-            version: data.version,
-            VLan: data.vlan,
-            replicaCount: data.replica_count,
-            user: "single",
-          };
-          setinitialData(obj);
-        }
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.data.status === "FAILED") {
-            seterrorStatus(true);
-            setMessage(err.data.message);
-          }
-        }
-      });
-  };
-  const getmultiInstanceData = () => {
-    let data = {
-      environment:
-        updateInitialData.environment === "Stage"
-          ? "stage"
-          : updateInitialData.environment === "Prod"
-          ? "prod"
-          : "dev",
-    };
-    Api.projectData(data)
-      .then((res) => {
-        if (res.status === "error") {
-          seterrorStatus(true);
-          setMessage(res.data.message);
-        }
-        if (res.status === 200 || res.status === 201) {
-          const data = res.data.results;
-
-          setMultiinstanceData(data);
-
-          if (res.data.message === "") {
-          } else {
-          }
-        }
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.data.status === "FAILED") {
-            seterrorStatus(true);
-            setMessage(err.data.message);
-          }
-        }
-      });
-  };
   const handleFormSubmit = (event) => {
     let errorData = {
       ...error,
     };
-
     event.preventDefault();
-    // debugger;
 
-    if (updateInitialData.projectName === "") {
+    if (!initialData.projectName) {
       errorData.projectName = "Project Name required";
     }
-    if (updateInitialData.minCpu === "") {
+    if (!initialData.environment) {
+      errorData.environment = "environment required";
+    }
+    if (!initialData.ShortDescription) {
+      errorData.ShortDescription = "ShortDescription  required";
+    }
+    if (!initialData.OperatingSystem) {
+      errorData.OperatingSystem = "Operating System Required";
+    }
+    if (!initialData.SystemType) {
+      errorData.SystemType = "SystemType Required";
+    }
+    if (!initialData.SystemPort) {
+      errorData.SystemPort = "SystemPort Required";
+    }
+
+    if (!initialData.SystemIp) {
+      errorData.SystemIp = "SystemIp Required";
+    }
+    if (!initialData.AttachFile) {
+      errorData.AttachFile = "AttachFile Required";
+    }
+
+    if (!initialData.Gateway) {
+      errorData.Gateway = "Gateway  required";
+    }
+    if (!initialData.minCpu) {
       errorData.minCpu = "MinCpu  required";
     }
-    if (updateInitialData.maxCpu === "") {
+    if (!initialData.maxCpu) {
       errorData.maxCpu = "maxCpu  required";
     }
-    if (updateInitialData.minMemory === "") {
+    if (!initialData.minMemory) {
       errorData.minMemory = "minMemory  required";
     }
-    if (updateInitialData.maxMemory === "") {
+    if (!initialData.maxMemory) {
       errorData.maxMemory = "maxMemory  required";
     }
-    if (updateInitialData.replicaCount === "") {
+    if (!initialData.replicaCount) {
       errorData.replicaCount = "replicaCount  required";
     }
-    if (updateInitialData.version === "") {
-      errorData.version = "Version  required";
-    }
-    if (updateInitialData.VLan === "") {
-      errorData.VLan = "VLAN  required";
-    }
+
     if (
-      updateInitialData.projectName === "" ||
-      updateInitialData.minCpu === "" ||
-      updateInitialData.maxCpu === "" ||
-      updateInitialData.minMemory === "" ||
-      updateInitialData.maxMemory === "" ||
-      updateInitialData.replicaCount === "" ||
-      updateInitialData.version === "" ||
-      updateInitialData.VLan === "" ||
-      error.projectName !== "" ||
-      error.minCpu !== "" ||
-      error.maxCpu !== "" ||
-      error.minMemory !== "" ||
-      error.maxMemory !== "" ||
-      error.replicaCount !== "" ||
-      error.version !== "" ||
-      error.VLan !== ""
+      initialData.projectName === "" ||
+      initialData.ShortDescription === "" ||
+      initialData.Gateway === "" ||
+      initialData.OperatingSystem === "" ||
+      initialData.SystemType === "" ||
+      initialData.SystemPort === "" ||
+      initialData.SystemIp === "" ||
+      initialData.AttachFile === "" ||
+      !error.projectName === "" ||
+      !error.ShortDescription === "" ||
+      !error.Gateway === "" ||
+      !error.OperatingSystem === "" ||
+      !error.SystemType === "" ||
+      !error.SystemIp === "" ||
+      !error.SystemPort === "" ||
+      !error.AttachFile === ""
     ) {
       setError(errorData);
     } else {
       let data = {
-        projectid: updateInitialData.InstanceName,
         initialSize: "1g",
         maxSize: "2g",
-        version: updateInitialData.version,
-        host: updateInitialData.host,
-        minMemory: updateInitialData.minMemory,
-        minCpu: updateInitialData.minCpu,
-        maxMemory: updateInitialData.maxMemory,
-        maxCpu: updateInitialData.maxCpu,
+        projectName: initialData.projectName,
+        version: "0.0.7",
+        host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
+        minMemory: initialData.minMemory,
+        minCpu: initialData.minCpu,
+        maxMemory: initialData.maxMemory,
+        maxCpu: initialData.maxCpu,
         fileSystemId: "12e51190",
-        accessPoint: updateInitialData.accessPoint,
-        gitRepo: updateInitialData.gitRepo,
-        environment: updateInitialData.environment.toLowerCase(),
-        replicaCount: updateInitialData.replicaCount,
-        description: updateInitialData.ShortDescription,
-        vlan:
-          updateInitialData.VLan === null ? "0.0.0.1" : updateInitialData.VLan,
+        accessPoint: "0f259ecad065aa92d",
+        gitRepo:
+          "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
+        environment: env.toLowerCase(),
+        replicaCount: initialData.replicaCount,
+        // shortName: initialData.ShortName,
+        description: initialData.ShortDescription,
+        OperatingSystem: initialData.OperatingSystem,
+        SystemType: initialData.SystemType,
+        SystemIp: initialData.SystemIp,
+        SystemPort: initialData.SystemPort,
+        AttachFile: initialData.AttachFile,
       };
-      Api.UpdateTcNewProvisioning(data)
+      Api.createTcNewProvisioning(data)
         .then((res) => {
           if (res.status === "error") {
             seterrorStatus(true);
@@ -481,27 +255,13 @@ const EcUpdateProvisioning = (props) => {
           }
           if (res.status === 200 || res.status === 201) {
             setsuccessStatus(true);
-            // setShow(true);
+            setShow(true);
             if (res.data.message === "") {
-              setMessage("Successfully Updated");
+              setMessage("Successfully created");
             } else {
               setMessage(res.data.message);
             }
-            const obj = {
-              ...updateInitialData,
-              environment: updateInitialData.environment,
-              InstanceName: "",
-              projectName: "",
-              minCpu: "4",
-              maxCpu: "5",
-              minMemory: "7",
-              maxMemory: "11",
-              version: "",
-              VLan: "",
-              replicaCount: "1",
-              user: updateInitialData.user,
-            };
-            setinitialData(obj);
+            resetForm();
           }
         })
         .catch((err) => {
@@ -515,56 +275,28 @@ const EcUpdateProvisioning = (props) => {
     }
   };
 
-  const handleMultipleSubmit = (senddata) => {
-    console.log("senddata", senddata);
+  const ProjectNameExit = (e) => {
     let data = {
-      projectid: senddata.id,
-      initialSize: "1g",
-      maxSize: "2g",
-      version: senddata.version,
-      host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-      minMemory: senddata.min_memory,
-      minCpu: senddata.min_cpu,
-      maxMemory: senddata.max_memory,
-      maxCpu: senddata.max_cpu,
-      fileSystemId: "12e51190",
-      accessPoint: "0f259ecad065aa92d",
-      gitRepo:
-        "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
-      environment: updateInitialData.environment.toLowerCase(),
-      replicaCount: senddata.replica_count,
-      description: senddata.description,
-      vlan: senddata.vlan,
+      projectName: e.target.value,
     };
-    Api.UpdateTcNewProvisioning(data)
+    Api.checkProjectNameExist(data)
       .then((res) => {
         if (res.status === "error") {
           seterrorStatus(true);
           setMessage(res.data.message);
         }
-        if (res.status === 200 || res.status === 201) {
+        if (
+          res.status === 200 ||
+          res.status === 201 ||
+          res.status === "SUCCESS"
+        ) {
           setsuccessStatus(true);
+          setShow(true);
           if (res.data.message === "") {
-            setMessage("Successfully Updated");
+            setMessage("Project Name Available");
           } else {
             setMessage(res.data.message);
           }
-          const obj = {
-            ...updateInitialData,
-            environment: updateInitialData.environment,
-            InstanceName: "",
-            projectName: "",
-            minCpu: "",
-            maxCpu: "",
-            minMemory: "",
-            maxMemory: "",
-            version: "",
-            VLan: "",
-            replicaCount: "",
-            user: updateInitialData.user,
-          };
-          setinitialData(obj);
-          getmultiInstanceData();
         }
       })
       .catch((err) => {
@@ -577,337 +309,726 @@ const EcUpdateProvisioning = (props) => {
       });
   };
 
+  const createNewInstance = (event) => {
+    let errorData = {
+      ...error,
+    };
+    event.preventDefault();
+    if (!initialData.InstanceName) {
+      errorData.InstanceName = "InstanceName required";
+    }
+    if (!initialData.MinCpu) {
+      errorData.MinCpu = "MinCpu  required";
+    }
+    if (!initialData.maxCpu) {
+      errorData.maxCpu = "maxCpu  required";
+    }
+    if (!initialData.minMemory) {
+      errorData.minMemory = "minMemory  required";
+    }
+    if (!initialData.maxMemory) {
+      errorData.maxMemory = "maxMemory  required";
+    }
+    if (!initialData.replicaCount) {
+      errorData.replicaCount = "replicaCount  required";
+    }
+
+    if (
+      initialData.InstanceName === "" &&
+      initialData.MinCpu === "" &&
+      initialData.maxCpu === "" &&
+      initialData.minMemory === "" &&
+      initialData.maxMemory === "" &&
+      initialData.replicaCount === ""
+    ) {
+      setError(errorData);
+    } else {
+      let data = {
+        projectId: initialData.InstanceName,
+        environment: initialData.environment.toLowerCase(),
+        minMemory: initialData.minMemory,
+        minCpu: initialData.minCpu,
+        maxMemory: initialData.maxMemory,
+        maxCpu: initialData.maxCpu,
+        replicaCount: initialData.replicaCount,
+      };
+
+      Api.createNewInstance(data)
+        .then((res) => {
+          if (res.status === "error") {
+            seterrorStatus(true);
+            setMessage(res.data.message);
+          }
+          if (res.status === 200 || res.status === 201) {
+            setsuccessStatus(true);
+            setShow(true);
+            setadvanceOption(false);
+            document.getElementById("custom-switch").checked = false;
+            if (res.data.message === "") {
+              setMessage("successfully Upgraded");
+            } else {
+              setMessage(res.data.message);
+            }
+
+            setinitialData({
+              projectName: "",
+              ShortDescription: "",
+              OperatingSystem: "",
+              SystemType: "",
+              SystemPort: "",
+              SystemIp: "",
+              AttachFile: "",
+              Gateway: "",
+              EcClient: "",
+              VLan: "",
+              BUC: "",
+              ADN: "",
+              environment: "Stage",
+              minMemory: "8",
+              maxMemory: "12",
+              minCpu: "4",
+              maxCpu: "5",
+              replicaCount: "1",
+              InstanceName: "",
+              maxSize: "2g",
+              initialSize: "1g",
+              version: "0.0.7",
+              host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
+              fileSystemId: "12e51190",
+              accessPoint: "0f259ecad065aa92d",
+              gitRepo:
+                "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
+            });
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data.status === "FAILED") {
+              seterrorStatus(true);
+              setMessage(err.data.message);
+            }
+          }
+        });
+    }
+  };
+  const createNewProdInstance = (event) => {
+    let errorData = {
+      ...error,
+    };
+    event.preventDefault();
+    if (!initialData.InstanceName) {
+      errorData.InstanceName = "InstanceName required";
+    }
+    if (!initialData.MinCpu) {
+      errorData.MinCpu = "MinCpu  required";
+    }
+    if (!initialData.maxCpu) {
+      errorData.maxCpu = "maxCpu  required";
+    }
+    if (!initialData.minMemory) {
+      errorData.minMemory = "minMemory  required";
+    }
+    if (!initialData.maxMemory) {
+      errorData.maxMemory = "maxMemory  required";
+    }
+    if (!initialData.replicaCount) {
+      errorData.replicaCount = "replicaCount  required";
+    }
+
+    if (
+      initialData.InstanceName === "" &&
+      initialData.MinCpu === "" &&
+      initialData.maxCpu === "" &&
+      initialData.minMemory === "" &&
+      initialData.maxMemory === "" &&
+      initialData.replicaCount === ""
+    ) {
+      setError(errorData);
+    } else {
+      let data = {
+        projectId: initialData.InstanceName,
+        environment: initialData.environment.toLowerCase(),
+        minMemory: initialData.minMemory,
+        minCpu: initialData.minCpu,
+        maxMemory: initialData.maxMemory,
+        maxCpu: initialData.maxCpu,
+        replicaCount: initialData.replicaCount,
+      };
+      // api call for create new provisioning
+
+      Api.createNewInstance(data)
+        .then((res) => {
+          if (res.status === "error") {
+            seterrorStatus(true);
+            setMessage(res.data.message);
+          }
+          if (res.status === 200 || res.status === 201) {
+            setsuccessStatus(true);
+            setShow(true);
+            setadvanceOption(false);
+            document.getElementById("custom-switch").checked = false;
+            if (res.data.message === "") {
+              setMessage("successfully Upgraded");
+            } else {
+              setMessage(res.data.message);
+            }
+
+            setinitialData({
+              projectName: "",
+              ShortDescription: "",
+              OperatingSystem: "",
+              SystemType: "",
+              SystemPort: "",
+              SystemIp: "",
+              AttachFile: "",
+              Gateway: "",
+              EcClient: "",
+              VLan: "",
+              BUC: "",
+              ADN: "",
+              environment: "Prod",
+              minMemory: "8",
+              maxMemory: "12",
+              minCpu: "4",
+              maxCpu: "5",
+              replicaCount: "1",
+              InstanceName: "",
+              maxSize: "2g",
+              initialSize: "1g",
+              version: "0.0.7",
+              host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
+              fileSystemId: "12e51190",
+              accessPoint: "0f259ecad065aa92d",
+              gitRepo:
+                "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
+            });
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data.status === "FAILED") {
+              seterrorStatus(true);
+              setMessage(err.data.message);
+            }
+          }
+        });
+    }
+  };
+
+  const FindInstanceInfo = (e) => {
+    Api.FindProjectInfo(
+      e.target.value,
+      initialData.environment === "Stage"
+        ? "dev"
+        : initialData.environment === "Prod"
+        ? "stage"
+        : ""
+    )
+      .then((res) => {
+        if (res.status === "error") {
+          seterrorStatus(true);
+          setMessage(res.data.message);
+        }
+        if (res.status === 200 || res.status === 201) {
+          const data = res.data.results[0];
+          setadvanceOption(true);
+          document.getElementById("custom-switch").checked = true;
+
+          const obj = {
+            ...initialData,
+            InstanceName: e.target.value,
+            minCpu: data.min_cpu,
+            maxCpu: data.max_cpu,
+            minMemory: data.min_memory,
+            maxMemory: data.max_memory,
+            replicaCount: data.replica_count,
+          };
+          setinitialData(obj);
+
+          if (res.data.message === "") {
+          } else {
+          }
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.data.status === "FAILED") {
+            seterrorStatus(true);
+            setMessage(err.data.message);
+          }
+        }
+      });
+  };
+
+  if (successStatus === true || errorStatus === true) {
+    setInterval(function () {
+      setsuccessStatus(false);
+      seterrorStatus(false);
+    }, 4000);
+  }
+  let EcClient = [
+    { label: "ecClient1", value: "ecClient1" },
+    { label: "ecClient2", value: "ecClient2" },
+    { label: "ecClient3", value: "ecClient3" },
+    { label: "ecClient4", value: "ecClient4" },
+  ];
+  let TargetSytemType = [
+    { label: "TargetSytemType1", value: "TargetSytemType1" },
+    { label: "TargetSytemType2", value: "TargetSytemType2" },
+    { label: "TargetSytemType3", value: "TargetSytemType3" },
+    { label: "TargetSytemType4", value: "TargetSytemType4" },
+  ];
+  let TargetSytemIp = [
+    { label: "TargetSytemIp1", value: "TargetSytemIp1" },
+    { label: "TargetSytemIp2", value: "TargetSytemIp2" },
+    { label: "TargetSytemIp3", value: "TargetSytemIp3" },
+    { label: "TargetSytemIp4", value: "TargetSytemIp4" },
+  ];
+  let TargetSytemPort = [];
+
   return (
     <>
-      {" "}
-      {successStatus == true ? (
-        <Alert
-          variant="success"
-          onClose={() => setsuccessStatus(false)}
-          dismissible
-        >
-          <p>{message}</p>
-        </Alert>
-      ) : (
-        ""
-      )}
-      {errorStatus == true ? (
-        <Alert
-          variant="danger"
-          onClose={() => seterrorStatus(false)}
-          dismissible
-        >
-          <p>{message}</p>
-        </Alert>
-      ) : (
-        ""
-      )}
-      <Row className="align-row tc-manage">
-        <Form.Group
-          as={Row}
-          className="mb-3 form-mar"
-          onChange={handelInputChange}
-        >
-          <span className="radioselect">Environment</span>
-          <Col sm={6} className="col-radio">
-            <Form.Check
-              type="radio"
-              label="Dev"
-              name="environment"
-              id="environment"
-              value="Dev"
-              defaultChecked
-            />
-            <Form.Check
-              type="radio"
-              label="Stage"
-              name="environment"
-              id="environment"
-              value="Stage"
-            />
-            <Form.Check
-              type="radio"
-              label="Prod"
-              name="environment"
-              id="environment"
-              value="Prod"
-            />
-          </Col>
-        </Form.Group>
-      </Row>
-      <Row className="align-row tc-manage">
-        <Form.Group
-          as={Row}
-          className="mb-3 form-mar"
-          onChange={handelInputChange}
-        >
-          <span className="radioselect">InstanceName</span>
-          <Col sm={6} className="col-radio">
-            <Form.Check
-              type="radio"
-              label="Single"
-              name="user"
-              id="user"
-              value="single"
-              checked={updateInitialData.user === "single"}
-            />
-            <Form.Check
-              type="radio"
-              label="Multiple"
-              name="user"
-              id="user"
-              value="multiple"
-              checked={updateInitialData.user === "multiple"}
-            />
-          </Col>
-        </Form.Group>
-        {updateInitialData.user === "single" ? (
-          <Form.Group as={Col} md="6">
-            <select
-              className="form-select classic select-height"
-              onChange={(e) => {
-                handelInputChange(e);
-                if (e.target.value === "SelectInstanceName") {
-                  resetForm();
-                } else {
-                  getSingleInstanceData(e);
-                }
-              }}
-              // sele
-              style={{ height: "40px" }}
-              id="InstanceName"
-              name="InstanceName"
-              value={updateInitialData.InstanceName}
-            >
-              <option value="SelectInstanceName">Select InstanceName</option>
-              {ProjectList &&
-                ProjectList.map((e, i) => {
-                  return (
-                    <option value={e.value} key={i}>
-                      {e.label}
-                    </option>
-                  );
-                })}
-            </select>
-            <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
-          </Form.Group>
-        ) : (
-          ""
-        )}
-      </Row>
-      {updateInitialData.user === "single" ? (
+      {props.OrgSpaceValue.Org !== "" && props.OrgSpaceValue.Space !== "" ? (
         <div>
-          <Row className="alignupdateRow tc-manage">
-            <Form.Group as={Col} md="3">
-              <Form.Label className="select-label">Project Name</Form.Label>{" "}
-              <Form.Control
-                disabled={true}
-                type="text"
-                placeholder="Project Name"
-                id="projectName"
-                name="projectName"
-                value={updateInitialData.projectName}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.projectName === "" &&
-                  error.projectName !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.projectName ? true : false}
-              />
+          {successStatus == true ? (
+            <Alert
+              variant="success"
+              onClose={() => setsuccessStatus(false)}
+              dismissible
+            >
+              <p>{message}</p>
+            </Alert>
+          ) : (
+            ""
+          )}
+          {errorStatus == true ? (
+            <Alert
+              variant="danger"
+              onClose={() => seterrorStatus(false)}
+              dismissible
+            >
+              <p>{message}</p>
+            </Alert>
+          ) : (
+            ""
+          )}
+          <Row className="align-row">
+            <Form.Group
+              as={Row}
+              className="mb-3 form-mar"
+              onChange={handelInputChange}
+            >
+              <span className="radioselect tc-manage">Environment</span>
+              <Col sm={6} className="col-radio">
+                <Form.Check
+                  type="radio"
+                  label="Dev"
+                  name="environment"
+                  id="environment"
+                  value="Dev"
+                  defaultValue="Dev"
+                  defaultChecked
+                />
+                <Form.Check
+                  type="radio"
+                  label="Stage"
+                  name="environment"
+                  id="environment"
+                  value="Stage"
+                />
+                <Form.Check
+                  type="radio"
+                  label="Prod"
+                  name="environment"
+                  id="environment"
+                  value="Prod"
+                  // checked={initialData.environment === "Prod"}
+                />
+              </Col>
               <Form.Control.Feedback type="invalid">
-                {updateInitialData.projectName === "" &&
-                error.projectName !== ""
-                  ? error.projectName
+                {initialData.environment === "" && error.environment !== ""
+                  ? error.environment
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
+          </Row>
+          {initialData.environment === "Dev" ? (
+            <Row className="mb-3 alignbox tc-manage">
+              <Form.Group as={Col} md="4">
+                <Form.Label>Instance Name</Form.Label>
+                <select
+                  className="form-select classic select-height"
+                  onChange={(e) => {
+                    handelInputChange(e);
+                    FindInstanceInfo(e);
+                  }}
+                  style={{ height: "40px" }}
+                  id="InstanceName"
+                  name="InstanceName"
+                  value={initialData.InstanceName}
+                >
+                  <option value="">Select InstanceName</option>
+                  <option value="InstanceName1">InstanceName 1</option>
+                  <option value="InstanceName2">InstanceName 2</option>
+                  <option value="InstanceName3">InstanceName 3</option>
+                </select>
+                <Form.Control.Feedback type="invalid">
+                  {initialData.InstanceName === "" && error.InstanceName
+                    ? error.InstanceName
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col} md="4">
+                <Form.Label>Short Description</Form.Label>
+                <Form.Control
+                  type="text"
+                  id="ShortDescription"
+                  placeholder="Short Description"
+                  name="ShortDescription"
+                  value={initialData.ShortDescription}
+                  onChange={handelInputChange}
+                  isInvalid={
+                    initialData.ShortDescription === "" &&
+                    error.ShortDescription
+                      ? true
+                      : false
+                  }
+                  isValid={initialData.ShortDescription ? true : false}
+                />
 
-            <Form.Group as={Col} md="3" className="fieldhelm">
-              <Form.Label className="select-label">Helm version</Form.Label>
+                <Form.Control.Feedback type="invalid">
+                  {!initialData.ShortDescription === "" ||
+                  error.ShortDescription
+                    ? error.ShortDescription
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col} md="4">
+                <Form.Label>Gate way</Form.Label>
+                <br></br>
+                <select
+                  className="form-select classic select-height"
+                  onChange={(e) => {
+                    handelInputChange(e);
+                    FindInstanceInfo(e);
+                  }}
+                  style={{ height: "40px" }}
+                  id="Gateway"
+                  name="Gateway"
+                  value={initialData.Gateway}
+                >
+                  <option value="">Select Gateway</option>
+                  <option value="Gateway1">Gateway 1</option>
+                  <option value="Gateway2">Gateway 2</option>
+                  <option value="Gateway3">Gateway 3</option>
+                </select>
+                <Form.Control.Feedback type="invalid">
+                  {initialData.Gateway === "" && error.Gateway
+                    ? error.Gateway
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+          ) : (
+            <Row className="mb-3 tc-manage">
+              <Form.Group as={Col} md="6">
+                <Form.Label className="select-label">Instance Name</Form.Label>
+
+                <select
+                  className="form-select classic select-height"
+                  onChange={(e) => {
+                    handelInputChange(e);
+                    FindInstanceInfo(e);
+                  }}
+                  // sele
+                  style={{ height: "40px" }}
+                  id="InstanceName"
+                  name="InstanceName"
+                  value={initialData.InstanceName}
+                >
+                  <option value="">Select InstanceName</option>
+                  {ProjectList &&
+                    ProjectList.map((e, i) => {
+                      return (
+                        <option value={e.id} key={i}>
+                          {e.project_name}
+                        </option>
+                      );
+                    })}
+                </select>
+                <Form.Control.Feedback type="invalid">
+                  {initialData.InstanceName === "" && error.InstanceName
+                    ? error.InstanceName
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+          )}
+          <Row className="mb-3 alignbox tc-manage">
+            <Form.Group as={Col} md="4">
+              <Form.Label>Ec Client</Form.Label>
               <br></br>
-              <Form.Control
-                type="text"
-                placeholder="Version"
-                id="version"
-                name="version"
-                value={updateInitialData.version}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.version === "" && error.version !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.version ? true : false}
+              <Creatable
+                isClearable
+                // onChange={this.handleChange}
+                // onInputChange={this.handleInputChange}
+                options={EcClient}
+                placeholder="Select or Input EcClient"
               />
               <Form.Control.Feedback type="invalid">
-                {updateInitialData.version === "" && error.version !== ""
-                  ? error.version
+                {initialData.EcClient === "" && error.EcClient
+                  ? error.EcClient
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="3" className="vlanfield">
-              <Form.Label>VLAN</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="VLAN"
-                name="VLan"
-                id="VLan"
-                onChange={handelInputChange}
-                value={updateInitialData.VLan}
-                isInvalid={
-                  updateInitialData.VLan === "" && error.VLan !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.VLan ? true : false}
+            <Form.Group as={Col} md="4" style={{ marginTop: "-13px" }}>
+              <Form.Label className="select-label">Operating System</Form.Label>
+              <br></br>
+              <select
+                className="form-select classic select-height"
+                onChange={(e) => {
+                  handelInputChange(e);
+                  FindInstanceInfo(e);
+                }}
+                style={{ height: "40px" }}
+                id="OperatingSystem"
+                name="OperatingSystem"
+                value={initialData.OperatingSystem}
+              >
+                <option value="">Select Operating System</option>
+                <option value="window">window</option>
+                <option value="LINUX">LINUX</option>
+                <option value="MAC">MAC</option>
+              </select>
+              <Form.Control.Feedback type="invalid">
+                {initialData.OperatingSystem === "" && error.OperatingSystem
+                  ? error.OperatingSystem
+                  : ""}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="4">
+              <Form.Label>Target System Type</Form.Label>
+              <br></br>
+              <Creatable
+                isClearable
+                // onChange={this.handleChange}
+                // onInputChange={this.handleInputChange}
+                options={TargetSytemType}
+                placeholder="Select or Input TargetSytemType"
               />
               <Form.Control.Feedback type="invalid">
-                {updateInitialData.VLan === "" && error.VLan !== ""
-                  ? error.VLan
+                {initialData.SystemType === "" && error.SystemType
+                  ? error.SystemType
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
 
-          <Row className="mb-3 bucAdnCom tc-manage">
-            <BucAdnComponent />
-          </Row>
-          <hr />
-          <Row className="mb-3 alignupdateRow tc-manage">
-            <Form.Group as={Col} md="2">
-              <Form.Label>Min Memory</Form.Label>
-              <Form.Control
-                type="Number"
-                name="minMemory"
-                id="minMemory"
-                value={updateInitialData.minMemory}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.minMemory === "" && error.minMemory !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.minMemory ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.minMemory === "" && error.minMemory !== ""
-                  ? error.minMemory
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group as={Col} md="2">
-              <Form.Label>Max Memory</Form.Label>
-              <Form.Control
-                type="Number"
-                name="maxMemory"
-                id="maxMemory"
-                value={updateInitialData.maxMemory}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.maxMemory === "" && error.maxMemory !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.maxMemory ? true : false}
-              />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.maxMemory === "" && error.maxMemory !== ""
-                  ? error.maxMemory
-                  : ""}
-              </Form.Control.Feedback>
-            </Form.Group>
+          <Row className="mb-3 alignbox tc-manage">
+            <Form.Group as={Col} md="4">
+              <Form.Label className="select-label">Target System Ip</Form.Label>
 
-            <Form.Group as={Col} md="2">
-              <Form.Label>Min Cpu</Form.Label>
-              <Form.Control
-                type="Number"
-                name="minCpu"
-                id="minCpu"
-                value={updateInitialData.minCpu}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.minCpu === "" && error.minCpu !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.minCpu ? true : false}
+              <br></br>
+              <Creatable
+                isClearable
+                // onChange={this.handleChange}
+                // onInputChange={this.handleInputChange}
+                options={TargetSytemIp}
+                placeholder="Select or Input TargetSytemIp"
               />
               <Form.Control.Feedback type="invalid">
-                {updateInitialData.minCpu === "" && error.minCpu !== ""
-                  ? error.minCpu
+                {initialData.SystemIp === "" && error.SystemIp
+                  ? error.SystemIp
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="2">
-              <Form.Label>Max Cpu</Form.Label>
-              <Form.Control
-                type="Number"
-                name="maxCpu"
-                id="maxCpu"
-                value={updateInitialData.maxCpu}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.maxCpu === "" && error.maxCpu !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.maxCpu ? true : false}
+            <Form.Group as={Col} md="4" style={{ marginTop: "12px" }}>
+              <Form.Label>Target System Port</Form.Label>
+
+              <br></br>
+              <Creatable
+                isClearable
+                // onChange={this.handleChange}
+                // onInputChange={this.handleInputChange}
+                options={TargetSytemPort}
+                placeholder="Select or Input TargetSytemPort"
               />
               <Form.Control.Feedback type="invalid">
-                {updateInitialData.maxCpu === "" && error.maxCpu !== ""
-                  ? error.maxCpu
+                {initialData.SystemPort === "" && error.SystemPort
+                  ? error.SystemPort
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="2">
-              <Form.Label>Replica Count</Form.Label>
-              <Form.Control
-                type="Number"
-                name="replicaCount"
-                id="replicaCount"
-                value={updateInitialData.replicaCount}
-                onChange={handelInputChange}
-                isInvalid={
-                  updateInitialData.replicaCount === "" &&
-                  error.replicaCount !== ""
-                    ? true
-                    : false
-                }
-                isValid={updateInitialData.replicaCount ? true : false}
+            <Form.Group as={Col} md="1" style={{ marginTop: "50px" }}>
+              <Form.Check
+                type="switch"
+                id="custom-switch1"
+                label="Tcs"
+                onChange={() => TcsHandelChange()}
               />
-              <Form.Control.Feedback type="invalid">
-                {updateInitialData.replicaCount === "" &&
-                error.replicaCount !== ""
-                  ? error.replicaCount
-                  : ""}
-              </Form.Control.Feedback>
             </Form.Group>
+            {TcsOption === true ? (
+              <Form.Group as={Col} md="3" style={{ marginTop: "18px" }}>
+                <Form.Label>Attach File</Form.Label>
+                <Form.Control
+                  type="file"
+                  placeholder="Attach File"
+                  name="AttachFile"
+                  id="AttachFile"
+                  value={initialData.AttachFile}
+                  onChange={handelInputChange}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {initialData.AttachFile === "" && error.AttachFile
+                    ? error.AttachFile
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+            ) : (
+              ""
+            )}
           </Row>
-          <div style={{ marginLeft: "18px" }} className="tc-manage">
-            <Button type="submit" onClick={(e) => handleFormSubmit(e)}>
+
+          {initialData.environment === "Dev" ? (
+            <Row className="mb-3 bucAdnCom tc-manage">
+              <BucAdnComponent
+                bucadnvalidate={bucadnvalidate}
+                bucAdnValue={initialData}
+              />
+            </Row>
+          ) : (
+            ""
+          )}
+          <Row className="mb-3 form-switch">
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Advance Option"
+              onChange={() => advanceHandelChange()}
+            />
+          </Row>
+          {advanceOption === true ? (
+            <Row className="mb-3 alignbox tc-manage">
+              <Form.Group as={Col} md="2">
+                <Form.Label>Min Memory</Form.Label>
+                <Form.Control
+                  type="Number"
+                  name="minMemory"
+                  id="minMemory"
+                  value={initialData.minMemory}
+                  onChange={handelInputChange}
+                  isInvalid={
+                    !initialData.minMemory && error.minMemory
+                      ? error.minMemory
+                      : ""
+                  }
+                  isValid={initialData.minMemory ? true : false}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!initialData.minMemory && error.minMemory
+                    ? error.minMemory
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col} md="2">
+                <Form.Label>Max Memory</Form.Label>
+                <Form.Control
+                  type="Number"
+                  name="maxMemory"
+                  id="maxMemory"
+                  value={initialData.maxMemory}
+                  onChange={handelInputChange}
+                  isInvalid={
+                    !initialData.maxMemory && error.maxMemory
+                      ? error.maxMemory
+                      : ""
+                  }
+                  isValid={initialData.maxMemory ? true : false}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!initialData.maxMemory && error.maxMemory
+                    ? error.maxMemory
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group as={Col} md="2">
+                <Form.Label>Min Cpu</Form.Label>
+                <Form.Control
+                  type="Number"
+                  name="minCpu"
+                  id="minCpu"
+                  value={initialData.minCpu}
+                  onChange={handelInputChange}
+                  isInvalid={
+                    !initialData.minCpu && error.minCpu ? error.minCpu : ""
+                  }
+                  isValid={initialData.minCpu ? true : false}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!initialData.minCpu && error.minCpu ? error.minCpu : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col} md="2">
+                <Form.Label>Max Cpu</Form.Label>
+                <Form.Control
+                  type="Number"
+                  name="maxCpu"
+                  id="maxCpu"
+                  value={initialData.maxCpu}
+                  onChange={handelInputChange}
+                  isInvalid={
+                    !initialData.maxCpu && error.maxCpu ? error.maxCpu : ""
+                  }
+                  isValid={initialData.maxCpu ? true : false}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!initialData.maxCpu && error.maxCpu ? error.maxCpu : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group as={Col} md="2">
+                <Form.Label>Replica Count</Form.Label>
+                <Form.Control
+                  type="Number"
+                  name="replicaCount"
+                  id="replicaCount"
+                  value={initialData.replicaCount}
+                  onChange={handelInputChange}
+                  isInvalid={
+                    !initialData.replicaCount && error.replicaCount
+                      ? error.replicaCount
+                      : ""
+                  }
+                  isValid={initialData.replicaCount ? true : false}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {!initialData.replicaCount && error.replicaCount
+                    ? error.replicaCount
+                    : ""}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+          ) : (
+            ""
+          )}
+          <Row className="alignbox tc-manage">
+            <Button
+              type="submit"
+              className="submit"
+              onClick={
+                initialData.environment === "Dev"
+                  ? (e) => handleFormSubmit(e)
+                  : initialData.environment === "Stage"
+                  ? (e) => createNewInstance(e)
+                  : (e) => createNewProdInstance(e)
+              }
+            >
               Submit
             </Button>
-          </div>
+          </Row>
         </div>
       ) : (
-        <BootstrapTable
-          keyField="id"
-          data={MultiinstanceData}
-          columns={columns}
-          className="tc-manage"
-          cellEdit={cellEditFactory({
-            mode: "dbclick",
-            blurToSave: true,
-            autoSelectText: true,
-            clickToSelect: { mode: "dbclick" ? true : false },
-            style: { backgroundColor: "#c8e6c9" },
-            bgColor: (row, rowIndex) => {
-              return row ? "#c8e6c9" : "blue"; // return a color code
-            },
-          })}
-        />
+        ""
       )}
     </>
   );
