@@ -124,6 +124,7 @@ img{
   padding: 1rem 1rem !important;
   background-color: white;
   height: 18vh;
+  z-index: 9;
 }
 
 .headers, .GE-header {

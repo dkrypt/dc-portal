@@ -17,10 +17,9 @@ import {EventList} from "../containers/globalScape/eventManagement/EventList.js"
 import {EnableAccount} from "../containers/globalScape/EnableAccount.js";
 import {DelegatePriToSso} from "../containers/globalScape/DelegatePriToSso.js";
 import {RevokeSso} from "../containers/globalScape/RevokeSso.js";
-import {ModifyEventNsg} from "../containers/globalScape/ModifyEventNsg.js";
 import {RemoveIP} from "../containers/globalScape/RemoveIP.js";
-import {AssignGroup} from "../containers/globalScape/AssignGroup.js";
-import {DisableAccount} from "../containers/globalScape/DisableAccount.js";
+import MaintainGroup from "../containers/globalScape/MaintainGroup.js";
+import ManageAccount from "../containers/globalScape/ManageAccount.js";
 import ManageEc from "../containers/manage/enterpriseConnect/ManageEc.js";
 import NewUser from "../containers/userManagement/NewUser.js";
 import NoSubscriptions from "../containers/userManagement/NoSubscriptions.js";
@@ -207,17 +206,7 @@ export default function Router(props) {
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
-      </Route>
-      <Route exact path="/globalscape/modifyeventfornsg">
-        <ModifyEventNsg
-          clickEvent={props.clickEvent}
-          persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler}
-          baseUrl={props.baseUrl}
-          authToken={props.authToken}
-          isLoader={props.isLoader}
-        />
-      </Route>
+      </Route>      
       <Route exact path="/globalscape/removeip">
         <RemoveIP
           clickEvent={props.clickEvent}
@@ -227,21 +216,20 @@ export default function Router(props) {
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
-      </Route>
-      <Route exact path="/globalscape/assigngroup">
-        <AssignGroup
-          clickEvent={props.clickEvent}
+      </Route>    
+
+      <Route exact path="/globalscape/maintaingroup">
+        <MaintainGroup
+          clickEvent={props.clickEvent.bind(this)}
           persona={props.persona}
-          setPersonaHandler={props.setPersonaHandler}
+          setPersonaHandler={props.setPersonaHandler.bind(this)}
           baseUrl={props.baseUrl}
           authToken={props.authToken}
-          isLoader={props.isLoader}
         />
       </Route>
-
-      <Route exact path="/globalscape/disableaccount">
-        <DisableAccount
-          clickEvent={props.clickEvent}
+      <Route exact path="/globalscape/manageaccount">
+        <ManageAccount
+          clickEvent={props.clickEvent.bind(this)}
           persona={props.persona}
           setPersonaHandler={props.setPersonaHandler}
           baseUrl={props.baseUrl}

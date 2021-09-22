@@ -1,14 +1,13 @@
 import React, { Fragment, useState } from "react";
-import {EventList} from "./eventManagement/EventList.js";
-import {DelegatePriToSso} from "./DelegatePriToSso.js";
-import {RevokeSso} from "./RevokeSso.js";
-import {EnableAccount} from "./EnableAccount.js";
-import {ModifyEventNsg} from "./ModifyEventNsg.js";
-import {RemoveIP} from "./RemoveIP.js";
-import {AssignGroup} from "./AssignGroup.js";
-import {DisableAccount} from "./DisableAccount.js";
+import { EventList } from "./eventManagement/EventList.js";
+import { DelegatePriToSso } from "./DelegatePriToSso.js";
+import { RevokeSso } from "./RevokeSso.js";
+import { ModifyEventNsg } from "./ModifyEventNsg.js";
+import { RemoveIP } from "./RemoveIP.js";
+import MaintainGroup from "./MaintainGroup.js";
+import ManageAccount from "./ManageAccount.js";
 import { Link } from "react-router-dom";
-import './GlobalScape.css';
+import "./GlobalScape.css";
 
 export const GlobalScape = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -39,20 +38,7 @@ export const GlobalScape = () => {
               </div>
             </Link>
           </div>
-          <div className="row mx-1 gs-row">
-            <Link to="/globalscape/enableaccount">
-              <div className="Card gs-card">
-                <span className="titles">Enable Account</span>
-              </div>
-            </Link>
-
-            <Link to="/globalscape/modifyeventfornsg">
-              <div className="Card gs-card">
-                <span className="titles" onClick={() => setCurrentStep(5)}>
-                  Modify Event For NSG
-                </span>
-              </div>
-            </Link>
+          <div className="row mx-1 gs-row">           
             <Link to="/globalscape/removeip">
               <div className="Card gs-card">
                 <span className="titles" onClick={() => setCurrentStep(6)}>
@@ -60,17 +46,18 @@ export const GlobalScape = () => {
                 </span>
               </div>
             </Link>
-            <Link to="/globalscape/assigngroup">
+            
+            <Link to="/globalscape/maintaingroup">
               <div className="Card gs-card">
-                <span className="titles" onClick={() => setCurrentStep(7)}>
-                  Assign Group
+                <span className="titles" onClick={() => setCurrentStep(8)}>
+                  Maintain Group
                 </span>
               </div>
             </Link>
-            <Link to="/globalscape/disableaccount">
+            <Link to="/globalscape/manageaccount">
               <div className="Card gs-card">
-                <span className="titles" onClick={() => setCurrentStep(8)}>
-                  Disable Account
+                <span className="titles" onClick={() => setCurrentStep(9)}>
+                  Manage Account
                 </span>
               </div>
             </Link>
@@ -80,11 +67,12 @@ export const GlobalScape = () => {
       {currentStep === 1 && <EventList />}
       {currentStep === 2 && <DelegatePriToSso />}
       {currentStep === 3 && <RevokeSso />}
-      {currentStep === 4 && <EnableAccount />}
+
       {currentStep === 5 && <ModifyEventNsg />}
       {currentStep === 6 && <RemoveIP />}
-      {currentStep === 7 && <AssignGroup />}
-      {currentStep === 8 && <DisableAccount />}
+     
+      {currentStep === 8 && <MaintainGroup />}
+      {currentStep === 9 && <ManageAccount />}
     </Fragment>
   );
 };

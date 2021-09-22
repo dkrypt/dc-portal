@@ -1,23 +1,19 @@
 import React, { Fragment, useState, useEffect } from "react";
-import ToastMessage from "../ToastMessage.js";
-import {EventListButtons} from "./EventListButtons.js";
+import { EventListButtons } from "./EventListButtons.js";
 import AxiosInstance from "../api/api.js";
-import { Spinner } from "react-bootstrap";
+import ModifySchedule from "./ModifySchedule.js";
 
 export const EventList = ({ clickEvent, isLoader }) => {
   // Local state getters and setters
   const [showModal, setShowModal] = useState(false);
-  const [showToastM, setShowToastM] = useState(false);
-  const [selectedEventName, setSelectedEventName] = useState('');
-  const [toastMessage, setToastMessage] = useState('');
-  const [searchText, setSearchText] = useState('');
+  const [selectedEventName, setSelectedEventName] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [eventsData, setEventsData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [checkedItems, setCheckedItems] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [ssoIdText, setSsoIdText] = useState("502663088");
 
   useEffect(() => {
-    isLoader(true);
     clickEvent({
       pageName: "EventManagement",
       headerText: "EVENT MANAGEMENT",
@@ -28,23 +24,48 @@ export const EventList = ({ clickEvent, isLoader }) => {
         setEventsData(response.data);
         isLoader(false);
       })
-      .catch((e) =>console.error(e));
+      .catch((e) => console.error(e));
   }, []);
-  const updatedToastMessage = (value, msg) => {
-    setShowToastM(value);
-    setToastMessage(msg);
-  }
+
   const closeModal = () => {
     setShowModal(false);
   };
   const filterEvents = (e) => {
-    if(eventsData.length > 0){
-      const filteredEvents = eventsData.filter(({EVENT_NAME})=>EVENT_NAME.toLowerCase().indexOf(e.target.value.toString().toLowerCase()) > -1);
+    const events = eventsData;
+    setSearchText(e.target.value);
+    if (events?.length > 0) {
+      const filteredEvents = events.filter(
+        ({ EVENT_NAME }) =>
+          EVENT_NAME.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+      );
       setFilteredEvents(filteredEvents);
     }
-  }
-  const handleCallback = () => console.log('This method is not defined, but used. This is a dummy definition for "handleCallback" function.');
-  const finalEventsList = searchText.length > 0 && filteredEvents.length >= 0 ? filteredEvents : eventsData;
+  };
+
+  const handleSsoIDfun = (e) => {
+    setSsoIdText(e.target.value);
+  };
+  const fetchEventData = () => {
+    isLoader(true);
+    const eventAPI = `/DISP_DISPLAY_EVENT_LIST?UserID=${ssoIdText}`;
+    AxiosInstance.post(eventAPI)
+      .then((response) => {
+        setEventsData(response.data);
+        isLoader(false);
+      })
+      .catch((e) => {
+        console.error(e);
+        alert("API Error: ", e);
+        isLoader(false);
+      });
+  };
+
+  const finalEventsList =
+    searchText.length > 0 && filteredEvents?.length >= 0
+      ? filteredEvents
+      : eventsData;
+  const searchTextMsg = filteredEvents?.length > 0 ? "Search Result" : "Total Records";
+ 
   
   return (
     <div className="container-lg w-100 p-3 borderStyle mb-5 gs-container">
@@ -60,15 +81,24 @@ export const EventList = ({ clickEvent, isLoader }) => {
           />
         </div>
         <span>
-          {filteredEvents?.length > 0 ? "Search Result" : "Total Records"}: {finalEventsList.length}
+          {searchTextMsg}: {finalEventsList.length}
+         
         </span>
-        <input
-            type="text"              
+        <div className="gs-right-btn">
+          <input
+            type="number"
             className="round borderStyle sso"
             placeholder="Enter SSO ID"
-            onChange={filterEvents}
-            autoComplete="off"
+            onChange={handleSsoIDfun}
           />
+          <button
+            type="button"
+            onClick={fetchEventData}
+            className="gs-btn purple fix-btn"
+          >
+            Fetch Events
+          </button>
+        </div>
       </div>
 
       {finalEventsList.map(({ EVENT_NAME }, index) => {
@@ -78,23 +108,10 @@ export const EventList = ({ clickEvent, isLoader }) => {
               <h6>Event Name</h6>
               <div className="gs_event-col">{EVENT_NAME}</div>
             </div>
-            <EventListButtons
-              eventName={EVENT_NAME}
-              parentCallback={handleCallback}
-              toastMessage={updatedToastMessage}
-              isLoader={isLoader}
-            />
+            <EventListButtons eventName={EVENT_NAME} isLoader={isLoader} />
           </div>
         );
       })}
-
-      {toastMessage && (
-        <ToastMessage
-          showToast={showToastM}
-          updateToast={updatedToastMessage}
-          toastMessage={toastMessage}
-        />
-      )}
     </div>
   );
 };

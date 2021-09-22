@@ -3,13 +3,7 @@ import { Button } from 'react-bootstrap';
 
 
 export const EnableAccount = ({clickEvent, eventName}) => {
-  useEffect(() => {
-    clickEvent({
-      pageName: "EnableAccount",
-      headerText: "ENABLE ACCOUNT",
-      subHeaderText: "GLOBAL",
-    });
-  }, [])
+
   return (
     <div className="container-lg w-100 p-3 borderStyle mb-5">
     <h5>Enable Account</h5>

@@ -1,97 +1,134 @@
 import React, { Fragment, useState } from "react";
 import AxiosInstance from "../api/api.js";
-import { Spinner } from "react-bootstrap";
-import {ViewSchedule} from "./ViewSchedule.js";
+import ToastMessage from "../ToastMessage.js";
+import { ViewSchedule } from "./ViewSchedule.js";
+import {ModifySchedule} from "./ModifySchedule.js";
+import ConfirmPopup from "./ConfirmPopup.js";
 
-export const EventListButtons = ({ eventName, toastMessage, isLoader }) => {
+export const EventListButtons = ({ eventName, isLoader }) => {
   // State getters and setters
-  const [runNowData, setRunNowData] = useState('');
-  const [enableData, setEnableData] = useState('');
-  const [disableData, setDisableData] = useState('');
-  const [selectedEventName, setSelectedEventName] = useState('');
-  const [loaded, setLoaded] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [runNowData, setRunNowData] = useState("");
+  const [enableData, setEnableData] = useState("");
+  const [disableData, setDisableData] = useState("");
+  const [selectedEventName, setSelectedEventName] = useState("");
+
+  const [showToastM, setShowToastM] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showConfirmBox, setShowConfirmBox] = useState(false);
+  const [confirmBoxMsg, setConfirmBoxMsg] = useState("");
+  const [showModalModify, setShowModalModify] = useState(false);
   const runNowClick = () => {
     isLoader(true);
-    setLoaded(true);
     AxiosInstance.post(`/ASYNCExecuteEvent?EventRuleName=${eventName}&ID=12345`)
       .then((response) => {
         setRunNowData(response.data);
-        isLoader(true);
-        setLoaded(false);
-        toastMessage(true, runNowData);
+        isLoader(false);
+        updatedToastMessage(true, response.data);
       })
       .catch((e) => {
-        setLoaded(false);
-        alert(e);        
+        isLoader(false);
+        alert(e);
       });
-  }
+  };
   const onValueChange = (changeEvent) => {
-    setSelectedOption(changeEvent.currentTarget.value);
-    if (selectedOption === 'Enable') {
-      enableNow();
-    } else if (selectedOption === 'Disable') {
-      disableNow();
-    }  
-  }
+    const target = changeEvent.target;
+    if (target.value === "Enable") {
+      setSelectedOption("enable");
+      setShowConfirmBox(true);
+      setConfirmBoxMsg("enabling");
+    } else if (target.value === "Disable") {
+      setShowConfirmBox(true);
+      setSelectedOption("disable");
+      setConfirmBoxMsg("disabling");
+    } else {
+      setShowConfirmBox(false);
+    }
+  };
+  const runNowButtonHandler = () => {
+    setShowConfirmBox(true);
+    setSelectedOption("run now");
+    setConfirmBoxMsg("immediate run");
+  };
+
+  const updatedToastMessage = (value, msg) => {
+    setShowToastM(value);
+    setToastMessage(msg);
+  };
+
+  const closeConfirmBox = () => {
+    setShowConfirmBox(false);
+  };
   const enableNow = () => {
     isLoader(true);
-    AxiosInstance.post(`/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=true`)    
+    AxiosInstance.post(
+      `/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=true`
+    )
       .then((response) => {
         setEnableData(response.data);
         isLoader(false);
-        toastMessage(true, enableData);
+        // toastMessage(true, enableData);
+        updatedToastMessage(true, response.data);
       })
-      .catch((e) => console.error(e));
-  }
+      .catch((e) => {
+        console.error(e);
+        alert(e);
+        isLoader(false);
+      });
+  };
+
   const disableNow = () => {
     isLoader(true);
-    AxiosInstance.post(`/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=false`)    
+    AxiosInstance.post(
+      `/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=false`
+    )
       .then((response) => {
         setDisableData(response.data);
         isLoader(false);
-        toastMessage(true, disableData);
+        updatedToastMessage(true, response.data);
       })
       .catch((e) => console.error(e));
-  }
+  };
   const viewScheduleFun = (eventname) => {
-    setShowModal(true);
+    setShowModalModify(true);
     setSelectedEventName(eventName);
-  }
+  };
   const closeModal = () => {
     setShowModal(false);
-  }
+    setShowModalModify(false);
+  };
+
   return (
     <Fragment>
-    <div className="row gs-bottom-row">
-      <h6 className="col-sm-2">Action</h6>
-      <div className="col-sm-10">
-        <div className="gs-radio">
-          <label>
-            <input
-              type="radio"
-              value="Enable"
-              name="optradio"
-              checked={selectedOption === "Enable"}
-              onChange={onValueChange}
-            />
-            Enable
-          </label>
-
-          <label>
-            <input
-              type="radio"
-              value="Disable"
-              name="optradio"
-              checked={selectedOption === "Disable"}
-              onChange={onValueChange}
-            />
-            Disable
-          </label> </div>
+      <div className="row gs-bottom-row">
+        <h6 className="col-sm-2">Action</h6>
+        <div className="col-sm-10">
+          <div className="gs-radio">
+            <label>
+              <input
+                type="radio"
+                value="Enable"
+                name="optradio"
+                checked={selectedOption === "Enable"}
+                onChange={onValueChange}
+              />
+              Enable
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="Disable"
+                name="optradio"
+                checked={selectedOption === "Disable"}
+                onChange={onValueChange}
+              />
+              Disable
+            </label>{" "}
+          </div>
           <button
             className="gs-btn green fix-btn"
-            onClick={() => runNowClick()}
+            onClick={() => runNowButtonHandler()}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -103,23 +140,9 @@ export const EventListButtons = ({ eventName, toastMessage, isLoader }) => {
             >
               <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z" />
             </svg>
-            <span>{!loaded ? "Run Now" : 
-              (<>
-                <Spinner
-                  as="span"
-                  animation="grow"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                Loading...
-              </>
-              )}
-            </span>
+            <span>Run Now</span>
           </button>
-          <button
-            className="gs-btn grey fix-btn disabled"
-            >
+          <button className="gs-btn grey fix-btn disabled">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -136,23 +159,58 @@ export const EventListButtons = ({ eventName, toastMessage, isLoader }) => {
             className="gs-btn maroon fix-btn"
             onClick={() => viewScheduleFun(eventName)}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-break" viewBox="0 0 16 16">
-<path d="M0 10.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zM12 0H4a2 2 0 0 0-2 2v7h1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v7h1V2a2 2 0 0 0-2-2zm2 12h-1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2H2v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2z"/>
-</svg>
-      
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-file-break"
+              viewBox="0 0 16 16"
+            >
+              <path d="M0 10.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zM12 0H4a2 2 0 0 0-2 2v7h1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v7h1V2a2 2 0 0 0-2-2zm2 12h-1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2H2v2a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-2z" />
+            </svg>
+
             <span>Modify Schedule</span>
           </button>
-       
+        </div>
       </div>
-    </div>
-    {showModal && (
-      <ViewSchedule
-        openModal={showModal}
-        closeModal={closeModal}
-        eventName={selectedEventName}
-        toastMessage={'updatedToastMessage'}
-      />
-    )}
+      {showModal && (
+        <ViewSchedule
+          openModal={showModal}
+          closeModal={closeModal}
+          eventName={selectedEventName}
+          toastMessage={"updatedToastMessage"}
+        />
+      )}
+      {showModalModify && (
+        <ModifySchedule
+          openModal={showModalModify}
+          closeModal={closeModal}
+          eventName={selectedEventName}
+          toastMessage={updatedToastMessage}
+        />
+      )}
+
+      {showConfirmBox && (
+        <ConfirmPopup
+          selectedOption={selectedOption}
+          eventName={eventName}
+          toastMessage={updatedToastMessage}
+          isLoader={isLoader}
+          onClose={closeConfirmBox}
+          onEnable={enableNow}
+          onDisable={disableNow}
+          onRunNow={runNowClick}
+          confirmBoxMsg={confirmBoxMsg}
+        />
+      )}
+      {toastMessage && (
+        <ToastMessage
+          showToast={showToastM}
+          updateToast={updatedToastMessage}
+          toastMessage={toastMessage}
+        />
+      )}
     </Fragment>
   );
 };

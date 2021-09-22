@@ -4,6 +4,7 @@
   margin-bottom: 10px;
   position: relative;
   min-height: 75vh;
+  float: left;
 }
 
 .gs-container form {
@@ -19,9 +20,9 @@
   width: 100%;
 }
 
-.modal-dialog {
+/* .modal-dialog {
   max-width: 60%;
-}
+} */
 
 .gs_event-header {
   margin: 0px !important;
@@ -239,4 +240,27 @@ input.round.borderStyle.sso {
   width: 30%;
   float: right;
   position: relative;
+}
+.gs-right-btn {
+  display: inline-block;
+  float: right;
+}
+input.round.borderStyle.sso {
+  display: inline-block;
+  width: 62%;
+  width: 224px;
+  float: left;
+  position: relative;
+  margin-right: 20px;
+}
+
+input.sso::-webkit-outer-spin-button,
+input.sso::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input.sso[type=number] {
+  -moz-appearance: textfield;
 }

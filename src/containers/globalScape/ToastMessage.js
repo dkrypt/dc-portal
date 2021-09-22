@@ -7,8 +7,8 @@ const ToastMessage = ({ showToast, updateToast, toastMessage }) => {
       className="d-inline-block m-1 gs-toast"
       onClose={() => updateToast(false, "")}
       show={showToast}
-      delay={3000}
-      
+      delay={5000}
+      autohide
     >
       <Toast.Header>
         <img src={Icon_TC} className="rounded me-2" alt="" />
