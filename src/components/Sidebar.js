@@ -31,7 +31,7 @@ export default function Sidebar(props) {
     <div className="col-3 p-0" id="sidebar-wrapper">
       <div className="sidebar-heading px-5">
         <div className="d-flex flex-row px-3">
-          <div className="col-3 p-0 text-center">
+          <div className="col-3 p-0 ge-logo-col">
             <Link to="/">
               <img className="img-fluid GE-Logo" alt="" src={Logo_GE} />
             </Link>

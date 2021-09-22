@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { Carousel, Dropdown } from "react-bootstrap";
+import {
+  Carousel,
+  Dropdown,
+  OverlayTrigger,
+  Popover,
+  Tooltip,
+  Button,
+  Image,
+} from "react-bootstrap";
 import LaunchIcon from "@material-ui/icons/Launch";
 
 import Icon_Open from "../assets/images/Icon-Open.svg";
@@ -10,20 +18,70 @@ import Icon_Snow from "../assets/images/Icon-Snow.png";
 const DOLLARREGEX = /[$].+/gm;
 
 export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
-  const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
-  const [month, setMonth] = useState(moment().format('MMMM'));
-  useEffect(() => {
-    /* setTimeout(() => {
-      const carouselNode = document.querySelector('.carousel-indicators');
-      if (carouselNode !== null) {
-        carouselNode.classList.add('col-12', 'p-0');
-      }
-    }, 100); */
-  }, []);
+  const [date, setDate] = useState(moment().format("DD-MM-YYYY"));
+  const [month, setMonth] = useState(moment().format("MMMM"));
+  const [subscriptionsTooltip, setSubscriptionsTooltip] = useState([]);
+ 
   const handleExternalLink = (url) => {
     // window.open(url, '_blank');
     console.log(url);
   };
+
+  
+
+  const filterServiceValue = (value, subscriptions) => {
+    return typeof value == "string" && value.includes("Healthy") ? (
+      value === "Healthy $partial" ? (
+        <span className="yellowDot"></span>
+      ) : (
+        <span className="greenDot"></span>
+      )
+    ) : value === "Restarting" ? (
+      <span className="yellowDot"></span>
+    ) : value === "Stopped" ? (
+      <span className="redDot"></span>
+    ) : subscriptions.length > 0 ? (
+      addTooltip(value, subscriptions)
+    ) : value
+  };
+
+  const addTooltip = (value, subscriptions) => {
+
+    
+    // setSubscriptionsTooltip(subscriptions)
+
+    // console.log("subscriptions: ",subscriptions)
+    return (
+      <OverlayTrigger
+        placement="right"
+        delay={{ show: 250, hide: 400 }}
+        overlay={(props)=>renderTooltip(props, subscriptions)}
+      >
+        <span>{value}</span>
+      </OverlayTrigger>
+    );
+  };
+
+  const renderTooltip = (props, subscriptions) => (
+    
+    <Tooltip bsPrefix="tooltip" id="button-tooltip" {...props}>
+    {/* {console.log("Props: ",props)} */}
+    <ul>{subscriptions.map((subscription,index)=>{
+      return<li key={index}>{subscription}</li>
+    })}</ul>
+    </Tooltip>
+  );
+
+  /* const popover = (
+    <Popover id="popover-basic">
+      <Popover.Header as="h3">Popover right</Popover.Header>
+      <Popover.Body>
+        And here's some <strong>amazing</strong> content. It's very engaging.
+        right?
+      </Popover.Body>
+    </Popover>
+  ); */
+
   return (
     <Carousel interval={5000}>
       {serviceCardDisplay.map((serviceCard, indexArr) => {
@@ -48,31 +106,33 @@ export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
                           "/" +
                           service.onClick.pageName.toLowerCase()
                         }
-                        onClick={() => clickEvent({
-                          pageName: service.onClick.pageName,
-                          headerText: service.onClick.headerText,
-                        })}
+                        onClick={() =>
+                          clickEvent({
+                            pageName: service.onClick.pageName,
+                            headerText: service.onClick.headerText,
+                          })
+                        }
                       >
                         <div className="row mb-2">
                           <div className="col ml-1 titles service-tile-content">
                             {service.serviceName}
                           </div>
                           {service.hasOwnProperty("img") ? (
-                              <div className="col-3 text-center service-tile-content">
-                                <img
-                                  className="img-fluid"
-                                  src={service.img.src}
-                                  alt={service.img.alt}
-                                  style={
-                                    typeof service.img.style == "object"
-                                      ? service.img.style
-                                      : {}
-                                  }
-                                />
-                              </div>
-                            ) : (
-                              ""
-                            )}
+                            <div className="col-3 text-center service-tile-content">
+                              <img
+                                className="img-fluid"
+                                src={service.img.src}
+                                alt={service.img.alt}
+                                style={
+                                  typeof service.img.style == "object"
+                                    ? service.img.style
+                                    : {}
+                                }
+                              />
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </Link>
                       <div className="row service-details">
@@ -84,24 +144,14 @@ export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
                                 key={index}
                               >
                                 {key
-                                    .replace("$date", date)
-                                    .replace("$month", month)}
-                                  :{" "}
-                                  {typeof value == "string" &&
-                                  value.includes("Healthy") ? (
-                                    value === "Healthy $partial" ? (
-                                      <span className="yellowDot"></span>
-                                    ) : (
-                                      <span className="greenDot"></span>
-                                    )
-                                  ) : value === "Restarting" ? (
-                                    <span className="yellowDot"></span>
-                                  ) : value === "Stopped" ? (
-                                    <span className="redDot"></span>
-                                  ) : (
-                                    value
-                                  )}
-                                  {/* {key
+                                  .replace("$date", date)
+                                  .replace("$month", month)}
+                                :{" "}
+                                {filterServiceValue(
+                                  value,
+                                  service.hasOwnProperty("subscriptions") ? service.subscriptions : []
+                                )}
+                                {/* {key
                                     .replace("$date", this.state.date)
                                     .replace("$month", this.state.month)}
                                   :{" "}
@@ -165,12 +215,12 @@ export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
                                     </Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Dropdown.Item
-                                      onClick={()=>buttonData.onClick.displayPopUpModal(
-                                        {
+                                      onClick={() =>
+                                        buttonData.onClick.displayPopUpModal({
                                           show: true,
                                           buttonName: "Integration Versions",
-                                        }
-                                      )}
+                                        })
+                                      }
                                     >
                                       Integration Version Details
                                     </Dropdown.Item>
@@ -182,14 +232,16 @@ export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
                                   type="button"
                                   className="btn btn-secondary btn-sm"
                                   onClick={
-                                    buttonData.type == "popup" ? 
-                                      ()=>buttonData.onClick.displayPopUpModal(
-                                          {
+                                    buttonData.type == "popup"
+                                      ? () =>
+                                          buttonData.onClick.displayPopUpModal({
                                             show: true,
                                             buttonName: buttonData.buttonName,
-                                          }
-                                        )
-                                      : ()=>handleExternalLink(buttonData.onClick.url)
+                                          })
+                                      : () =>
+                                          handleExternalLink(
+                                            buttonData.onClick.url
+                                          )
                                   }
                                 >
                                   {/* {buttonData.buttonName == "Open" ? (
