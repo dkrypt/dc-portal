@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useStoreState, useStoreActions } from 'easy-peasy';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import {
@@ -20,7 +21,8 @@ const DOLLARREGEX = /[$].+/gm;
 export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
   const [date, setDate] = useState(moment().format("DD-MM-YYYY"));
   const [month, setMonth] = useState(moment().format("MMMM"));
-  const [subscriptionsTooltip, setSubscriptionsTooltip] = useState([]);
+  const [subscriptionsTooltip, setSubscriptionsTooltip] = useState([]);  
+const setPageTitle = useStoreActions(actions=>actions.setPageTitle)
  
   const handleExternalLink = (url) => {
     // window.open(url, '_blank');
@@ -106,11 +108,7 @@ export const CustomCarousel = ({ clickEvent, serviceCardDisplay }) => {
                           "/" +
                           service.onClick.pageName.toLowerCase()
                         }
-                        onClick={() =>
-                          clickEvent({
-                            pageName: service.onClick.pageName,
-                            headerText: service.onClick.headerText,
-                          })
+                        onClick={() =>setPageTitle(service.onClick.headerText)
                         }
                       >
                         <div className="row mb-2">

@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
+import { useStoreState, useStoreActions } from 'easy-peasy';
 
 import {CustomCarousel} from "../../components/CustomCarousel.js";
 
@@ -207,6 +208,7 @@ export const Dashboard = (props) => {
   const [serviceCards, setServiceCards] = useState(serviceCardsInitailState);
   const [serviceCardDisplay, setServiceCardDisplay] = useState([]);
   const [firstTimeLoad, setFirstTimeLoad] = useState([]);
+  const setPageTitle = useStoreActions(actions=>actions.setPageTitle)
 
   const callFirstTimeLoad = () => {
     let serviceArray = Object.assign([], serviceCards);
@@ -235,20 +237,13 @@ export const Dashboard = (props) => {
   };
 
   useEffect(() => {
-    props.clickEvent({
-      pageName: "Dashboard",
-      headerText: "DASHBOARD",
-      subHeaderText: props.persona,
-    });
-
-    console.log("onmount");
+    setPageTitle("DASHBOARD")
     if (props.persona === "GLOBAL") {
       callFirstTimeLoad();
     }
   }, []);
 
   useEffect(() => {
-    console.log("onupdatemount");
     let updateServiceCards = Object.assign([], serviceCards);
     if (props.persona === "GLOBAL") {
       updateServiceCards.forEach((service) => {
@@ -262,7 +257,6 @@ export const Dashboard = (props) => {
       updateServiceCards.forEach((service, index) => {
         service.subscriptions.forEach((subscriptionName) => {
           if (props.persona === subscriptionName) {
-            console.log("subscriptionName: ", subscriptionName);
             service.serviceInfo["Subscription Count"] = 1;
             tempCard[0].push(service);
           }

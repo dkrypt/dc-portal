@@ -14,7 +14,25 @@
   top: 30% !important;
 }
 
-.no-subscription a {
-  color: #005eb8 !important;
-  text-decoration: underline !important;
+.no-subscription{
+  text-decoration: none !important;
+  font-size: var(--fs-mid);
+  z-index: 1;
+  position: unset;
+}
+
+.alerts > div{
+  font-size: var(--fs-small);
+}
+
+.no-subscription .btn{
+  background-color: var(--ge-lightblue) !important;
+}
+.no-subscription .btn:hover, .no-subscription a {
+  background-color: var(--ge-darkblue) !important;
+}
+
+.no-subscription .btn.disabled{
+  z-index: -1;
+  background-color: var(--ge-darkgrey) !important;
 }

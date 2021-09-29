@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
+import { useStoreState, useStoreActions } from "easy-peasy";
 import { v4 as uuidv4 } from "uuid";
 
 import "./NewEngagementRequest.css";
@@ -33,12 +34,10 @@ export const NewEngagementRequest = (props) => {
   const [formSuccessMsg, setFormSuccessMsg] = useState("");
   const [isRequired, setIsRequired] = useState(false);
 
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
+
   useEffect(() => {
-    props.clickEvent({
-      pageName: "NewEngagementRequest",
-      headerText: "NEW ENGAGEMENT REQUEST",
-      subHeaderText: "GLOBAL",
-    });
+    setPageTitle("NEW ENGAGEMENT REQUEST");
 
     setTimeout(() => {
       var multipleCancelButton = new window.Choices(
@@ -73,20 +72,20 @@ export const NewEngagementRequest = (props) => {
   }, []);
 
   const handleInputChange = (event) => {
-    console.log("event: ",event)
+    console.log("event: ", event);
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log("Name: ",name," target: ",target)
+    console.log("Name: ", name, " target: ", target);
     var valueOptions = [];
     var currentFormData = Object.assign({}, formData);
-    console.log("multiple: ",target.multiple)
+    console.log("multiple: ", target.multiple);
     if (target.multiple === true) {
       var options = target.options;
       for (var i = 0, l = options.length; i < l; i++) {
         if (options[i].selected) {
           valueOptions.push(options[i].value);
-          console.log("Name: ",name," value: ",valueOptions)
+          console.log("Name: ", name, " value: ", valueOptions);
         }
       }
     }

@@ -1,8 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import { useStoreState, useStoreActions } from "easy-peasy";
+
 import "./ThreadConnect.css";
 
-import {CustomCarousel} from "../../components/CustomCarousel.js";
+import { CustomCarousel } from "../../components/CustomCarousel.js";
 import PopUpModal from "../../components/PopUpModal";
 
 import Icon_TC from "../../assets/images/Icon-TC.png";
@@ -153,6 +155,8 @@ export const ThreadConnect = (props) => {
   const [serviceCardDisplay, setServiceCardDisplay] = useState([]);
   const [firstTimeLoad, setFirstTimeLoad] = useState([]);
 
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
+
   const callFirstTimeLoad = () => {
     let serviceArray = Object.assign([], serviceCards);
     let tempArr = [];
@@ -179,11 +183,13 @@ export const ThreadConnect = (props) => {
     return tempArr;
   };
   useEffect(() => {
-    props.clickEvent({
+    /* props.clickEvent({
       pageName: "ThreadConnect",
       headerText: "MY THREAD CONNECT SERVICE",
       subHeaderText: props.persona,
     });
+     */
+    setPageTitle("MY THREAD CONNECT SERVICE");
 
     /*  var serviceNames = [];
     serviceCards.forEach((service) => {

@@ -38,11 +38,10 @@ export default function Router(props) {
           isLoader={props.isLoader}
         />
       </Route>
-      <Route exact path="/no-subscriptions">
+      <Route exact path="/user-management">
         <NoSubscriptions
           clickEvent={props.clickEvent}
           isLoader={props.isLoader}
-          changeUsername={props.changeUsername}
         />
       </Route>
       <Route exact path="/thread-connect">

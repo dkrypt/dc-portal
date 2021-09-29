@@ -64,7 +64,7 @@ export const CookieNotification = () => {
             className="cookieConsentOK"
             onClick={(event) => readCookieNotification(event)}
           >
-            Allow cookies.
+            Allow Cookies
           </a>
         </div>
       </div>

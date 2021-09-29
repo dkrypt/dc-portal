@@ -9,7 +9,6 @@ export default function ReactLoader() {
       color="#00BFFF"
       height={80}
       width={80}
-      timeout={4000} //3 secs
     />
   );
 }

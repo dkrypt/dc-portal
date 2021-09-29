@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
+import { useStoreState, useStoreActions } from "easy-peasy";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
 
 export const CenterHeader = ({
@@ -9,6 +10,7 @@ export const CenterHeader = ({
 }) => {
   const [subHeaderOptions, setSubHeaderOptions] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const pageTitle = useStoreState((state) => state.pageTitle);
 
   useEffect(() => {
     setSubHeaderOptions(subHeaderOpts);
@@ -30,7 +32,7 @@ export const CenterHeader = ({
     <div className="container-fluid p-2 center-header">
       <div className="d-flex flex-row headers service-tile-content">
         <div className="col p-0">
-          {headerText}
+          {pageTitle}
 
           <span className="global-icon ml-1">
             <a
@@ -71,19 +73,15 @@ export const CenterHeader = ({
                 return (
                   <Fragment key={index}>
                     <div className="dropdown-divider"></div>
-                    <div className="dropdown-item">
-                      ﹂
-                      <a
-                        className="sub-org-space"
-                        onClick={() =>
-                          onPersonaChange({
-                            personaName: option,
-                          })
-                        }
-                      >
-                        {option}
-                      </a>
-                    </div>
+                    <a
+                      onClick={() =>
+                        onPersonaChange({
+                          personaName: option,
+                        })
+                      }
+                    >
+                      <div className="dropdown-item">﹂ {option}</div>
+                    </a>
                   </Fragment>
                 );
               })}

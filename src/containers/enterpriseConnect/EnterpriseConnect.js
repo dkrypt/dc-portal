@@ -1,8 +1,11 @@
 import React, { Fragment, useEffect } from "react";
+import { useStoreState, useStoreActions } from "easy-peasy";
 import Highcharts from "highcharts";
 
-export const EnterpriseConnect = ({ setPersonaHandler, }) => {
+export const EnterpriseConnect = ({ setPersonaHandler }) => {
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
   useEffect(() => {
+    setPageTitle("MY ENTERPRISE CONNECT SERVICE");
     highChart();
     setPersonaHandler([]);
   }, []);
@@ -202,7 +205,7 @@ export const EnterpriseConnect = ({ setPersonaHandler, }) => {
         },
       ],
     });
-  }
+  };
   return (
     <Fragment>
       <div className="container-lg w-100 p-3 borderStyle mb-3">
