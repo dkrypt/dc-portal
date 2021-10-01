@@ -1,85 +1,104 @@
 import React, { useState } from "react";
 import moment from "moment";
-import DateTimePicker from "react-datetime-picker";
 import { Modal, Button } from "react-bootstrap";
-import Api from "../apiLayer/api.js";
-export const ViewScheduleDaily = ({
+import DateTimePicker from "react-datetime-picker";
+import { WeekDaysCheckbox } from "./WeekDaysCheckbox.js";
+import Api from "../apilayer/api.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
+
+export const ViewScheduleWeekly = ({
   closeModal,
   openModal,
-  eventName,
   toastMessage,
-  
+  eventName,
   isLoader,
 }) => {
-  // const [scheduleTime, setScheduleTime] = useState('');
-  // const handleScheduleTime = (e) => {
-  //   setScheduleTime(e.target.value);
-  // }
-  
-  const [onceData, setOnceData] = useState("");
-  const [eventRecu, setEventRecu] = useState("");
-  const [eventDate, setEventDate] = useState(new Date());
-  const [eventEnable, setEventEnable] = useState("");
-  const [tt, settt] = useState("");
-  const [selectedTime, setSelectedTime] = useState("Hours");
-  const [endTimeEnable, setEndTimeEnable] = useState("false"); 
-  const [repeatEnable, setRepeatEnable] = useState("false");
  
+  const [eventDate, setEventDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(0);
+  const [endTimeEnable, setEndTimeEnable] = useState("false");
+  const [repeatEnable, setRepeatEnable] = useState("false");
+  const [repeatRate, setRepeatRate] = useState("10");
+  const [weeklyPeriod, setWeeklyPeriod] = useState("2");
+  const [weekData, setWeekData] = useState("");
+
+  const globalbaseUrl = useStoreState(
+    (state) => state.dataStore.globalscape.dataset.globalscapeUrl
+  );
+  /** Function that will set different values to state variable
+   * based on which dropdown is selected
+   */
   const changeSelectOptionHandler = (event) => {
-    setSelectedTime(event.target.value);
+    event.target.value == "Hours" ? setSelectedTime(0) : setSelectedTime(1);
   };
-const endTimeEnableToggle = () =>{
-  setEndTimeEnable(!endTimeEnable);  
-}
-const repeatEnableToggle = () =>{
-  setRepeatEnable(!repeatEnable);
-}
+  const endTimeEnableToggle = () => {
+    setEndTimeEnable(!endTimeEnable);
+  };
+  const repeatEnableToggle = () => {
+    setRepeatEnable(!repeatEnable);
+  };
+  const repeatRateHandler = (e) => {
+    setRepeatRate(e.target.value);
+  };
+  const weeklyPeriodToggle = (e) => {
+    setWeeklyPeriod(e.target.value);
+  };
+  const weekDayCallback = (data) => {
+    setWeekData(data);
+  };
+  let currentDate;
   const onEnablebuttonClick = () => {
     closeModal();
-    // toastMessage(true, "Modify schedule saved");
-    console.log("event", eventDate);
+    currentDate = encodeURIComponent(
+      moment(eventDate).format("yyyy, MM, DD, hh:mm:ss")
+    );
+    // console.log(eventDate, currentDate);
+    // console.log( "eventDate > "+ currentDate + ", repeatEnable >" + repeatEnable + ", repeatRate >" + repeatRate + ", selectedTime >" + selectedTime + ", endTimeEnable >" + endTimeEnable + ", weeklyPeriod >" + weeklyPeriod + ",  weekData >" + weekData);
     onceCall();
   };
-  
-  // const url = "/SCHEDULE/SCHEDULE_CHANGE_ONCE?EventRuleName=503142021==DescTEST==FromGE_to==EP_DomainTEST==TEST&EventParams=event_Recurrence=5;event_DateTimeStart=2035%2C%2001%2C%2011%2C%2011%3A11%3A11;event_Enabled=true";
-  const url2 = `/SCHEDULE/SCHEDULE_CHANGE_ONCE?EventRuleName=${eventName}&EventParams=event_Recurrence=${eventRecu};event_DateTimeStart=${tt};event_Enabled=${eventEnable}`;
-  const url3 = `/SCHEDULE/SCHEDULE_CHANGE_ONCE?EventRuleName=503142021==DescTEST==FromGE_to==EP_DomainTEST==TEST&EventParams=event_Recurrence=5;event_DateTimeStart=2035%2C%2001%2C%2011%2C%2011%3A11%3A11;event_Enabled=true`;
+
   const onceCall = () => {
-    // isLoader(true);
-    // AxiosInstance.post(url3)
-    //   .then((response) => {
-    //     setOnceData(response.data);
-    //     // isLoader(false);
-    //     // updatedToastMessage(true, response.data);
-    //   })
-    //   .catch((e) => {
-    //     console.error(e);
-    //     alert(e);
-    //     isLoader(false);
-    //   });
+    isLoader(true);
+    Api.getModifyWeeklyData(
+      globalbaseUrl,
+      eventName,
+      repeatEnable,
+      repeatRate,
+      selectedTime,
+      endTimeEnable,
+      weeklyPeriod,
+      weekData,
+      currentDate
+    )
+      .then((response) => {
+        // setOnceData(response.data);
+        isLoader(false);
+        toastMessage(true, response.data);
+      })
+      .catch((e) => {
+        console.error(e);
+        alert(e);
+        isLoader(false);
+      });
   };
 
-  const handleEventRecuChange = (e) => {
-    setEventRecu(e.target.value);
-  };
-
-  const handleEventEnableChange = (e) => {
-    setEventEnable(e.target.value);
-  };
   const changeDate = (date) => {
-    settt(encodeURIComponent(moment(date).format("yyyy, MM, DD, hh:mm:ss")));
-    console.log(tt, moment(date).format("yyyy, MM, DD, hh:mm:ss"));
+    setEventDate(
+      encodeURIComponent(moment(date).format("yyyy, MM, DD, hh:mm:ss"))
+    );
+    console.log(eventDate, moment(date).format("yyyy, MM, DD, hh:mm:ss"));
   };
   const defaultValue = new Date(2000, 2, 10, 13, 30, 0);
+  const weekdayToggle = () => {};
   return (
     <Modal show={openModal} onHide={closeModal} size="">
       <Modal.Header>
-        <Modal.Title>Modify Schedule Daily Request</Modal.Title>
+        <Modal.Title>Modify Schedule Weekly Request</Modal.Title>
       </Modal.Header>
-      <Modal.Body>       
+      <Modal.Body>
         <div className="row form-group">
           <label className="col-sm-4 col-form-label col-form-label-sm">
-            Daily day period:
+            Weekly Week Period:
           </label>
           <div className="col-sm-8">
             <span className="col-form-label col-form-label-sm">
@@ -90,12 +109,13 @@ const repeatEnableToggle = () =>{
               className="form-control form-control-sm gs-sm-input"
               placeholder="2"
               min="1"
-              max="29"
+              max="4"
+              onChange={weeklyPeriodToggle}
             />
-            <span>day(s) </span>
+            <span>week(s) on</span>
           </div>
-        </div>      
-
+        </div>
+        <WeekDaysCheckbox weeklyData={weekDayCallback} />
         <div className="row form-group">
           <label className="col-sm-4 col-form-label col-form-label-sm">
             Starting date and time:
@@ -118,7 +138,7 @@ const repeatEnableToggle = () =>{
             <div className="form-check-inline">
               <input
                 className="form-check-input"
-                type="checkbox"              
+                type="checkbox"
                 value={endTimeEnable}
                 onChange={endTimeEnableToggle}
               />
@@ -134,7 +154,11 @@ const repeatEnableToggle = () =>{
                 format={"yyyy-MM-dd hh:mm:ss a"}
                 onChange={changeDate}
                 value={eventDate}
-               className={endTimeEnable ? "react-datetime-picker--disabled" : "react-datetime-picker--enabled"}
+                className={
+                  endTimeEnable
+                    ? "react-datetime-picker--disabled"
+                    : "react-datetime-picker--enabled"
+                }
               />
             </div>
           </div>
@@ -161,24 +185,31 @@ const repeatEnableToggle = () =>{
               {selectedTime === "Hours" ? (
                 <input
                   type="Number"
-                  className={`form-control form-control-sm gs-sm-input ${repeatEnable ? 'gs-disabled' : ''}`}
+                  className={`form-control form-control-sm gs-sm-input ${
+                    repeatEnable ? "gs-disabled" : ""
+                  }`}
                   placeholder="1"
                   min="1"
-                  max="23" 
+                  max="23"
+                  onChange={repeatRateHandler}
                 />
               ) : (
                 <input
                   type="Number"
-                  className={`form-control form-control-sm gs-sm-input ${repeatEnable ? 'gs-disabled' : ''}`}
+                  className={`form-control form-control-sm gs-sm-input ${
+                    repeatEnable ? "" : "gs-disabled"
+                  }`}
                   placeholder="10"
                   min="10"
                   max="59"
+                  onChange={repeatRateHandler}
                 />
               )}
-              <div className="btn-group">                
+              <div className="btn-group">
                 <select
-                  className=
-                  {`btn btn-sm dropdown-toggle gs-dropdown ${repeatEnable ? 'gs-disabled' : ''}`}
+                  className={`btn btn-sm dropdown-toggle gs-dropdown ${
+                    repeatEnable ? "" : "gs-disabled"
+                  }`}
                   onChange={changeSelectOptionHandler}
                 >
                   <option>Hours</option>

@@ -1,17 +1,13 @@
 import React, { Fragment, useState } from "react";
-import AxiosInstance from "../api/api.js";
 import ToastMessage from "../ToastMessage.js";
 import { ViewSchedule } from "./ViewSchedule.js";
 import {ModifySchedule} from "./ModifySchedule.js";
 import ConfirmPopup from "./ConfirmPopup.js";
+import Api from "../apiLayer/api.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 
 export const EventListButtons = ({ eventName, isLoader }) => {
-  // State getters and setters
-  const [runNowData, setRunNowData] = useState("");
-  const [enableData, setEnableData] = useState("");
-  const [disableData, setDisableData] = useState("");
   const [selectedEventName, setSelectedEventName] = useState("");
-
   const [showToastM, setShowToastM] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
@@ -19,11 +15,13 @@ export const EventListButtons = ({ eventName, isLoader }) => {
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [confirmBoxMsg, setConfirmBoxMsg] = useState("");
   const [showModalModify, setShowModalModify] = useState(false);
+  const globalbaseUrl = useStoreState(
+    (state) => state.dataStore.globalscape.dataset.globalscapeUrl   
+    );
   const runNowClick = () => {
-    isLoader(true);
-    AxiosInstance.post(`/ASYNCExecuteEvent?EventRuleName=${eventName}&ID=12345`)
-      .then((response) => {
-        setRunNowData(response.data);
+    isLoader(true);   
+    Api.getRunNowData(globalbaseUrl, eventName)
+      .then((response) => {      
         isLoader(false);
         updatedToastMessage(true, response.data);
       })
@@ -61,14 +59,10 @@ export const EventListButtons = ({ eventName, isLoader }) => {
     setShowConfirmBox(false);
   };
   const enableNow = () => {
-    isLoader(true);
-    AxiosInstance.post(
-      `/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=true`
-    )
-      .then((response) => {
-        setEnableData(response.data);
-        isLoader(false);
-        // toastMessage(true, enableData);
+    isLoader(true);   
+    Api.getEnableEventData(globalbaseUrl, eventName)
+      .then((response) => {        
+        isLoader(false);        
         updatedToastMessage(true, response.data);
       })
       .catch((e) => {
@@ -79,12 +73,9 @@ export const EventListButtons = ({ eventName, isLoader }) => {
   };
 
   const disableNow = () => {
-    isLoader(true);
-    AxiosInstance.post(
-      `/ENE_SYNC_ENABLE_EVENT?EventRuleName=${eventName}&event_Enabled=false`
-    )
-      .then((response) => {
-        setDisableData(response.data);
+    isLoader(true);    
+    Api.getDisableEventData(globalbaseUrl, eventName)
+      .then((response) => {    
         isLoader(false);
         updatedToastMessage(true, response.data);
       })
@@ -178,6 +169,7 @@ export const EventListButtons = ({ eventName, isLoader }) => {
         <ViewSchedule
           openModal={showModal}
           closeModal={closeModal}
+          isLoader={isLoader}
           eventName={selectedEventName}
           toastMessage={"updatedToastMessage"}
         />
@@ -187,6 +179,7 @@ export const EventListButtons = ({ eventName, isLoader }) => {
           openModal={showModalModify}
           closeModal={closeModal}
           eventName={selectedEventName}
+          isLoader={isLoader}
           toastMessage={updatedToastMessage}
         />
       )}

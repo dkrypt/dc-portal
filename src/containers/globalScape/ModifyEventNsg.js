@@ -15,7 +15,7 @@ export const ModifyEventNsg = ({clickEvent, eventName}) => {
           </div>
           <div className="form-group row">
           <div className="col-sm-10 text-center">
-            <Button variant="primary" onClick="">
+            <Button variant="primary" >
               Save
             </Button>
             </div>

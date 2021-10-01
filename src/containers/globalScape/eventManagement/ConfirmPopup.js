@@ -23,7 +23,7 @@ const ConfirmPopup = (props) => {
     <Modal size="sm" show={smShow} onHide={OnCancelButtonClick}>
       <Modal.Header closeButton>
         <Modal.Title id="example-modal-sizes-title-sm">
-          Confirmation Box
+          
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -31,10 +31,10 @@ const ConfirmPopup = (props) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={OnCancelButtonClick}>
-          Close
+          Cancel
         </Button>
         <Button variant="primary" onClick={onSaveButtonClick}>
-          Save
+          Ok
         </Button>
       </Modal.Footer>
     </Modal>

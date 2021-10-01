@@ -144,6 +144,7 @@ img, .titles, .headers, .GE-header, .user-details, .list-group-item, .dropdown-c
   padding: 1rem 1rem !important;
   background-color: white;
   height: var(--headerbar-height);
+  z-index: 999;
 }
 
 .headers, .GE-header {
@@ -283,7 +284,7 @@ a:hover {
   height: 6.2rem;
   width: 75%;
   background-color: white;
-  z-index: 9;
+  /* z-index: 9; */
 }
 
 /*Search Bar CSS*/
@@ -450,7 +451,7 @@ a:hover {
 .loader {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 900; /* Sit on top */
+  z-index: 99999; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */

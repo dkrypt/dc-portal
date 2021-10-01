@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Button } from 'react-bootstrap';
 
 
-export const EnableAccount = ({clickEvent, eventName}) => {
+export const EnableAccount = ({eventName}) => {
 
   return (
     <div className="container-lg w-100 p-3 borderStyle mb-5">
@@ -17,7 +17,7 @@ export const EnableAccount = ({clickEvent, eventName}) => {
       </div>
       <div className="form-group row">
       <div className="col-sm-10 text-center">
-        <Button variant="primary" onClick="">
+        <Button variant="primary">
           Enabled
         </Button>
         </div>

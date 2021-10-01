@@ -13,8 +13,7 @@ import useCookie from "./DataLayer/useCookie";
 
 const BASE_ENDPOINT = process.env.REACT_APP_BASEURL;
 
-const API_ENDPOINT =
-  "/v1.2beta/dcsc/api";
+const API_ENDPOINT = "/v1.2beta/dcsc/api";
 const API_USER_CONTEXT_PATH = "/v1.2beta/user";
 
 export default function DCSC() {
