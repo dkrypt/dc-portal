@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form, Row, Col, Button, Alert, Spinner } from "react-bootstrap";
 import BucAdnComponent from "../threadConnect/BucAdnComponent.js";
-import Api from "../../../middleware/ManageApi.js";
+import Api from "../../../Apis/ManageApi.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 let initialValues = {
   Org: "",
   Space: "",
   adn: "",
   buc: "",
   Products: [],
+  bucAdnValidate: "",
 };
 let initialError = {
   Org: "",
@@ -17,6 +19,7 @@ let initialError = {
   Products: "",
 };
 const UpdateSubscription = (props) => {
+  // const prevValue = useRef("");
   const [initialValue, setinitialValue] = useState(initialValues);
   const [error, seterror] = useState(initialError);
   const [orgList, setOrgList] = useState([]);
@@ -27,7 +30,10 @@ const UpdateSubscription = (props) => {
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [bucAdnResponseData, setbucAdnResponseData] = useState({});
+  const [previousData, setpreviousData] = useState({});
+  console.log("useStoreState", useStoreState);
+  console.log("useStoreActions", useStoreActions);
   useEffect(() => {
     handelgetOrgList();
     getProductList();
@@ -68,6 +74,7 @@ const UpdateSubscription = (props) => {
     const { name, value } = event.target;
     setinitialValue({ ...initialValue, [name]: value });
     seterror(initialError);
+    // setinitialValue((prevState) => prevState);
   };
   const handelValidate = (e) => {
     e.preventDefault();
@@ -89,6 +96,52 @@ const UpdateSubscription = (props) => {
       error.adn !== ""
     ) {
       seterror(errorData1);
+    } else {
+      setIsLoading(true);
+      let data = {
+        buc: initialValue.buc,
+        adn: initialValue.adn,
+      };
+      Api.bucAdnValidate(data)
+        .then((res) => {
+          console.log("res", res);
+          if (res.status === 200 || res.status === 201) {
+            if (res.data.status === "FAIL") {
+              setIsLoading(false);
+              seterrorStatus(true);
+              setMessage("Error");
+            } else {
+              setIsLoading(false);
+              if (res.data.results.isValid === "TRUE") {
+                setsuccessStatus(true);
+                setMessage("Validate Succefull");
+                setbucAdnResponseData(res.data.results);
+                let obj = {
+                  ...initialValue,
+                  bucAdnValidate: "true",
+                };
+                setinitialValue(obj);
+              } else {
+                seterrorStatus(true);
+                setbucAdnResponseData(res.data.results);
+                setMessage(" Validate Failed");
+                let obj = {
+                  ...initialValue,
+                  bucAdnValidate: "false",
+                };
+                setinitialValue(obj);
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data.status === "FAILED") {
+              seterrorStatus(true);
+              setMessage(err.data.message);
+            }
+          }
+        });
     }
   };
 
@@ -127,8 +180,8 @@ const UpdateSubscription = (props) => {
     if (
       initialValue.Org === "" ||
       initialValue.Space === "" ||
-      initialValue.buc === "" ||
-      initialValue.adn === "" ||
+      // initialValue.buc === "" ||
+      // initialValue.adn === "" ||
       initialValue.Products.length == 0 ||
       error.Org !== "" ||
       error.Space !== "" ||
@@ -139,12 +192,23 @@ const UpdateSubscription = (props) => {
       seterror(errorData);
     } else {
       setIsLoading(true);
+
       let data = {
         id: updateData.id,
-        buc: initialValue.buc,
-        adn: initialValue.adn,
+        // buc: initialValue.buc,
+        // adn: initialValue.adn,
         products: initialValue.Products,
       };
+      if (initialValue.buc && initialValue.bucAdnValidate === "true") {
+        data.buc = initialValue.buc;
+      } else {
+        data.buc = previousData.buc;
+      }
+      if (initialValue.adn && initialValue.bucAdnValidate === "true") {
+        data.adn = initialValue.adn;
+      } else {
+        data.adn = previousData.adn;
+      }
 
       Api.updatesubscriptionData(data)
         .then((res) => {
@@ -162,6 +226,7 @@ const UpdateSubscription = (props) => {
               setIsLoading(false);
               setsuccessStatus(true);
               Reset();
+              setpreviousData({});
               if (res.data.message === "") {
                 setMessage("Successfully Updated");
               } else {
@@ -236,6 +301,7 @@ const UpdateSubscription = (props) => {
         if (res.status === 200 || res.status === 201) {
           setIsLoading(false);
           const data = res.data.results;
+
           setUpdateData(data);
           data &&
             data.products.map((e) => {
@@ -249,6 +315,7 @@ const UpdateSubscription = (props) => {
             adn: data && data.adn,
           };
           setinitialValue(obj);
+          setpreviousData(obj);
         }
       })
       .catch((err) => {
@@ -264,21 +331,13 @@ const UpdateSubscription = (props) => {
       seterrorStatus(false);
     }, 4000);
   }
+
+  console.log("previousData", previousData);
+  console.log("initialValue", initialValue);
   return (
     <div>
       {isLoading === true ? (
-        <div
-          style={{
-            display: "block",
-            position: "fixed",
-            zIndex: "900",
-            width: "100%",
-            height: "100%",
-            overflow: "auto",
-            left: "50%",
-            top: "50%",
-          }}
-        >
+        <div className="spineerUi">
           <Spinner animation="border" role="status"></Spinner>
         </div>
       ) : (
@@ -382,10 +441,20 @@ const UpdateSubscription = (props) => {
               onChange={handelInputChange}
               value={initialValue.buc}
               isInvalid={
-                initialValue.buc === "" && error.buc !== "" ? error.buc : ""
+                initialValue.bucAdnValidate === "false" ||
+                (initialValue.buc === "" && error.buc !== "")
+                  ? true
+                  : previousData.buc && previousData.buc !== initialValue.buc
+                  ? true
+                  : false
               }
               isValid={
-                initialValue.buc === "" && error.buc !== "" ? error.buc : ""
+                initialValue.bucAdnValidate === "true" ||
+                (initialValue.buc === "" && error.buc !== "")
+                  ? true
+                  : previousData.buc && previousData.buc !== ""
+                  ? true
+                  : false
               }
             />
 
@@ -402,10 +471,20 @@ const UpdateSubscription = (props) => {
               onChange={handelInputChange}
               value={initialValue.adn}
               isInvalid={
-                initialValue.adn === "" && error.adn !== "" ? error.adn : ""
+                initialValue.bucAdnValidate === "false" ||
+                (initialValue.adn === "" && error.adn !== "")
+                  ? true
+                  : previousData.adn && previousData.adn !== initialValue.adn
+                  ? true
+                  : false
               }
               isValid={
-                initialValue.adn === "" && error.adn !== "" ? error.adn : ""
+                initialValue.bucAdnValidate === "true" ||
+                (initialValue.adn === "" && error.adn !== "")
+                  ? true
+                  : previousData.adn && previousData.adn !== ""
+                  ? true
+                  : false
               }
             />
 
@@ -415,12 +494,22 @@ const UpdateSubscription = (props) => {
           </Form.Group>
 
           <Form.Group
-            style={{ marginTop: "31px" }}
+            className="bucadnvalidation"
             as={Col}
             md="1"
             controlId="validationFormik05"
           >
-            <Button onClick={(e) => handelValidate(e)}>Validate</Button>
+            <Button
+              onClick={(e) => handelValidate(e)}
+              disabled={
+                (previousData.adn && previousData.adn !== initialValue.adn) ||
+                (previousData.buc && previousData.buc !== initialValue.buc)
+                  ? false
+                  : true
+              }
+            >
+              Validate
+            </Button>
           </Form.Group>
         </Row>
       </Row>

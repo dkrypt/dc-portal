@@ -9,7 +9,7 @@ import {
   Alert,
   Spinner,
 } from "react-bootstrap";
-import Api from "../../../middleware/ManageApi.js";
+import Api from "../../../Apis/ManageApi.js";
 
 let initialValues = {
   Org: "",
@@ -45,6 +45,7 @@ function UserManagement() {
   const [ErrorTeamLeadsso, setErrorTeamLeadsso] = useState("");
   const [ErrorEcCreationsso, setErrorEcCreationsso] = useState("");
   const [ErrorContentsso, setErrorcontentsso] = useState("");
+  const [userInstanceList, setuserInstanceList] = useState([]);
 
   const handelgetOrgList = () => {
     Api.getOrgList()
@@ -135,13 +136,17 @@ function UserManagement() {
   useEffect(() => {
     handelgetOrgList();
     handelgetUserRoleList();
-    projectListdata();
+    // projectListdata();
   }, []);
 
   if (successStatus === true || errorStatus === true) {
     setInterval(function () {
       setsuccessStatus(false);
       seterrorStatus(false);
+      setErroradminsso("");
+      setErrorTeamLeadsso("");
+      setErrorEcCreationsso("");
+      setErrorcontentsso("");
     }, 4000);
   }
   const handelInputChange = (event) => {
@@ -232,6 +237,7 @@ function UserManagement() {
     let data = {
       org_space_id: initialValue.Space,
       users: user,
+      tc_id: initialValue.InstanceName,
     };
     setIsLoading(true);
     Api.userRole(data)
@@ -282,19 +288,10 @@ function UserManagement() {
       data &&
       data.map((e, i) => {
         return (
-          <div key={i} style={{ display: "flex" }}>
+          <div key={i} className="user-display">
             <div>{e.ssoId}</div>
-            <div
-              style={{
-                marginLeft: "7px",
-              }}
-              onClick={() => removeUser(e, id)}
-            >
-              <i
-                className="fa fa-times"
-                aria-hidden="true"
-                style={{ paddingBottom: "6px", color: "red" }}
-              ></i>
+            <div className="userdisplaymar" onClick={() => removeUser(e, id)}>
+              <i className="fa fa-times remove-user" aria-hidden="true"></i>
             </div>
           </div>
         );
@@ -302,25 +299,36 @@ function UserManagement() {
     );
   };
 
-  const projectListdata = () => {
-    let data = {
-      environment: "dev",
-      action: "updation",
-    };
-    let projectList = [];
+  const HandelGetUserlist = (e) => {
     setIsLoading(true);
-    Api.ProjectNameList(data)
+    Api.userList(initialValue.Space, e.target.value)
       .then((res) => {
         if (res.data.status === "FAIL") {
           setIsLoading(false);
         }
         if (res.status === 200) {
+          setUser(res.data.results);
           setIsLoading(false);
-          res.data.results &&
-            res.data.results.forEach((p) => {
-              projectList.push({ label: p.project_name, value: p.id });
-            });
-          setProjectList(projectList);
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.data.status === "FAIL") {
+            setProjectList(err.response.data.results);
+          }
+        }
+      });
+  };
+  const getUserInstancelist = (id) => {
+    setIsLoading(true);
+    Api.userInstancenameList(id)
+      .then((res) => {
+        if (res.data.status === "FAIL") {
+          setIsLoading(false);
+        }
+        if (res.status === 200) {
+          setuserInstanceList(res.data.results);
+          setIsLoading(false);
         }
       })
       .catch((err) => {
@@ -335,18 +343,7 @@ function UserManagement() {
   return (
     <>
       {isLoading === true ? (
-        <div
-          style={{
-            display: "block",
-            position: "fixed",
-            zIndex: "9900",
-            width: "100%",
-            height: "100%",
-            overflow: "auto",
-            left: "50%",
-            top: "50%",
-          }}
-        >
+        <div className="spineerUi">
           <Spinner animation="border" role="status"></Spinner>
         </div>
       ) : (
@@ -420,6 +417,7 @@ function UserManagement() {
               if (e.target.value === "selectSpace") {
               } else {
                 handelgetUserRoleListData(e);
+                getUserInstancelist(e.target.value);
               }
             }}
           >
@@ -442,21 +440,26 @@ function UserManagement() {
           <Form.Label className="select-label">instance Name</Form.Label>
           <br></br>
           <select
-            className="form-select classic select-height"
+            className="form-select classic select-height instanceheight"
             onChange={(e) => {
               handelInputChange(e);
+              HandelGetUserlist(e);
+              if (e.target.value === "") {
+              } else {
+                handelInputChange(e);
+                HandelGetUserlist(e);
+              }
             }}
-            style={{ height: "40px" }}
             id="InstanceName"
             name="InstanceName"
             value={initialValue.InstanceName}
           >
             <option value="">Select InstanceName</option>
-            {ProjectList &&
-              ProjectList.map((e, i) => {
+            {userInstanceList &&
+              userInstanceList.map((e, i) => {
                 return (
-                  <option value={e.value} key={i}>
-                    {e.label}
+                  <option value={e.id} key={i}>
+                    {e.project_name}
                   </option>
                 );
               })}
@@ -483,17 +486,11 @@ function UserManagement() {
                   <br />
                   <div
                     // multiple
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "100%",
-                      overflowY: "scroll",
-                      border: "1px solid",
-                      height: "60%",
-                    }}
+                    className="userlistShow"
                   >
                     {displayData(role.id)}
                   </div>
-                  <div style={{ height: "38px", display: "flex" }}>
+                  <div className="search-field">
                     <div>
                       <Form.Control
                         type="text"
@@ -513,7 +510,7 @@ function UserManagement() {
                         }
                         onChange={(e) => adminSsoHandleChange(e, role.id)}
                       />
-                      <span style={{ color: "red" }}>
+                      <span className="errorMsg">
                         {role.id === userRoleList[0].id && adminsso === ""
                           ? Erroradminsso
                           : role.id === userRoleList[1].id &&
@@ -576,37 +573,25 @@ function UserManagement() {
           {initialValue.Org !== "" && initialValue.Space !== "" ? (
             <Row>
               {userRoleList && userRoleList[0] ? (
-                <Form.Group as={Col} md="12">
+                <Form.Group as={Col} md="12" className="singelUser">
                   <Form.Label className="select-label">
                     {userRoleList && userRoleList[0].role_name}
                   </Form.Label>
                   <br />
                   <div
                     // multiple
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "100%",
-                      overflowY: "scroll",
-                      border: "1px solid",
-                      height: "60%",
-                    }}
+                    className="userlistShow"
                   >
                     {displayData(userRoleList && userRoleList[0].id)}
                   </div>
-                  <div style={{ height: "38px", display: "flex" }}>
+                  <div className="search-field">
                     <div>
                       <Form.Control
                         type="text"
                         name="SSO"
                         placeholder="SSO Search"
                         id={userRoleList && userRoleList[0].id}
-                        value={
-                          userRoleList &&
-                          userRoleList[0].id === userRoleList &&
-                          userRoleList[0].id
-                            ? adminsso
-                            : ""
-                        }
+                        value={adminsso}
                         onChange={(e) =>
                           adminSsoHandleChange(
                             e,
@@ -614,7 +599,7 @@ function UserManagement() {
                           )
                         }
                       />
-                      <span style={{ color: "red" }}>
+                      <span className="errorMsg">
                         {adminsso === "" ? Erroradminsso : ""}
                       </span>
                     </div>
@@ -652,10 +637,10 @@ function UserManagement() {
       )}
       <br></br>
       {initialValue.Org !== "" && initialValue.Space !== "" ? (
-        <Row style={{ marginTop: "40px" }}>
+        <Row className="usersubmit">
           <Button
             variant="primary"
-            style={{ marginLeft: "13px" }}
+            className="submitmar"
             onClick={() => handelUserAManagment()}
           >
             Submit
@@ -669,30 +654,8 @@ function UserManagement() {
           <Modal.Title>SSO Found</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {successStatus == true ? (
-            <Alert
-              variant="success"
-              onClose={() => setsuccessStatus(false)}
-              dismissible
-            >
-              <p>{message}</p>
-            </Alert>
-          ) : (
-            ""
-          )}
-          {errorStatus == true ? (
-            <Alert
-              variant="danger"
-              onClose={() => seterrorStatus(false)}
-              dismissible
-            >
-              <p>{message}</p>
-            </Alert>
-          ) : (
-            ""
-          )}
           <Table className="SSOtable" striped bordered hover size="lg">
-            <thead style={{ textAlign: "center" }}>
+            <thead className="modal-center">
               <tr>
                 <td></td>
                 <td>
@@ -709,44 +672,21 @@ function UserManagement() {
             <tbody>
               {ssoData.map((element, i) => {
                 return (
-                  <tr
-                    key={i}
-                    style={{
-                      borderBottom: "1px solid #ddd",
-                      textAlign: "center",
-                    }}
-                  >
-                    <td
-                      style={{
-                        padding: "10px",
-                      }}
-                    >
+                  <tr key={i} className="modalbody">
+                    <td className="modalbodydata">
                       <input
                         type="radio"
-                        // id={element.sso_id}
                         id="sso"
                         name="sso"
                         value={element.sso_id}
                         onChange={(e) => handleChecked(e, element, UserRoleId)}
                       />
                     </td>
-                    {/* <td style={{ padding: "10px" }}>
-                      <img
-                        src={element.avatar}
-                        alt="avatar"
-                        style={{
-                          width: "30%",
-                          height: "12%",
-                          borderRadius: "27px",
-                        }}
-                      />
-                    </td> */}
-                    <td style={{ padding: "10px" }}>{element.sso_id}</td>
-                    <td style={{ padding: "10px" }}>{element.email}</td>
-                    <td style={{ padding: "10px" }}>
+                    <td className="modalbodydata">{element.sso_id}</td>
+                    <td className="modalbodydata">{element.email}</td>
+                    <td className="modalbodydata">
                       {element.first_name} {element.last_name}
                     </td>
-                    {/* <td style={{ padding: "10px" }}>{element.last_name}</td> */}
                   </tr>
                 );
               })}

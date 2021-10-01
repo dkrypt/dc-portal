@@ -1,120 +1,68 @@
 import React, { useEffect } from "react";
 import { Tab } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
 import Icon_TC from "../../assets/images/Icon-TC.png";
 import Icon_EC from "../../assets/images/Icon-EC.png";
 import Icon_Dive from "../../assets/images/Icon-Dive.png";
-import Subscription from "../../assets/images/subscroptionImage.jpg";
-import UserImage from "../../assets/images/userImage.png";
-
+import Subscription from "../../assets/images/subscriptionIcon.svg";
+import UserImage from "../../assets/images/usersIcon.svg";
+import { useStoreState, useStoreActions } from "easy-peasy";
 function Manage(props) {
-  let CardCss = {
-    card: { margin: "10px" },
-    content: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-around",
-      alignItems: "center",
-      padding: "10px",
-    },
-    image: { maxHeight: "150px" },
-  };
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
+
+  //inside useeffect
+
   useEffect(() => {
-    props.clickEvent({
-      pageName: "Manage",
-      headerText: "MANAGE",
-      subHeaderText: "GLOBAL",
-    });
+    setPageTitle("MANAGE");
   }, []);
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around",
-      }}
-    >
+    <div className="manage-ui">
       <Tab.Container id="left-tabs-example" defaultActiveKey="first">
-        <div style={CardCss.card}>
-          <Link
-            to="/manage/manage-subscription"
-            onClick={props.clickEvent.bind(this, {
-              pageName: "Subscription",
-              headerText: "SUBSCRIPTION",
-            })}
-          >
-            <div
-              className="Card card-1 manage-content "
-              style={CardCss.content}
-            >
+        <div className="managecard">
+          <Link to="/manage/manage-subscription">
+            <div className="Card card-1 manage-content card-content">
               <div>
                 <img
-                  className="img-fluid"
+                  className="img-fluid manage-image"
                   src={Subscription}
                   alt="Dive-Icon"
-                  style={CardCss.image}
                 ></img>
               </div>
               <div>
-                <span
-                  style={{
-                    textAlign: "center",
-                  }}
-                  className="card_title"
-                >
-                  Subscription
-                </span>
+                <span className="card_title managename">Subscription</span>
               </div>
             </div>
             {/* </a> */}
           </Link>
         </div>
-        <div style={CardCss.card}>
-          <Link
-            to="/manage/manage-user"
-            onClick={props.clickEvent.bind(this, {
-              pageName: "User",
-              headerText: "Manage User",
-            })}
-          >
-            <div className="Card card-1" style={CardCss.content}>
+        <div className="managecard">
+          <Link to="/manage/manage-user">
+            <div className="Card card-1 card-content">
               <div>
                 <img
-                  className="img-fluid"
+                  className="img-fluid manage-image"
                   src={UserImage}
                   alt="UserImage"
-                  style={CardCss.image}
                 ></img>
               </div>
               <div>
-                <span style={{ width: "158px" }} className="card_title">
-                  {" "}
-                  User
-                </span>
+                <span className="card_title manageuserwidth"> User</span>
               </div>
             </div>
           </Link>
         </div>
-        <div style={CardCss.card}>
-          <Link
-            to="/manage/manage-tc"
-            onClick={props.clickEvent.bind(this, {
-              pageName: "ManageTC",
-              headerText: "MANAGE THREAD CONNECT",
-            })}
-          >
-            <div className="Card card-1" style={CardCss.content}>
+        <div className="managecard">
+          <Link to="/manage/manage-tc">
+            <div className="Card card-1 card-content">
               <div>
                 <img
-                  className="img-fluid"
+                  className="img-fluid manage-image"
                   src={Icon_TC}
                   alt="TC-Icon"
-                  style={CardCss.image}
                 ></img>
               </div>
               <div>
-                <span style={{ width: "158px" }} className="card_title">
+                <span className="card_title manageuserwidth">
                   {" "}
                   Thread Connect
                 </span>
@@ -122,45 +70,35 @@ function Manage(props) {
             </div>
           </Link>
         </div>
-        <div style={CardCss.card}>
-          <Link
-            to="/manage/manage-ec"
-            onClick={props.clickEvent.bind(this, {
-              pageName: "Enterpriseconnect",
-              headerText: "ENTERPRISECONNECT",
-            })}
-          >
-            <div className="Card card-1" style={CardCss.content}>
+        <div className="managecard">
+          <Link to="/manage/manage-ec">
+            <div className="Card card-1 card-content">
               <div>
                 <img
-                  className="img-fluid"
+                  className="img-fluid manage-image"
                   src={Icon_EC}
                   alt="EC-Icon"
-                  style={CardCss.image}
                 ></img>
               </div>
               <div>
-                <span style={{ width: "158px" }} className="card_title">
+                <span className="card_title manageuserwidth">
                   Enterprise Connect
                 </span>
               </div>
             </div>
           </Link>
         </div>
-        <div style={CardCss.card}>
-          <div className="Card card-1" style={CardCss.content}>
+        <div className="managecard">
+          <div className="Card card-1 card-content">
             <div>
               <img
-                className="img-fluid"
+                className="img-fluid manage-image"
                 src={Icon_Dive}
                 alt="Dive-Icon"
-                style={CardCss.image}
               ></img>
             </div>
             <div>
-              <span style={{ width: "158px" }} className="card_title">
-                DIVE{" "}
-              </span>
+              <span className="card_title manageuserwidth">DIVE </span>
             </div>
           </div>
         </div>

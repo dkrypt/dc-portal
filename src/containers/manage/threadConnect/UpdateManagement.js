@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Button, Modal, Alert, Spinner } from "react-bootstrap";
-import BucAdnComponent from "./BucAdnComponent.js";
-// import DataTable from "react-data-table-component";
-import Api from "../../../middleware/ManageApi.js";
-// import Select from "react-select";
+// import BucAdnComponent from "./BucAdnComponent.js";
+import Api from "../../../Apis/ManageApi.js";
 import BootstrapTable from "react-bootstrap-table-next";
 import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
 import paginationFactory from "react-bootstrap-table2-paginator";
-
-// let regExp = /^([a-zA-Z0-9_-]){3,5}$/;
+import { useStoreState, useStoreActions } from "easy-peasy";
 let initialValues = {
   projectName: "",
   ShortDescription: "",
@@ -17,6 +14,7 @@ let initialValues = {
   VLan: "",
   BUC: "",
   ADN: "",
+  bucAdnValidate: "",
   environment: "Dev",
   minMemory: "7",
   maxMemory: "11",
@@ -27,12 +25,7 @@ let initialValues = {
   maxSize: "2g",
   initialSize: "1g",
   version: "",
-  host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-  fileSystemId: "12e51190",
-  accessPoint: "0f259ecad065aa92d",
   user: "single",
-  gitRepo:
-    "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
 };
 const Initialerror = {
   projectName: "",
@@ -50,25 +43,30 @@ const Initialerror = {
   replicaCount: "",
   InstanceName: "",
   version: "",
+  org: "",
+  space: "",
 };
 const UpdateManagement = (props) => {
-  // const [env, setenv] = useState("Dev");
   const [updateInitialData, setinitialData] = useState(initialValues);
   const [error, setError] = useState(Initialerror);
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
   const [message, setMessage] = useState("");
-  // const [editData, setEditData] = useState({});
   const [ProjectList, setProjectList] = useState([]);
   const [MultiinstanceData, setMultiinstanceData] = useState([]);
   const [editRowData, seteditRowData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [tcHelmVersion, setTecHelmVersion] = useState([]);
-
-  // const handleChangeProject = (env) => {
-  //   // setenv(env);
-  //   // handleShow();
-  // };
+  const [previousDataUpdate, setpreviousDataUpdate] = useState({});
+  const [OrgValues, setOrgValues] = useState("");
+  const [spaceValues, setspaceValue] = useState("");
+  const baseUrl = useStoreState(
+    (state) => state.dataStore.operations.dataset.manageUrl
+  );
+  if (spaceValues !== props.spaceValue) {
+    setspaceValue(props.spaceValue);
+  } else {
+  }
   const resetForm = () => {
     setinitialData({
       projectName: "",
@@ -88,20 +86,33 @@ const UpdateManagement = (props) => {
       maxSize: "2g",
       initialSize: "1g",
       version: "",
-      host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-      fileSystemId: "12e51190",
-      accessPoint: "0f259ecad065aa92d",
       user: "single",
-      gitRepo:
-        "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
     });
     seteditRowData([]);
+    setpreviousDataUpdate({});
+    setProjectList([]);
+    props.handelResetForm(false);
   };
+
+  useEffect(() => {
+    projectListdata();
+    setOrgValues(props.OrgValue);
+    setspaceValue(props.spaceValue);
+  }, [props.spaceValue !== "" && props.update === true]);
+
+  useEffect(() => {
+    projectListdata();
+  }, [updateInitialData.environment]);
+
   useEffect(() => {
     resetForm();
-    projectListdata();
     handelTcHelmVersionListdata();
-  }, [props.update === true]);
+    projectListdata();
+  }, [OrgValues, spaceValues]);
+
+  useEffect(() => {
+    getmultiInstanceData();
+  }, [updateInitialData.user === "multiple"]);
 
   const handelInputChange = (event) => {
     const { name, value } = event.target;
@@ -116,6 +127,8 @@ const UpdateManagement = (props) => {
         projectName: "",
         minCpu: "",
         maxCpu: "",
+        BUC: "",
+        ADN: "",
         minMemory: "",
         maxMemory: "",
         version: "",
@@ -125,6 +138,7 @@ const UpdateManagement = (props) => {
       };
       setinitialData(obj);
       seteditRowData([]);
+      setpreviousDataUpdate({});
     }
 
     if (name == "user") {
@@ -134,6 +148,8 @@ const UpdateManagement = (props) => {
         projectName: "",
         minCpu: "4",
         maxCpu: "5",
+        BUC: "",
+        ADN: "",
         minMemory: "7",
         maxMemory: "11",
         version: "",
@@ -143,17 +159,10 @@ const UpdateManagement = (props) => {
       };
       setinitialData(obj);
       seteditRowData([]);
+      setpreviousDataUpdate({});
     }
   };
 
-  const bucadnvalidate = (data) => {
-    const obj = {
-      ...updateInitialData,
-      BUC: data.BUC,
-      ADN: data.ADN,
-    };
-    setinitialData(obj);
-  };
   if (successStatus === true || errorStatus === true) {
     setInterval(function () {
       setsuccessStatus(false);
@@ -165,21 +174,23 @@ const UpdateManagement = (props) => {
     let data = {
       environment: updateInitialData.environment.toLowerCase(),
       action: "updation",
+      orgSpaceId: props.spaceValue,
     };
+
     let projectList = [];
     setIsLoading(true);
     Api.ProjectNameList(data)
       .then((res) => {
         if (res.data.status === "FAIL") {
           setIsLoading(false);
-        }
-        if (res.status === 200) {
+        } else if (res.status === 200) {
           setIsLoading(false);
           res.data.results &&
             res.data.results.forEach((p) => {
               projectList.push({ label: p.project_name, value: p.id });
             });
           setProjectList(projectList);
+        } else {
         }
       })
       .catch((err) => {
@@ -193,7 +204,7 @@ const UpdateManagement = (props) => {
 
   const handelTcHelmVersionListdata = () => {
     setIsLoading(true);
-    Api.getHelmVersion()
+    Api.getHelmVersion(baseUrl)
       .then((res) => {
         if (res.data.status === "FAIL") {
           setIsLoading(false);
@@ -203,7 +214,8 @@ const UpdateManagement = (props) => {
           setTecHelmVersion(res.data.results);
           const obj = {
             ...updateInitialData,
-            version: res.data.results[0],
+            // version: res.data.results[0],
+            version: "",
           };
           setinitialData(obj);
         }
@@ -216,13 +228,7 @@ const UpdateManagement = (props) => {
         }
       });
   };
-  useEffect(() => {
-    projectListdata();
-  }, [updateInitialData.environment]);
 
-  useEffect(() => {
-    getmultiInstanceData();
-  }, [updateInitialData.user === "multiple"]);
   let helmArray = [];
   tcHelmVersion.map((e) => {
     let obj = {
@@ -256,6 +262,7 @@ const UpdateManagement = (props) => {
         }
         return true;
       },
+      editable: false,
     },
     {
       dataField: "adn",
@@ -269,6 +276,7 @@ const UpdateManagement = (props) => {
         }
         return true;
       },
+      editable: false,
     },
     {
       dataField: "min_memory",
@@ -384,7 +392,6 @@ const UpdateManagement = (props) => {
           setMessage(res.data.message);
         } else if (res.status === 200 || res.status === 201) {
           const data = res.data.results[0];
-          console.log("data", data);
           projectListdata();
           const obj = {
             host: data.host,
@@ -410,6 +417,7 @@ const UpdateManagement = (props) => {
             user: "single",
           };
           setinitialData(obj);
+          setpreviousDataUpdate(obj);
         }
       })
       .catch((err) => {
@@ -429,6 +437,7 @@ const UpdateManagement = (props) => {
           : updateInitialData.environment === "Prod"
           ? "prod"
           : "dev",
+      orgSpaceId: props.spaceValue,
     };
     setIsLoading(true);
     Api.projectData(data)
@@ -440,9 +449,7 @@ const UpdateManagement = (props) => {
         } else if (res.status === 200 || res.status === 201) {
           setIsLoading(false);
           const data = res.data.results;
-
           setMultiinstanceData(data);
-          projectListdata();
           if (res.data.message === "") {
           } else {
           }
@@ -456,6 +463,74 @@ const UpdateManagement = (props) => {
           }
         }
       });
+  };
+  const handelValidate = (e) => {
+    // e.preventDefault();
+
+    let errorData1 = {
+      ...error,
+    };
+
+    if (updateInitialData.BUC === "") {
+      errorData1.BUC = "BUC required";
+    }
+    if (updateInitialData.ADN === "") {
+      errorData1.ADN = "ADN  required";
+    }
+
+    if (
+      updateInitialData.BUC === "" ||
+      updateInitialData.ADN === "" ||
+      error.BUC !== "" ||
+      error.ADN !== ""
+    ) {
+      setError(errorData1);
+    } else {
+      let data = {
+        buc: updateInitialData.BUC,
+        adn: updateInitialData.ADN,
+      };
+      setIsLoading(true);
+      Api.bucAdnValidate(data)
+        .then((res) => {
+          if (res.status === 200 || res.status === 201) {
+            if (res.data.status === "FAIL") {
+              setIsLoading(false);
+              seterrorStatus(true);
+              setMessage("Error");
+            } else {
+              setIsLoading(false);
+              if (res.data.results.isValid === "TRUE") {
+                setsuccessStatus(true);
+                setMessage("Validation Succesfull");
+                // setbucAdnResponseData(res.data.results);
+                let obj = {
+                  ...updateInitialData,
+                  bucAdnValidate: "true",
+                };
+                setinitialData(obj);
+              } else {
+                seterrorStatus(true);
+                // setbucAdnResponseData(res.data.results);
+                setMessage("Validation Failed");
+                let obj = {
+                  ...updateInitialData,
+                  bucAdnValidate: "false",
+                };
+                setinitialData(obj);
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data.status === "FAILED") {
+              seterrorStatus(true);
+              setMessage(err.data.message);
+            }
+          }
+        });
+    }
   };
   const handleFormSubmit = (event) => {
     let errorData = {
@@ -516,20 +591,33 @@ const UpdateManagement = (props) => {
         initialSize: "6g",
         maxSize: "16g",
         version: updateInitialData.version,
-        // host: updateInitialData.host,
         minMemory: updateInitialData.minMemory,
         minCpu: updateInitialData.minCpu,
         maxMemory: updateInitialData.maxMemory,
         maxCpu: updateInitialData.maxCpu,
-        // fileSystemId: "12e51190",
-        // accessPoint: updateInitialData.accessPoint,
-        // gitRepo: updateInitialData.gitRepo,
+
         environment: updateInitialData.environment.toLowerCase(),
         replicaCount: updateInitialData.replicaCount,
         description: updateInitialData.ShortDescription,
         vlan:
           updateInitialData.VLan === null ? "0.0.0.1" : updateInitialData.VLan,
       };
+      if (
+        updateInitialData.BUC &&
+        updateInitialData.bucAdnValidate === "true"
+      ) {
+        data.buc = updateInitialData.BUC;
+      } else {
+        data.buc = previousDataUpdate.BUC;
+      }
+      if (
+        updateInitialData.ADN &&
+        updateInitialData.bucAdnValidate === "true"
+      ) {
+        data.adn = updateInitialData.ADN;
+      } else {
+        data.adn = previousDataUpdate.ADN;
+      }
       Api.singleTcNewProvisioning(data)
         .then((res) => {
           if (res.data.status === "FAIL") {
@@ -556,10 +644,13 @@ const UpdateManagement = (props) => {
               maxMemory: "11",
               version: "",
               VLan: "",
+              BUC: "",
+              ADN: "",
               replicaCount: "1",
               user: updateInitialData.user,
             };
             setinitialData(obj);
+            setpreviousDataUpdate({});
           }
         })
         .catch((err) => {
@@ -623,6 +714,8 @@ const UpdateManagement = (props) => {
             maxMemory: "",
             version: "",
             VLan: "",
+            BUC: "",
+            ADN: "",
             replicaCount: "",
             user: updateInitialData.user,
           };
@@ -680,25 +773,13 @@ const UpdateManagement = (props) => {
       },
     ],
   });
-  console.log("updateInitialData", updateInitialData);
+
   return (
     <>
-      {props.OrgSpaceValue.Org !== "" && props.OrgSpaceValue.Space !== "" ? (
+      {OrgValues !== "" && spaceValues !== "" ? (
         <div>
           {isLoading === true ? (
-            <div
-              style={{
-                display: "block",
-                position: "fixed",
-                zIndex: "900",
-                width: "100%",
-                height: "100%",
-                overflow: "auto",
-                // position: "absolute",
-                left: "50%",
-                top: "50%",
-              }}
-            >
+            <div className="spineerUi">
               <Spinner animation="border" role="status"></Spinner>
             </div>
           ) : (
@@ -739,19 +820,25 @@ const UpdateManagement = (props) => {
                   label="Dev"
                   name="environment"
                   value="Dev"
-                  defaultChecked
+                  checked={updateInitialData.environment === "Dev"}
+                  // defaultChecked
+                  readOnly
                 />
                 <Form.Check
                   type="radio"
                   label="Stage"
                   name="environment"
                   value="Stage"
+                  checked={updateInitialData.environment === "Stage"}
+                  readOnly
                 />
                 <Form.Check
                   type="radio"
                   label="Prod"
                   name="environment"
                   value="Prod"
+                  checked={updateInitialData.environment === "Prod"}
+                  readOnly
                 />
               </Col>
             </Form.Group>
@@ -770,7 +857,6 @@ const UpdateManagement = (props) => {
                   name="user"
                   id="user"
                   value="single"
-                  defaultChecked
                   checked={updateInitialData.user === "single"}
                   readOnly
                 />
@@ -788,7 +874,7 @@ const UpdateManagement = (props) => {
             {updateInitialData.user === "single" ? (
               <Form.Group as={Col} md="6">
                 <select
-                  className="form-select classic select-height"
+                  className="form-select classic select-height instanceheight"
                   onChange={(e) => {
                     handelInputChange(e);
                     if (e.target.value === "SelectInstanceName") {
@@ -798,7 +884,7 @@ const UpdateManagement = (props) => {
                     }
                   }}
                   // sele
-                  style={{ height: "40px" }}
+
                   id="InstanceName"
                   name="InstanceName"
                   value={updateInitialData.InstanceName}
@@ -816,7 +902,7 @@ const UpdateManagement = (props) => {
                     })}
                 </select>
                 <br></br>
-                <span style={{ color: "red", marginLeft: "30px" }}>
+                <span className="versionerror">
                   {updateInitialData.InstanceName === "SelectInstanceName" &&
                   error.InstanceName !== ""
                     ? error.InstanceName
@@ -859,31 +945,20 @@ const UpdateManagement = (props) => {
                 <Form.Group as={Col} md="3" className="fieldhelm">
                   <Form.Label className="select-label">Helm version</Form.Label>
                   <br></br>
-                  {/* <Form.Control
-                    type="text"
-                    placeholder="Version"
-                    id="version"
-                    name="version"
-                    value={updateInitialData.version}
-                    onChange={handelInputChange}
-                    isInvalid={
-                      updateInitialData.version === "" && error.version !== ""
-                        ? true
-                        : false
-                    }
-                    isValid={updateInitialData.version ? true : false}
-                  /> */}
-
                   <select
-                    className="form-select classic select-height"
+                    className="form-select classic select-height instanceheight"
                     onChange={(e) => {
                       handelInputChange(e);
                     }}
-                    style={{ height: "40px" }}
                     id="version"
                     name="version"
-                    value={tcHelmVersion.includes(updateInitialData.version)}
+                    value={
+                      tcHelmVersion.includes(updateInitialData.version) === true
+                        ? updateInitialData.version
+                        : " "
+                    }
                   >
+                    <option defaultValue>Select Helm Version</option>
                     {tcHelmVersion &&
                       tcHelmVersion.map((e, i) => {
                         return (
@@ -894,16 +969,11 @@ const UpdateManagement = (props) => {
                       })}
                   </select>
                   <br></br>
-                  <span style={{ color: "red", marginLeft: "30px" }}>
+                  <span className="versionerror">
                     {updateInitialData.version === "" && error.version !== ""
                       ? error.version
                       : ""}
                   </span>
-                  {/* <Form.Control.Feedback type="invalid">
-                    {updateInitialData.version === "" && error.version !== ""
-                      ? error.version
-                      : ""}
-                  </Form.Control.Feedback> */}
                 </Form.Group>
                 <Form.Group as={Col} md="3" className="vlanfield">
                   <Form.Label>VLAN</Form.Label>
@@ -930,11 +1000,101 @@ const UpdateManagement = (props) => {
               </Row>
 
               <Row className="mb-3 bucAdnCom tc-manage">
-                {/* <BucAdnComponent /> */}
-                <BucAdnComponent
+                {/* <BucAdnComponent
                   bucadnvalidate={bucadnvalidate}
                   bucAdnValue={updateInitialData}
-                />
+                /> */}
+                <Row className="mb-4">
+                  <Form.Group as={Col} md="5">
+                    <Form.Label>BUC</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="BUC"
+                      name="BUC"
+                      onChange={handelInputChange}
+                      value={updateInitialData.BUC}
+                      isInvalid={
+                        updateInitialData.bucAdnValidate === "false" ||
+                        (updateInitialData.BUC === "" && error.BUC !== "")
+                          ? true
+                          : previousDataUpdate.BUC &&
+                            previousDataUpdate.BUC !== updateInitialData.BUC
+                          ? true
+                          : false
+                      }
+                      isValid={
+                        updateInitialData.bucAdnValidate === "true" ||
+                        (updateInitialData.BUC === "" && error.BUC !== "")
+                          ? true
+                          : previousDataUpdate.BUC &&
+                            previousDataUpdate.BUC !== ""
+                          ? true
+                          : false
+                      }
+                    />
+
+                    <Form.Control.Feedback type="invalid">
+                      {updateInitialData.BUC === "" && error.BUC !== ""
+                        ? error.BUC
+                        : ""}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group as={Col} md="5">
+                    <Form.Label>ADN</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="ADN"
+                      name="ADN"
+                      onChange={handelInputChange}
+                      value={updateInitialData.ADN}
+                      isInvalid={
+                        updateInitialData.bucAdnValidate === "false" ||
+                        (updateInitialData.ADN === "" && error.ADN !== "")
+                          ? true
+                          : previousDataUpdate.ADN &&
+                            previousDataUpdate.ADN !== updateInitialData.ADN
+                          ? true
+                          : false
+                      }
+                      isValid={
+                        updateInitialData.bucAdnValidate === "true" ||
+                        (updateInitialData.ADN === "" && error.ADN !== "")
+                          ? true
+                          : previousDataUpdate.ADN &&
+                            previousDataUpdate.ADN !== ""
+                          ? true
+                          : false
+                      }
+                    />
+
+                    <Form.Control.Feedback type="invalid">
+                      {updateInitialData.ADN === "" && error.ADN !== ""
+                        ? error.ADN
+                        : ""}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+
+                  <Form.Group
+                    className="deploy-submit"
+                    as={Col}
+                    md="1"
+                    controlId="validationFormik05"
+                  >
+                    <Button
+                      onClick={(e) => handelValidate(e)}
+                      disabled={
+                        (previousDataUpdate.ADN &&
+                          previousDataUpdate.ADN !== updateInitialData.ADN) ||
+                        (previousDataUpdate.BUC &&
+                          previousDataUpdate.BUC !== updateInitialData.BUC)
+                          ? false
+                          : true
+                      }
+                    >
+                      Validate
+                    </Button>
+                  </Form.Group>
+                </Row>
               </Row>
               <hr />
               <Row className="mb-3 alignupdateRow tc-manage">
@@ -1051,7 +1211,7 @@ const UpdateManagement = (props) => {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
-              <div style={{ marginLeft: "18px" }} className="tc-manage">
+              <div className="tc-manage updatesubmit">
                 <Button type="submit" onClick={(e) => handleFormSubmit(e)}>
                   Submit
                 </Button>
@@ -1075,7 +1235,7 @@ const UpdateManagement = (props) => {
                 autoSelectText: true,
 
                 clickToSelect: { mode: "dbclick" ? true : false },
-                // style: { backgroundColor: "#c8e6c9" },
+
                 afterSaveCell: (oldValue, newValue, row, column) => {
                   if (oldValue !== newValue) {
                     handelnewEdit(row);

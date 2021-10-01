@@ -3,7 +3,7 @@ import moment from "moment";
 import { Modal, Button } from "react-bootstrap";
 import DateTimePicker from "react-datetime-picker";
 import { WeekDaysCheckbox } from "./WeekDaysCheckbox.js";
-import Api from "../apilayer/api.js";
+import Api from "../apiLayer/api.js";
 import { useStoreState, useStoreActions } from "easy-peasy";
 
 export const ViewScheduleWeekly = ({
@@ -13,7 +13,6 @@ export const ViewScheduleWeekly = ({
   eventName,
   isLoader,
 }) => {
- 
   const [eventDate, setEventDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(0);
   const [endTimeEnable, setEndTimeEnable] = useState("false");

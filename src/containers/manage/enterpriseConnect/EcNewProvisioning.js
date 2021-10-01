@@ -3,7 +3,7 @@ import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 
 import BucAdnComponent from "./../threadConnect/BucAdnComponent.js";
 
-import Api from "../../../middleware/ManageApi.js";
+import Api from "../../../Apis/ManageApi.js";
 
 let initialValues = {
   projectName: "",
@@ -701,12 +701,11 @@ const EcNewProvisioning = (props) => {
                 <Form.Label className="select-label">Instance Name</Form.Label>
 
                 <select
-                  className="form-select classic select-height"
+                  className="form-select classic select-height instanceheight"
                   onChange={(e) => {
                     handelInputChange(e);
                     FindInstanceInfo(e);
                   }}
-                  style={{ height: "40px" }}
                   id="InstanceName"
                   name="InstanceName"
                   value={initialData.InstanceName}
@@ -722,7 +721,7 @@ const EcNewProvisioning = (props) => {
                     })}
                 </select>
                 <br></br>
-                <span style={{ color: "red", marginLeft: "120px" }}>
+                <span className="deploye-errmsg">
                   {initialData.InstanceName === "" && error.InstanceName !== ""
                     ? error.InstanceName
                     : ""}

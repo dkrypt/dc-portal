@@ -10,17 +10,18 @@ import {
   Button,
 } from "react-bootstrap";
 import UserManagement from "./UserManagement.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 function ManageUser(props) {
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
+
+  //inside useeffect
+
   useEffect(() => {
-    props.clickEvent({
-      pageName: "User",
-      headerText: "Manage User",
-      subHeaderText: "GLOBAL",
-    });
+    setPageTitle("Manage User");
   }, []);
   return (
     <>
-      <div className="container-lg w-100 p-3 mb-3 tc-manage">
+      <div className="container-lg w-100  mb-3 tc-manage">
         <Tab.Container
           id="left-tabs-example"
           defaultActiveKey="first"
@@ -37,7 +38,7 @@ function ManageUser(props) {
               </Nav>
             </Card.Header>
             <Card.Body className="tc-manage">
-              <Tab.Content className="tc-manage">
+              <Tab.Content className="tc-manage add-scroll">
                 <Tab.Pane eventKey="first" className="tc-manage">
                   <UserManagement />
                 </Tab.Pane>

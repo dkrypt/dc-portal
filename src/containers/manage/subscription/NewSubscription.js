@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Button, Alert, Spinner } from "react-bootstrap";
 // import Loader from "react-loader-spinner";
-import Api from "../../../middleware/ManageApi.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
+import Api from "../../../Apis/ManageApi.js";
 let initialValues = {
   Org: "",
   Space: "",
   buc: "",
   adn: "",
   Product: [],
+  bucAdnValidate: "",
 };
 let initialError = {
   Org: "",
@@ -24,7 +26,11 @@ const NewSubscription = (props) => {
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [bucAdnResponseData, setbucAdnResponseData] = useState({});
 
+  const baseUrl = useStoreState(
+    (state) => state.dataStore.operations.dataset.manageUrl
+  );
   const resetForm = () => {
     setinitialValue(initialValues);
   };
@@ -42,7 +48,7 @@ const NewSubscription = (props) => {
 
   const getProductList = () => {
     setIsLoading(true);
-    Api.productList()
+    Api.productList(baseUrl)
       .then((res) => {
         if (res.data.status === "FAIL") {
           setIsLoading(false);
@@ -113,13 +119,13 @@ const NewSubscription = (props) => {
     if (
       initialValue.Org === "" ||
       initialValue.Space === "" ||
-      initialValue.buc === "" ||
-      initialValue.adn === "" ||
+      // initialValue.buc === "" ||
+      // initialValue.adn === "" ||
       initialValue.Product.length == 0 ||
       error.Org !== "" ||
       error.Space !== "" ||
-      error.buc !== "" ||
-      error.adn !== "" ||
+      // error.buc !== "" ||
+      // error.adn !== "" ||
       error.Product !== ""
     ) {
       seterror(errorData);
@@ -129,14 +135,14 @@ const NewSubscription = (props) => {
         space: initialValue.Space,
         products: initialValue.Product,
       };
-      if (initialValue.buc) {
+      if (initialValue.buc && initialValue.bucAdnValidate === "true") {
         data.buc = initialValue.buc;
       }
-      if (initialValue.adn) {
+      if (initialValue.adn && initialValue.bucAdnValidate === "true") {
         data.adn = initialValue.adn;
       }
       setIsLoading(true);
-      Api.newSubscription(data)
+      Api.newSubscription(baseUrl, data)
         .then((res) => {
           if (res.status === 200 || res.status === 201) {
             if (res.data.status === "FAIL") {
@@ -147,15 +153,13 @@ const NewSubscription = (props) => {
             } else {
               setIsLoading(false);
               setsuccessStatus(true);
-
+              Reset();
               if (res.data.message === "") {
                 setMessage("Successfully created");
               } else {
                 setMessage(res.data.message);
               }
             }
-
-            Reset();
           }
         })
         .catch((err) => {
@@ -194,21 +198,34 @@ const NewSubscription = (props) => {
         buc: initialValue.buc,
         adn: initialValue.adn,
       };
-      Api.bucAdnValidate(data)
+      Api.bucAdnValidate(baseUrl, data)
         .then((res) => {
+          console.log("res", res);
           if (res.status === 200 || res.status === 201) {
             if (res.data.status === "FAIL") {
               setIsLoading(false);
               seterrorStatus(true);
-              setMessage(res.data.message);
+              setMessage("Error");
             } else {
               setIsLoading(false);
-              setsuccessStatus(true);
-
-              if (res.data.message === "") {
-                setMessage("Validate Successfully");
+              if (res.data.results.isValid === "TRUE") {
+                setsuccessStatus(true);
+                setMessage(res.data.results.validMsg);
+                setbucAdnResponseData("Validation Succesfull");
+                let obj = {
+                  ...initialValue,
+                  bucAdnValidate: "true",
+                };
+                setinitialValue(obj);
               } else {
-                setMessage(res.data.message);
+                seterrorStatus(true);
+                setbucAdnResponseData(res.data.results);
+                setMessage("Validation Failed");
+                let obj = {
+                  ...initialValue,
+                  bucAdnValidate: "false",
+                };
+                setinitialValue(obj);
               }
             }
           }
@@ -237,22 +254,11 @@ const NewSubscription = (props) => {
       seterrorStatus(false);
     }, 4000);
   }
-
+  // console.log("bucAdnResponseData", bucAdnResponseData);
   return (
     <div>
       {isLoading === true ? (
-        <div
-          style={{
-            display: "block",
-            position: "fixed",
-            zIndex: "9900",
-            width: "100%",
-            height: "100%",
-            overflow: "auto",
-            left: "50%",
-            top: "50%",
-          }}
-        >
+        <div className="spineerUi">
           <Spinner animation="border" role="status"></Spinner>
         </div>
       ) : (
@@ -329,10 +335,16 @@ const NewSubscription = (props) => {
               onChange={handelInputChange}
               value={initialValue.buc}
               isInvalid={
-                initialValue.buc === "" && error.buc !== "" ? error.buc : ""
+                initialValue.bucAdnValidate === "false" ||
+                (initialValue.buc === "" && error.buc !== "")
+                  ? true
+                  : false
               }
               isValid={
-                initialValue.buc === "" && error.buc !== "" ? error.buc : ""
+                initialValue.bucAdnValidate === "true" ||
+                (initialValue.buc === "" && error.buc !== "")
+                  ? true
+                  : false
               }
             />
 
@@ -349,10 +361,16 @@ const NewSubscription = (props) => {
               onChange={handelInputChange}
               value={initialValue.adn}
               isInvalid={
-                initialValue.adn === "" && error.adn !== "" ? error.adn : ""
+                initialValue.bucAdnValidate === "false" ||
+                (initialValue.adn === "" && error.adn !== "")
+                  ? true
+                  : false
               }
               isValid={
-                initialValue.adn === "" && error.adn !== "" ? error.adn : ""
+                initialValue.bucAdnValidate === "true" ||
+                (initialValue.adn === "" && error.adn !== "")
+                  ? true
+                  : false
               }
             />
 
@@ -362,7 +380,7 @@ const NewSubscription = (props) => {
           </Form.Group>
 
           <Form.Group
-            style={{ marginTop: "31px" }}
+            className="bucadnvalidation"
             as={Col}
             md="1"
             controlId="validationFormik05"

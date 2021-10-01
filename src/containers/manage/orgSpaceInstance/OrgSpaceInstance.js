@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Form, Row, Col } from "react-bootstrap";
-import Api from "../../../middleware/ManageApi.js";
+import Api from "../../../Apis/ManageApi.js";
 let initialValues = {
   Org: "",
   Space: "",
@@ -14,10 +14,8 @@ const Orgspaceinstance = (props) => {
   const [error, seterror] = useState(initialError);
   const [orgList, setOrgList] = useState([]);
   const [spaceList, setSpaceList] = useState([]);
-  const [message, setMessage] = useState("");
-  const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
-  console.log(" ", props);
+
   const handelInputChange = (event) => {
     const { name, value } = event.target;
     setinitialValue({ ...initialValue, [name]: value });
@@ -57,7 +55,7 @@ const Orgspaceinstance = (props) => {
         if (err.response) {
           if (err.response.data.status === "FAILED") {
             seterrorStatus(true);
-            setMessage(err.data.message);
+            // setMessage(err.data.message);
           }
         }
       });
@@ -65,10 +63,14 @@ const Orgspaceinstance = (props) => {
   useEffect(() => {
     handelgetOrgList();
   }, []);
+  const orgSpaceChange = useCallback(() => {
+    props.getOrgspaceValue(initialValue.Org, initialValue.Space);
+  }, [initialValue.Org, initialValue.Space]);
 
   useEffect(() => {
     handelgetOrgList();
-    props.getOrgspaceValue(initialValue);
+    // props.getOrgspaceValue(initialValue.Org, initialValue.Space);
+    orgSpaceChange();
   }, [initialValue.Org, initialValue.Space]);
 
   return (
@@ -82,6 +84,7 @@ const Orgspaceinstance = (props) => {
             value={initialValue.Org}
             onChange={(e) => {
               handelInputChange(e);
+              props.handelResetForm(true);
               if (e.target.value === "selectOrg") {
                 // Reset();
               } else {
@@ -115,6 +118,7 @@ const Orgspaceinstance = (props) => {
             value={initialValue.Space}
             onChange={(e) => {
               handelInputChange(e);
+              props.handelResetForm(true);
               if (e.target.value === "selectSpace") {
               } else {
               }

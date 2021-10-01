@@ -3,8 +3,8 @@ import { Form, Row, Col, Button, Alert, Spinner } from "react-bootstrap";
 
 import BucAdnComponent from "./BucAdnComponent.js";
 
-import Api from "../../../middleware/ManageApi.js";
-
+import Api from "../../../Apis/ManageApi.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 let initialValues = {
   projectName: "",
   ShortDescription: "",
@@ -13,6 +13,7 @@ let initialValues = {
   VLan: "",
   BUC: "",
   ADN: "",
+  bucAdnValidate: "",
   env: "Dev",
   minMemory: "7",
   maxMemory: "11",
@@ -23,11 +24,6 @@ let initialValues = {
   maxSize: "2g",
   initialSize: "1g",
   version: "0.0.7",
-  host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-  fileSystemId: "12e51190",
-  accessPoint: "0f259ecad065aa92d",
-  gitRepo:
-    "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
 };
 
 const Initialerror = {
@@ -48,24 +44,38 @@ const Initialerror = {
 };
 let regExp = /^([a-zA-Z0-9_-]){3,5}$/;
 const NewProvisioning = (props) => {
+  // const baseUrl = useStoreState(
+  //   (state) => state.dataStore.operations.dataset.manageUrl
+  // );
+
   const [advanceOption, setadvanceOption] = useState(false);
   const [initialData, setinitialData] = useState(initialValues);
   const [error, setError] = useState(Initialerror);
-  const [env, setenv] = useState("Dev");
+  // const [env, setenv] = useState("Dev");
   const [ProjectList, setProjectList] = useState([]);
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const handleChangeProject = (env) => {
-    setenv(env);
-    // resetValue();
-  };
+  const [bucAdnResponseData, setbucAdnResponseData] = useState({});
+  const [OrgValues, setOrgValues] = useState("");
+  const [spaceValues, setspaceValue] = useState("");
+
+  if (spaceValues !== props.spaceValue) {
+    setspaceValue(props.spaceValue);
+  } else {
+  }
+
+  useEffect(() => {
+    resetForm();
+  }, [props.create === true, props.resetForm === true]);
 
   const resetForm = () => {
     setinitialData(initialValues);
+    props.handelResetForm(false);
   };
+
   const handelInputChange = (event) => {
     setError(Initialerror);
     const { name, value } = event.target;
@@ -90,11 +100,6 @@ const NewProvisioning = (props) => {
         maxSize: "2g",
         initialSize: "1g",
         version: "0.0.7",
-        host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-        fileSystemId: "12e51190",
-        accessPoint: "0f259ecad065aa92d",
-        gitRepo:
-          "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
       });
     }
   };
@@ -105,37 +110,54 @@ const NewProvisioning = (props) => {
 
   useEffect(() => {
     resetForm();
-    projectListdata();
-  }, [props.create === true]);
-
-  const projectListdata = () => {
-    setIsLoading(true);
-    let data = {
-      environment: initialData.env.toLowerCase(),
-      action: "creation",
-    };
-    Api.ProjectNameList(data)
-      .then((res) => {
-        if (res.data.status === "FAIL") {
-          setIsLoading(false);
-        }
-        if (res.status === 200) {
-          setIsLoading(false);
-          setProjectList(res.data.results);
-        }
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.data.status === "FAIL") {
-            setProjectList(err.response.data.results);
-          }
-        }
-      });
-  };
+  }, [props.create === true, props.resetForm === true]);
 
   useEffect(() => {
     projectListdata();
+    setOrgValues(props.OrgValue);
+    setspaceValue(props.spaceValue);
+  }, [
+    props.spaceValue !== "" &&
+      props.create === true &&
+      initialData.env !== "Dev",
+  ]);
+  useEffect(() => {
+    projectListdata();
   }, [initialData.env]);
+
+  useEffect(() => {
+    projectListdata();
+  }, [OrgValues, spaceValues]);
+
+  const projectListdata = () => {
+    if (props.spaceValue) {
+      setIsLoading(true);
+      let data = {
+        environment: initialData.env.toLowerCase(),
+        action: "creation",
+        orgSpaceId: props.spaceValue,
+      };
+
+      Api.ProjectNameList(data)
+        .then((res) => {
+          if (res.data.status === "FAIL") {
+            setIsLoading(false);
+          }
+          if (res.status === 200) {
+            setIsLoading(false);
+            setProjectList(res.data.results);
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data.status === "FAIL") {
+              setProjectList(err.response.data.results);
+            }
+          }
+        });
+    } else {
+    }
+  };
 
   const handleFormSubmit = (event) => {
     setIsLoading(true);
@@ -198,30 +220,28 @@ const NewProvisioning = (props) => {
     ) {
       setError(errorData);
     } else {
+      setIsLoading(true);
       let data = {
         initialSize: "6g",
         maxSize: "16g",
         projectName: initialData.projectName,
         // version: "0.0.7",
-        // host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
         minMemory: initialData.minMemory,
         minCpu: initialData.minCpu,
         maxMemory: initialData.maxMemory,
         maxCpu: initialData.maxCpu,
-        // fileSystemId: "12e51190",
-        // accessPoint: "0f259ecad065aa92d",
-        // gitRepo:
-        //   "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
-        environment: env.toLowerCase(),
+        environment: initialData.env.toLowerCase(),
+
         replicaCount: initialData.replicaCount,
         shortName: initialData.ShortName,
         description: initialData.ShortDescription,
+        orgSpaceId: props.spaceValue,
       };
-      if (initialData.BUC !== "") {
+      if (initialData.BUC !== "" && initialData.bucAdnValidate === "true") {
         data.buc = initialData.BUC;
       }
 
-      if (initialData.ADN !== "") {
+      if (initialData.ADN !== "" && initialData.bucAdnValidate === "true") {
         data.adn = initialData.ADN;
       }
 
@@ -262,7 +282,8 @@ const NewProvisioning = (props) => {
   const ProjectNameExit = (e) => {
     setIsLoading(true);
     let data = {
-      projectName: e.target.value,
+      projectName: initialData.projectName,
+      shortName: e.target.value,
     };
     Api.checkProjectNameExist(data)
 
@@ -386,11 +407,6 @@ const NewProvisioning = (props) => {
               maxSize: "2g",
               initialSize: "1g",
               version: "0.0.7",
-              host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-              fileSystemId: "12e51190",
-              accessPoint: "0f259ecad065aa92d",
-              gitRepo:
-                "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
             });
           }
         })
@@ -493,11 +509,6 @@ const NewProvisioning = (props) => {
               maxSize: "2g",
               initialSize: "1g",
               version: "0.0.7",
-              host: "aviation-tc-dev-aws.digitalconnect.apps.ge.com",
-              fileSystemId: "12e51190",
-              accessPoint: "0f259ecad065aa92d",
-              gitRepo:
-                "https://github.build.ge.com/digital-connect-devops/tc-aviation-argo-cd-apps.git",
             });
           }
         })
@@ -566,41 +577,78 @@ const NewProvisioning = (props) => {
       seterrorStatus(false);
     }, 4000);
   }
-
-  const bucadnvalidate = (data, status, message, check) => {
-    const obj = {
-      ...initialData,
-      BUC: data.BUC,
-      ADN: data.ADN,
+  const handelValidate = (e) => {
+    let errorData1 = {
+      ...error,
     };
-    setinitialData(obj);
 
-    if (check === "success") {
-      setsuccessStatus(status);
-      setMessage(message);
-    } else if (check === "error") {
-      seterrorStatus(status);
-      setMessage(message);
+    if (initialData.BUC === "") {
+      errorData1.BUC = "BUC required";
+    }
+    if (initialData.ADN === "") {
+      errorData1.ADN = "ADN  required";
+    }
+
+    if (
+      initialData.BUC === "" ||
+      initialData.ADN === "" ||
+      error.BUC !== "" ||
+      error.ADN !== ""
+    ) {
+      setError(errorData1);
+    } else {
+      let data = {
+        buc: initialData.BUC,
+        adn: initialData.ADN,
+      };
+      setIsLoading(true);
+      Api.bucAdnValidate(data)
+        .then((res) => {
+          if (res.status === 200 || res.status === 201) {
+            if (res.data.status === "FAIL") {
+              setIsLoading(false);
+              seterrorStatus(true);
+              setMessage("Error");
+            } else {
+              setIsLoading(false);
+              if (res.data.results.isValid === "TRUE") {
+                setsuccessStatus(true);
+                setMessage("Validation Succesfull");
+                setbucAdnResponseData(res.data.results);
+                let obj = {
+                  ...initialData,
+                  bucAdnValidate: "true",
+                };
+                setinitialData(obj);
+              } else {
+                seterrorStatus(true);
+                setbucAdnResponseData(res.data.results);
+                setMessage("Validation Failed");
+                let obj = {
+                  ...initialData,
+                  bucAdnValidate: "false",
+                };
+                setinitialData(obj);
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.data.status === "FAILED") {
+              seterrorStatus(true);
+              setMessage(err.data.message);
+            }
+          }
+        });
     }
   };
   return (
     <>
-      {props.OrgSpaceValue.Org !== "" && props.OrgSpaceValue.Space !== "" ? (
+      {OrgValues !== "" && spaceValues !== "" ? (
         <div>
           {isLoading === true ? (
-            <div
-              style={{
-                display: "block",
-                position: "fixed",
-                zIndex: "900",
-                width: "100%",
-                height: "100%",
-                overflow: "auto",
-                // position: "absolute",
-                left: "50%",
-                top: "50%",
-              }}
-            >
+            <div className="spineerUi">
               <Spinner animation="border" role="status"></Spinner>
             </div>
           ) : (
@@ -641,15 +689,23 @@ const NewProvisioning = (props) => {
                   label="Dev"
                   name="env"
                   value="Dev"
-                  defaultChecked
+                  // defaultChecked
+                  checked={initialData.env === "Dev"}
                 />
                 <Form.Check
                   type="radio"
                   label="Stage"
                   name="env"
                   value="Stage"
+                  checked={initialData.env === "Stage"}
                 />
-                <Form.Check type="radio" label="Prod" name="env" value="Prod" />
+                <Form.Check
+                  type="radio"
+                  label="Prod"
+                  name="env"
+                  value="Prod"
+                  checked={initialData.env === "Prod"}
+                />
               </Col>
               <Form.Control.Feedback type="invalid">
                 {initialData.env === "" && error.env !== "" ? error.env : ""}
@@ -667,7 +723,8 @@ const NewProvisioning = (props) => {
                   name="projectName"
                   value={initialData.projectName}
                   onChange={handelInputChange}
-                  onInput={(e) => ProjectNameExit(e)}
+                  // onInput={(e) => ProjectNameExit(e)}
+
                   isInvalid={
                     initialData.projectName === "" && error.projectName !== ""
                       ? true
@@ -716,6 +773,7 @@ const NewProvisioning = (props) => {
                   id="ShortName"
                   value={initialData.ShortName}
                   onChange={handelInputChange}
+                  onInput={(e) => ProjectNameExit(e)}
                   isInvalid={
                     (initialData.ShortName === "" && error.ShortName !== "") ||
                     (initialData.ShortName !== "" && error.ShortName !== "")
@@ -745,12 +803,11 @@ const NewProvisioning = (props) => {
                 <Form.Label className="select-label">Instance Name</Form.Label>
 
                 <select
-                  className="form-select classic select-height"
+                  className="form-select classic select-height instanceheight"
                   onChange={(e) => {
                     handelInputChange(e);
                     FindInstanceInfo(e);
                   }}
-                  style={{ height: "40px" }}
                   id="InstanceName"
                   name="InstanceName"
                   value={initialData.InstanceName}
@@ -766,7 +823,7 @@ const NewProvisioning = (props) => {
                     })}
                 </select>
                 <br></br>
-                <span style={{ color: "red", marginLeft: "120px" }}>
+                <span className="deploye-errmsg">
                   {initialData.InstanceName === "" && error.InstanceName !== ""
                     ? error.InstanceName
                     : ""}
@@ -776,10 +833,77 @@ const NewProvisioning = (props) => {
           )}
           {initialData.env === "Dev" ? (
             <Row className="mb-3 bucAdnCom tc-manage">
-              <BucAdnComponent
+              {/* <BucAdnComponent
                 bucadnvalidate={bucadnvalidate}
                 bucAdnValue={initialData}
-              />
+              /> */}
+              <Row className="mb-4">
+                <Form.Group as={Col} md="5">
+                  <Form.Label>BUC</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="BUC"
+                    name="BUC"
+                    onChange={handelInputChange}
+                    value={initialData.BUC}
+                    isInvalid={
+                      initialData.bucAdnValidate === "false" ||
+                      (initialData.BUC === "" && error.BUC !== "")
+                        ? true
+                        : false
+                    }
+                    isValid={
+                      initialData.bucAdnValidate === "true" ||
+                      (initialData.BUC === "" && error.BUC !== "")
+                        ? true
+                        : false
+                    }
+                  />
+
+                  <Form.Control.Feedback type="invalid">
+                    {initialData.BUC === "" && error.BUC !== ""
+                      ? error.BUC
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="5">
+                  <Form.Label>ADN</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="ADN"
+                    name="ADN"
+                    onChange={handelInputChange}
+                    value={initialData.ADN}
+                    isInvalid={
+                      initialData.bucAdnValidate === "false" ||
+                      (initialData.ADN === "" && error.ADN !== "")
+                        ? true
+                        : false
+                    }
+                    isValid={
+                      initialData.bucAdnValidate === "true" ||
+                      (initialData.ADN === "" && error.ADN !== "")
+                        ? true
+                        : false
+                    }
+                  />
+
+                  <Form.Control.Feedback type="invalid">
+                    {initialData.ADN === "" && error.ADN !== ""
+                      ? error.ADN
+                      : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group
+                  className="deploy-submit"
+                  as={Col}
+                  md="1"
+                  controlId="validationFormik05"
+                >
+                  <Button onClick={(e) => handelValidate(e)}>Validate</Button>
+                </Form.Group>
+              </Row>
             </Row>
           ) : (
             ""

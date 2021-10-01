@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { Dashboard as MainDashboard } from "../containers/mainDashboard/Dashboard.js";
 import { ThreadConnect } from "../containers/threadConnect/ThreadConnect.js";
@@ -12,17 +12,25 @@ import Manage from "../containers/manage/Manage.js";
 import ManageTC from "../containers/manage/threadConnect/ManageTC.js";
 import ManageSubscription from "../containers/manage/subscription/ManageSubscription.js";
 import ManageUser from "../containers/manage/user/ManageUser.js";
-import {EventList} from "../containers/globalScape/eventManagement/EventList.js";
-import {DelegatePriToSso} from "../containers/globalScape/DelegatePriToSso.js";
-import {RevokeSso} from "../containers/globalScape/RevokeSso.js";
-import {RemoveIP} from "../containers/globalScape/RemoveIP.js";
+import { EventList } from "../containers/globalScape/eventManagement/EventList.js";
+import { DelegatePriToSso } from "../containers/globalScape/DelegatePriToSso.js";
+import { RevokeSso } from "../containers/globalScape/RevokeSso.js";
+import { RemoveIP } from "../containers/globalScape/RemoveIP.js";
 import MaintainGroup from "../containers/globalScape/MaintainGroup.js";
 import ManageAccount from "../containers/globalScape/ManageAccount.js";
 import ManageEc from "../containers/manage/enterpriseConnect/ManageEc.js";
 import NewUser from "../containers/userManagement/NewUser.js";
 import NoSubscriptions from "../containers/userManagement/NoSubscriptions.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 
 export default function Router(props) {
+  const baseUrl = useStoreState(
+    (state) => state.dataStore.operations.dataset.manageUrl
+  );
+  useEffect(() => {
+    sessionStorage.setItem("operationBaseUrl", baseUrl);
+  }, [baseUrl]);
+
   return (
     <Switch>
       <Route exact path="/new-user">
@@ -193,7 +201,7 @@ export default function Router(props) {
           authToken={props.authToken}
           isLoader={props.isLoader}
         />
-      </Route>           
+      </Route>
       <Route exact path="/globalscape/remove-ip">
         <RemoveIP
           clickEvent={props.clickEvent}

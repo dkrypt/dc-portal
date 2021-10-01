@@ -714,6 +714,10 @@ select.classic:focus {
 }
 .select-label {
   padding: 6px !important;
+  /* margin-left: 16px !important; */
+}
+.singelUser {
+  margin-left: 16px !important;
 }
 /* <----- new provisioning css ---> */
 .form-mar {
@@ -816,6 +820,32 @@ select.classic:focus {
 .errorMsg {
   color: red;
 }
+.usersubmit {
+  margin-top: 40px;
+}
+.submitmar {
+  margin-left: 13px;
+}
+.modal-center {
+  text-align: center;
+}
+.modalbody {
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+.modalbodydata {
+  padding: 10px;
+}
+.bucadnvalidation {
+  margin-top: 31px;
+}
+.versionerror {
+  margin-left: 30px;
+  color: red;
+}
+.updatesubmit {
+  margin-left: 18px;
+}
 
 /* <------ new subscription End -----> */
 
@@ -824,6 +854,38 @@ select.classic:focus {
   margin-left: 10px;
   margin-top: 20px;
 }
+.user-display {
+  display: flex;
+}
+.remove-user {
+  padding-bottom: 6px;
+  color: red;
+}
+.userdisplaymar {
+  margin-left: 7px;
+}
+.spineerUi {
+  display: block;
+  position: fixed;
+  z-index: 9900;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  left: 50%;
+  top: 50%;
+}
+.userlistShow {
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: scroll;
+  border: 1px solid;
+  height: 60%;
+}
+.search-field {
+  display: flex;
+  height: 38px;
+}
+
 /* <------- user manage end -------> */
 
 /* <-------- manage component ---------> */
@@ -831,7 +893,90 @@ select.classic:focus {
   text-align: center;
   position: unset !important;
 }
+.manage-ui {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px;
+}
+.managecard {
+  margin: 10px;
+}
+.manage-image {
+  max-height: 150px;
+}
+.managename {
+  text-align: center;
+}
+.manageuserwidth {
+  width: 158px;
+}
+
+.tc-manage.add-scroll.tab-content {
+  max-height: 50vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* let CardCss = {
+    card: { margin: "10px" },
+    content: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-around",
+      alignItems: "center",
+      padding: "10px",
+    },
+    image: { maxHeight: "150px" },
+  }; */
 /* <--------- manage component end --------> */
+
+/* <--------ec start ------> */
+.ecoperation {
+  margin-top: -13px;
+}
+.ecsystemport {
+  margin-top: 12px;
+}
+.tcsswitch {
+  margin-top: 50px;
+}
+.ec-attach {
+  margin-top: 18px;
+}
+
+/* <-----ec end ---------> */
+
+/* <-------- deploy tc start -------> */
+.instanceheight {
+  height: 40px;
+}
+.deploye-errmsg {
+  margin-left: 120px;
+  color: red;
+}
+.deploy-attachFile {
+  margin-top: 18px;
+}
+.deploy-submit {
+  margin-top: 31px;
+}
+.fetchProperty {
+  margin-top: 42px;
+}
+/* <-------- deploy tc end -------> */
+
+/* <-------- fileplacement tc start -------> */
+.relativePath {
+  margin-top: 10px;
+}
+/* <-------- fileplacement tc end -------> */
 
 @media (max-width: 990px) {
   .card {

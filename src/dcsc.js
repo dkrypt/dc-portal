@@ -35,6 +35,7 @@ export default function DCSC() {
   const globalDataset = useStoreState(
     (state) => state.dataStore.global.dataset
   );
+
   // get/set/clear cookie
   const [cookieValue, setCookie, clearCookie] = useCookie("ec-config");
 
@@ -165,7 +166,6 @@ export default function DCSC() {
         url: `${API_ENDPOINT}/${opsKey}`,
         headers: { Authorization: `Bearer ${jwt}` },
       });
-
       Promise.all([getGsData, getOpsData])
         .then(([gsResp, opsResp]) => {
           setGlobalscapeDataset(gsResp.data.globalscape);

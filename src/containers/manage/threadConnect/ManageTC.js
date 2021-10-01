@@ -1,45 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Nav, Col, Card } from "react-bootstrap";
+import TcDeploy from "../deploy/TcDeploy.js";
+import FilePlacement from "../filePlacement/FilePlacement.js";
 import Orgspaceinstance from "../orgSpaceInstance/OrgSpaceInstance.js";
 import NewProvisioning from "./NewProvisioning.js";
 import UpdateManagement from "./UpdateManagement.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 function ThreadConnect(props) {
   const [count, setCount] = useState(0);
-  const [OrgSpaceValue, setOrgSpaceValue] = useState({});
+  const [OrgValue, setOrgValue] = useState("");
+  const [spaceValue, setSpaceValue] = useState("");
   const [update, setUpdate] = useState(false);
-  const [create, setCreate] = useState(false);
+  const [create, setCreate] = useState(true);
+  const [Deploy, setDeploy] = useState(false);
+  const [filePlacement, setfilePlacement] = useState(false);
+  const [resetForm, setResetForm] = useState(false);
+
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
+
+  //inside useeffect
 
   useEffect(() => {
-    props.clickEvent({
-      pageName: "ManageTC",
-      headerText: "MANAGE THREAD CONNECT",
-      subHeaderText: "GLOBAL",
-    });
+    setPageTitle("MANAGE THREAD CONNECT");
   }, []);
-  useEffect(() => {
-    // setCount(count + 1);
-    // alert("hi");
-  }, [count]);
 
   const handelChange = (e, i) => {
     setCount(i);
   };
-  const getOrgSpaceValue = (data) => {
-    setOrgSpaceValue(data);
+  const getOrgSpaceValue = (org, space) => {
+    setOrgValue(org);
+    setSpaceValue(space);
   };
   const createTc = () => {
     setUpdate(false);
     setCreate(true);
+    setDeploy(false);
+    setfilePlacement(false);
   };
   const UpdateTc = () => {
     setUpdate(true);
     setCreate(false);
+
+    setDeploy(false);
+    setfilePlacement(false);
   };
-  console.log("OrgSpaceValue", OrgSpaceValue);
+  const handelDeploy = () => {
+    setUpdate(false);
+    setCreate(false);
+    setDeploy(true);
+    setfilePlacement(false);
+  };
+  const HandelFilePlacement = () => {
+    setUpdate(false);
+    setCreate(false);
+    setDeploy(false);
+    setfilePlacement(true);
+  };
+  const handelResetForm = (value) => {
+    setResetForm(value);
+  };
+  const handelFile = () => {
+    setUpdate(false);
+    setCreate(false);
+    setDeploy(false);
+    setfilePlacement(false);
+  };
   return (
     <>
-      <div className="container-lg w-100 p-3 mb-3 tc-manage">
-        <Orgspaceinstance getOrgspaceValue={getOrgSpaceValue} />
+      <div className="container-lg w-100  mb-3 tc-manage">
+        <Orgspaceinstance
+          getOrgspaceValue={getOrgSpaceValue}
+          handelResetForm={handelResetForm}
+        />
         <Tab.Container id="left-tabs-example" defaultActiveKey="first">
           <Card className="tc-manage">
             <Card.Header className="tc-manage">
@@ -66,7 +98,11 @@ function ThreadConnect(props) {
                     </Nav.Link>
                   </Nav.Item>
                 </Col>
-                <Col md={3} className="tc-manage">
+                <Col
+                  md={3}
+                  className="tc-manage"
+                  onClick={() => handelDeploy()}
+                >
                   <Nav.Item className="card aligncenter tc-manage">
                     <Nav.Link
                       eventKey="third"
@@ -77,7 +113,11 @@ function ThreadConnect(props) {
                     </Nav.Link>
                   </Nav.Item>
                 </Col>
-                <Col md={3} className="tc-manage">
+                <Col
+                  md={3}
+                  className="tc-manage"
+                  onClick={() => HandelFilePlacement()}
+                >
                   <Nav.Item className="card aligncenter tc-manage">
                     <Nav.Link
                       eventKey="four"
@@ -91,25 +131,43 @@ function ThreadConnect(props) {
               </Nav>
             </Card.Header>
             <Card.Body className="tc-manage">
-              <Tab.Content className="tc-manage">
+              <Tab.Content className="tc-manage add-scroll">
                 <Tab.Pane eventKey="first" className="tc-manage">
-                  <NewProvisioning
-                    OrgSpaceValue={OrgSpaceValue}
-                    create={create}
-                  />
+                  <div>
+                    {create === true && OrgValue !== "" && spaceValue !== "" ? (
+                      <NewProvisioning
+                        OrgValue={OrgValue}
+                        spaceValue={spaceValue}
+                        create={create}
+                        resetForm={resetForm}
+                        handelResetForm={handelResetForm}
+                        // handelFile={handelFile}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </Tab.Pane>
                 <Tab.Pane eventKey="second" className="tc-manage">
-                  <UpdateManagement
-                    OrgSpaceValue={OrgSpaceValue}
-                    update={update}
-                  />
+                  {update === true && OrgValue !== "" && spaceValue !== "" ? (
+                    <UpdateManagement
+                      OrgValue={OrgValue}
+                      spaceValue={spaceValue}
+                      update={update}
+                      resetForm={resetForm}
+                      handelResetForm={handelResetForm}
+                      // handelFile={handelFile}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </Tab.Pane>
                 <Tab.Pane eventKey="third" className="tc-manage">
                   {" "}
-                  <h1>Deployment </h1>{" "}
+                  <TcDeploy OrgValue={OrgValue} spaceValue={spaceValue} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="four" className="tc-manage">
-                  <h1>File-Placement</h1>
+                  <FilePlacement OrgValue={OrgValue} spaceValue={spaceValue} />
                 </Tab.Pane>
               </Tab.Content>
             </Card.Body>

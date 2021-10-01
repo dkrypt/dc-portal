@@ -3,15 +3,17 @@ import { Tab, Nav, Col, Card } from "react-bootstrap";
 import Orgspaceinstance from "../orgSpaceInstance/OrgSpaceInstance.js";
 import NewSubscription from "./NewSubscription.js";
 import UpdateSubscription from "./UpdateSubscription.js";
+import { useStoreState, useStoreActions } from "easy-peasy";
 function ManageSubscription(props) {
   const [update, setUpdate] = useState(false);
   const [create, setCreate] = useState(false);
+
+  const setPageTitle = useStoreActions((actions) => actions.setPageTitle);
+
+  //inside useeffect
+
   useEffect(() => {
-    props.clickEvent({
-      pageName: "Subscription",
-      headerText: "SUBSCRIPTION",
-      subHeaderText: "GLOBAL",
-    });
+    setPageTitle("SUBSCRIPTION");
   }, []);
 
   const UpdateSub = () => {
@@ -25,7 +27,7 @@ function ManageSubscription(props) {
 
   return (
     <>
-      <div className="container-lg w-100 p-3 mb-3">
+      <div className="container-lg w-100  mb-3">
         <Tab.Container
           id="left-tabs-example"
           defaultActiveKey="first"
@@ -53,7 +55,7 @@ function ManageSubscription(props) {
               </Nav>
             </Card.Header>
             <Card.Body className="tc-manage">
-              <Tab.Content className="tc-manage">
+              <Tab.Content className="tc-manage add-scroll">
                 <Tab.Pane eventKey="first" className="tc-manage">
                   <NewSubscription
                     create={create}

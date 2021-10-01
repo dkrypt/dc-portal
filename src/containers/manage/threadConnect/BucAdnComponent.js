@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Button, Alert } from "react-bootstrap";
-import Api from "../../../middleware/ManageApi.js";
+import Api from "../../../Apis/ManageApi.js";
 const initialValues = {
   BUC: "",
   ADN: "",
+  bucAdnValidate: "",
 };
 const InitialError = {
   BUC: "",
@@ -15,13 +16,17 @@ let BucAdnComponent = (props) => {
   const [message, setMessage] = useState("");
   const [successStatus, setsuccessStatus] = useState(false);
   const [errorStatus, seterrorStatus] = useState(false);
+  const [bucAdnResponseData, setbucAdnResponseData] = useState({});
+  const [previousData, setpreviousData] = useState({});
 
   useEffect(() => {
     let obj = {
       BUC: props.bucAdnValue.BUC,
       ADN: props.bucAdnValue.ADN,
+      bucAdnValidate: props.bucAdnValue.bucAdnValidate,
     };
     setinitialData(obj);
+    setpreviousData(obj);
   }, [props.bucAdnValue]);
   const handelInputChange = (event) => {
     const { name, value } = event.target;
@@ -29,6 +34,9 @@ let BucAdnComponent = (props) => {
   };
 
   const handelValidate = (e) => {
+    // e.preventDefault();
+    // debugger;
+
     let errorData1 = {
       ...error,
     };
@@ -48,39 +56,54 @@ let BucAdnComponent = (props) => {
     ) {
       setError(errorData1);
     } else {
+      // setIsLoading(true);
       let data = {
         buc: initialData.BUC,
         adn: initialData.ADN,
       };
       Api.bucAdnValidate(data)
         .then((res) => {
+          console.log("res", res);
           if (res.status === 200 || res.status === 201) {
             if (res.data.status === "FAIL") {
+              // setIsLoading(false);
               seterrorStatus(true);
-              setMessage(res.data.message);
-              props.bucadnvalidate(
-                initialData,
-                true,
-                res.data.message,
-                "error"
-              );
+              setMessage("Error");
             } else {
-              setsuccessStatus(true);
-              if (res.data.message === "") {
-                setMessage("Validate Successfully");
+              // setIsLoading(false);
+              if (res.data.results.isValid === "TRUE") {
+                setsuccessStatus(true);
+                setMessage(res.data.results.validMsg);
+                setbucAdnResponseData("BUC And ADN Validate Succesfully");
+                let obj = {
+                  ...initialData,
+                  bucAdnValidate: "true",
+                };
+                setinitialData(obj);
                 props.bucadnvalidate(
-                  initialData,
+                  obj,
+                  true,
                   true,
                   "Validate Successfully",
-                  "success"
+                  "success",
+                  previousData
                 );
               } else {
-                setMessage(res.data.message);
+                seterrorStatus(true);
+                setbucAdnResponseData(res.data.results);
+                setMessage("BUC And ADN Not Validate");
+                let obj = {
+                  ...initialData,
+                  bucAdnValidate: "false",
+                };
+                setinitialData(obj);
                 props.bucadnvalidate(
-                  initialData,
+                  obj,
+                  false,
                   true,
-                  "Validate Successfully",
-                  "success"
+                  "BUC And ADN Not Validate",
+                  "error",
+                  previousData
                 );
               }
             }
@@ -103,7 +126,12 @@ let BucAdnComponent = (props) => {
     }, 4000);
   }
 
-  console.log("props", props);
+  // const resetForm = () => {
+  //   setinitialData(initialData);
+  // };
+
+  // console.log("props", props);
+
   return (
     <>
       <Row className="mb-4">
@@ -116,8 +144,34 @@ let BucAdnComponent = (props) => {
             id="BUC"
             onChange={handelInputChange}
             value={initialData.BUC}
-            isInvalid={!initialData.BUC && error.BUC ? error.BUC : ""}
-            isValid={!initialData.BUC && error.BUC ? error.BUC : ""}
+            // isInvalid={!initialData.BUC && error.BUC ? error.BUC : ""}
+            // isValid={!initialData.BUC && error.BUC ? error.BUC : ""}
+            // isInvalid={
+            //   initialData.bucAdnValidate === "false" ||
+            //   (initialData.BUC === "" && error.BUC !== "")
+            //     ? true
+            //     : false
+            // }
+            // isValid={
+            //   initialData.bucAdnValidate === "true" ||
+            //   (initialData.BUC === "" && error.BUC !== "")
+            //     ? true
+            //     : false
+            // }
+            isInvalid={
+              initialData.bucAdnValidate === "false" ||
+              (initialData.BUC === "" && error.BUC !== "")
+                ? true
+                : false
+            }
+            isValid={
+              initialData.bucAdnValidate === "true" ||
+              (initialData.BUC === "" && error.BUC !== "")
+                ? true
+                : previousData.BUC && previousData.BUC !== ""
+                ? true
+                : false
+            }
           />
 
           <Form.Control.Feedback type="invalid">
@@ -133,8 +187,34 @@ let BucAdnComponent = (props) => {
             id="ADN"
             onChange={handelInputChange}
             value={initialData.ADN}
-            isInvalid={!initialData.ADN && error.ADN ? error.ADN : ""}
-            isValid={!initialData.ADN && error.ADN ? error.ADN : ""}
+            // isInvalid={!initialData.ADN && error.ADN ? error.ADN : ""}
+            // isValid={!initialData.ADN && error.ADN ? error.ADN : ""}
+            // isInvalid={
+            //   initialData.bucAdnValidate === "FALSE" ||
+            //   (initialData.ADN === "" && error.ADN !== "")
+            //     ? true
+            //     : false
+            // }
+            // isValid={
+            //   initialData.bucAdnValidate === "TRUE" ||
+            //   (initialData.ADN === "" && error.ADN !== "")
+            //     ? true
+            //     : false
+            // }
+            isInvalid={
+              initialData.bucAdnValidate === "false" ||
+              (initialData.ADN === "" && error.ADN !== "")
+                ? true
+                : false
+            }
+            isValid={
+              initialData.bucAdnValidate === "true" ||
+              (initialData.ADN === "" && error.ADN !== "")
+                ? true
+                : previousData.ADN && previousData.ADN !== ""
+                ? true
+                : false
+            }
           />
 
           <Form.Control.Feedback type="invalid">

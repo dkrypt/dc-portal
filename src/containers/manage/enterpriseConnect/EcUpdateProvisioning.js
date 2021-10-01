@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Button, Alert } from "react-bootstrap";
 import BucAdnComponent from "../threadConnect/BucAdnComponent.js";
-import Api from "../../../middleware/ManageApi.js";
+import Api from "../../../Apis/ManageApi.js";
 import Creatable, { makeCreatableSelect } from "react-select/creatable";
 let initialValues = {
   projectName: "",
@@ -657,12 +657,11 @@ const EcUpdateProvisioning = (props) => {
               <Form.Group as={Col} md="4">
                 <Form.Label>Instance Name</Form.Label>
                 <select
-                  className="form-select classic select-height"
+                  className="form-select classic select-height instanceheight"
                   onChange={(e) => {
                     handelInputChange(e);
                     FindInstanceInfo(e);
                   }}
-                  style={{ height: "40px" }}
                   id="InstanceName"
                   name="InstanceName"
                   value={initialData.InstanceName}
@@ -707,12 +706,11 @@ const EcUpdateProvisioning = (props) => {
                 <Form.Label>Gate way</Form.Label>
                 <br></br>
                 <select
-                  className="form-select classic select-height"
+                  className="form-select classic select-height instanceheight"
                   onChange={(e) => {
                     handelInputChange(e);
                     FindInstanceInfo(e);
                   }}
-                  style={{ height: "40px" }}
                   id="Gateway"
                   name="Gateway"
                   value={initialData.Gateway}
@@ -735,13 +733,13 @@ const EcUpdateProvisioning = (props) => {
                 <Form.Label className="select-label">Instance Name</Form.Label>
 
                 <select
-                  className="form-select classic select-height"
+                  className="form-select classic select-height instanceheight"
                   onChange={(e) => {
                     handelInputChange(e);
                     FindInstanceInfo(e);
                   }}
                   // sele
-                  style={{ height: "40px" }}
+
                   id="InstanceName"
                   name="InstanceName"
                   value={initialData.InstanceName}
@@ -781,16 +779,15 @@ const EcUpdateProvisioning = (props) => {
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="4" style={{ marginTop: "-13px" }}>
+            <Form.Group as={Col} md="4" className="ecoperation">
               <Form.Label className="select-label">Operating System</Form.Label>
               <br></br>
               <select
-                className="form-select classic select-height"
+                className="form-select classic select-height instanceheight"
                 onChange={(e) => {
                   handelInputChange(e);
                   FindInstanceInfo(e);
                 }}
-                style={{ height: "40px" }}
                 id="OperatingSystem"
                 name="OperatingSystem"
                 value={initialData.OperatingSystem}
@@ -826,32 +823,44 @@ const EcUpdateProvisioning = (props) => {
 
           <Row className="mb-3 alignbox tc-manage">
             <Form.Group as={Col} md="4">
-              <Form.Label className="select-label">Target System Ip</Form.Label>
-
-              <br></br>
-              <Creatable
-                isClearable
-                // onChange={this.handleChange}
-                // onInputChange={this.handleInputChange}
-                options={TargetSytemIp}
-                placeholder="Select or Input TargetSytemIp"
+              <Form.Label className="select-label">IP/DNS</Form.Label>
+              <Form.Control
+                type="text"
+                id="SystemIp"
+                placeholder="SystemIp"
+                name="SystemIp"
+                value={initialData.SystemIp}
+                onChange={handelInputChange}
+                isInvalid={
+                  initialData.SystemIp === "" && error.SystemIp ? true : false
+                }
+                isValid={initialData.SystemIp ? true : false}
               />
+              <br></br>
               <Form.Control.Feedback type="invalid">
                 {initialData.SystemIp === "" && error.SystemIp
                   ? error.SystemIp
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="4" style={{ marginTop: "12px" }}>
+            <Form.Group as={Col} md="4" className="ecsystemport">
               <Form.Label>Target System Port</Form.Label>
 
               <br></br>
-              <Creatable
-                isClearable
-                // onChange={this.handleChange}
-                // onInputChange={this.handleInputChange}
-                options={TargetSytemPort}
-                placeholder="Select or Input TargetSytemPort"
+
+              <Form.Control
+                type="text"
+                id="SystemIp"
+                placeholder="SystemPort"
+                name="SystemPort"
+                value={initialData.SystemPort}
+                onChange={handelInputChange}
+                isInvalid={
+                  initialData.SystemPort === "" && error.SystemPort
+                    ? true
+                    : false
+                }
+                isValid={initialData.SystemPort ? true : false}
               />
               <Form.Control.Feedback type="invalid">
                 {initialData.SystemPort === "" && error.SystemPort
@@ -859,16 +868,16 @@ const EcUpdateProvisioning = (props) => {
                   : ""}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="1" style={{ marginTop: "50px" }}>
+            <Form.Group as={Col} md="1" className="tcsswitch">
               <Form.Check
                 type="switch"
                 id="custom-switch1"
-                label="Tcs"
+                label="TLS"
                 onChange={() => TcsHandelChange()}
               />
             </Form.Group>
             {TcsOption === true ? (
-              <Form.Group as={Col} md="3" style={{ marginTop: "18px" }}>
+              <Form.Group as={Col} md="3" className="ec-attach">
                 <Form.Label>Attach File</Form.Label>
                 <Form.Control
                   type="file"
@@ -899,118 +908,123 @@ const EcUpdateProvisioning = (props) => {
           ) : (
             ""
           )}
-          <Row className="mb-3 form-switch">
+
+          {/*
+          for future use
+           <Row className="mb-3 form-switch">
             <Form.Check
               type="switch"
               id="custom-switch"
               label="Advance Option"
-              onChange={() => advanceHandelChange()}
+              // onChange={() => advanceHandelChange()}
+              onChange={() => alert("hii")}
             />
           </Row>
-          {advanceOption === true ? (
-            <Row className="mb-3 alignbox tc-manage">
-              <Form.Group as={Col} md="2">
-                <Form.Label>Min Memory</Form.Label>
-                <Form.Control
-                  type="Number"
-                  name="minMemory"
-                  id="minMemory"
-                  value={initialData.minMemory}
-                  onChange={handelInputChange}
-                  isInvalid={
-                    !initialData.minMemory && error.minMemory
-                      ? error.minMemory
-                      : ""
-                  }
-                  isValid={initialData.minMemory ? true : false}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {!initialData.minMemory && error.minMemory
+          {advanceOption === true ? ( */}
+          <hr></hr>
+          <Row className="mb-3 alignbox tc-manage">
+            <Form.Group as={Col} md="2">
+              <Form.Label>Min Memory</Form.Label>
+              <Form.Control
+                type="Number"
+                name="minMemory"
+                id="minMemory"
+                value={initialData.minMemory}
+                onChange={handelInputChange}
+                isInvalid={
+                  !initialData.minMemory && error.minMemory
                     ? error.minMemory
-                    : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group as={Col} md="2">
-                <Form.Label>Max Memory</Form.Label>
-                <Form.Control
-                  type="Number"
-                  name="maxMemory"
-                  id="maxMemory"
-                  value={initialData.maxMemory}
-                  onChange={handelInputChange}
-                  isInvalid={
-                    !initialData.maxMemory && error.maxMemory
-                      ? error.maxMemory
-                      : ""
-                  }
-                  isValid={initialData.maxMemory ? true : false}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {!initialData.maxMemory && error.maxMemory
+                    : ""
+                }
+                isValid={initialData.minMemory ? true : false}
+              />
+              <Form.Control.Feedback type="invalid">
+                {!initialData.minMemory && error.minMemory
+                  ? error.minMemory
+                  : ""}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="2">
+              <Form.Label>Max Memory</Form.Label>
+              <Form.Control
+                type="Number"
+                name="maxMemory"
+                id="maxMemory"
+                value={initialData.maxMemory}
+                onChange={handelInputChange}
+                isInvalid={
+                  !initialData.maxMemory && error.maxMemory
                     ? error.maxMemory
-                    : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
+                    : ""
+                }
+                isValid={initialData.maxMemory ? true : false}
+              />
+              <Form.Control.Feedback type="invalid">
+                {!initialData.maxMemory && error.maxMemory
+                  ? error.maxMemory
+                  : ""}
+              </Form.Control.Feedback>
+            </Form.Group>
 
-              <Form.Group as={Col} md="2">
-                <Form.Label>Min Cpu</Form.Label>
-                <Form.Control
-                  type="Number"
-                  name="minCpu"
-                  id="minCpu"
-                  value={initialData.minCpu}
-                  onChange={handelInputChange}
-                  isInvalid={
-                    !initialData.minCpu && error.minCpu ? error.minCpu : ""
-                  }
-                  isValid={initialData.minCpu ? true : false}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {!initialData.minCpu && error.minCpu ? error.minCpu : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group as={Col} md="2">
-                <Form.Label>Max Cpu</Form.Label>
-                <Form.Control
-                  type="Number"
-                  name="maxCpu"
-                  id="maxCpu"
-                  value={initialData.maxCpu}
-                  onChange={handelInputChange}
-                  isInvalid={
-                    !initialData.maxCpu && error.maxCpu ? error.maxCpu : ""
-                  }
-                  isValid={initialData.maxCpu ? true : false}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {!initialData.maxCpu && error.maxCpu ? error.maxCpu : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group as={Col} md="2">
-                <Form.Label>Replica Count</Form.Label>
-                <Form.Control
-                  type="Number"
-                  name="replicaCount"
-                  id="replicaCount"
-                  value={initialData.replicaCount}
-                  onChange={handelInputChange}
-                  isInvalid={
-                    !initialData.replicaCount && error.replicaCount
-                      ? error.replicaCount
-                      : ""
-                  }
-                  isValid={initialData.replicaCount ? true : false}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {!initialData.replicaCount && error.replicaCount
+            <Form.Group as={Col} md="2">
+              <Form.Label>Min Cpu</Form.Label>
+              <Form.Control
+                type="Number"
+                name="minCpu"
+                id="minCpu"
+                value={initialData.minCpu}
+                onChange={handelInputChange}
+                isInvalid={
+                  !initialData.minCpu && error.minCpu ? error.minCpu : ""
+                }
+                isValid={initialData.minCpu ? true : false}
+              />
+              <Form.Control.Feedback type="invalid">
+                {!initialData.minCpu && error.minCpu ? error.minCpu : ""}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="2">
+              <Form.Label>Max Cpu</Form.Label>
+              <Form.Control
+                type="Number"
+                name="maxCpu"
+                id="maxCpu"
+                value={initialData.maxCpu}
+                onChange={handelInputChange}
+                isInvalid={
+                  !initialData.maxCpu && error.maxCpu ? error.maxCpu : ""
+                }
+                isValid={initialData.maxCpu ? true : false}
+              />
+              <Form.Control.Feedback type="invalid">
+                {!initialData.maxCpu && error.maxCpu ? error.maxCpu : ""}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col} md="2">
+              <Form.Label>Replica Count</Form.Label>
+              <Form.Control
+                type="Number"
+                name="replicaCount"
+                id="replicaCount"
+                value={initialData.replicaCount}
+                onChange={handelInputChange}
+                isInvalid={
+                  !initialData.replicaCount && error.replicaCount
                     ? error.replicaCount
-                    : ""}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Row>
-          ) : (
+                    : ""
+                }
+                isValid={initialData.replicaCount ? true : false}
+              />
+              <Form.Control.Feedback type="invalid">
+                {!initialData.replicaCount && error.replicaCount
+                  ? error.replicaCount
+                  : ""}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Row>
+          {/* ) : (
             ""
-          )}
+          )} */}
           <Row className="alignbox tc-manage">
             <Button
               type="submit"
