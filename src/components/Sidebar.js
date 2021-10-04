@@ -65,12 +65,12 @@ export default function Sidebar(props) {
       hasSubMenu: true,
       subMenuItems: [
         {
-          name: "SUBSCRIPTION",
+          name: "SUBSCRIPTIONS",
           to: "/manage/manage-subscription",
           targetBlank: false,
         },
         {
-          name: "USER",
+          name: "USERS",
           to: "/manage/manage-user",
           targetBlank: false,
         },

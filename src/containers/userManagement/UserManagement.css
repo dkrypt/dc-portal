@@ -16,19 +16,51 @@
 
 .no-subscription{
   text-decoration: none !important;
-  font-size: var(--fs-mid);
+  font-size: var(--fs-mid-2x);
   z-index: 1;
   position: unset;
 }
 
 .alerts > div{
-  font-size: var(--fs-small);
+  font-size: var(--fs-mid-1x);
 }
+
+.user-buttons{
+  font-size: var(--fs-mid-2x);
+  padding: 8% 3% !important;
+}
+
+.alerts a, .need-help a{
+	color: var(--ge-lightblue) !important;
+}
+
+.alerts a:hover, .need-help a:hover{
+  color: var(--ge-darkblue) !important;
+}
+
+.info{
+  position: relative;
+	z-index: 3;
+	color: white;
+	opacity: 0;
+	transform: translateY(30px);
+	transition: 0.5s;
+}
+
+.no-subscription .btn:hover > .button-text{
+  transition: 0.4s ease-out;
+  transform: translateY(-20px)
+}
+.no-subscription .btn:hover .info{
+  display: block;
+  opacity: 1;
+}
+
 
 .no-subscription .btn{
   background-color: var(--ge-lightblue) !important;
 }
-.no-subscription .btn:hover, .no-subscription a {
+.no-subscription .btn:hover{
   background-color: var(--ge-darkblue) !important;
 }
 

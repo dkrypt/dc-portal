@@ -13,7 +13,9 @@ import useCookie from "./DataLayer/useCookie";
 
 const BASE_ENDPOINT = process.env.REACT_APP_BASEURL;
 
-const API_ENDPOINT = "/v1.2beta/dcsc/api";
+
+const API_ENDPOINT = process.env.REACT_APP_DCURL && process.env.REACT_APP_ENV ==="development" ? `${process.env.REACT_APP_DCURL}/v1.2beta/dcsc/api`: "/v1.2beta/dcsc/api";
+console.log("API_ENDPOINT: ",API_ENDPOINT)
 const API_USER_CONTEXT_PATH = "/v1.2beta/user";
 
 export default function DCSC() {
@@ -35,7 +37,6 @@ export default function DCSC() {
   const globalDataset = useStoreState(
     (state) => state.dataStore.global.dataset
   );
-
   // get/set/clear cookie
   const [cookieValue, setCookie, clearCookie] = useCookie("ec-config");
 
@@ -45,12 +46,8 @@ export default function DCSC() {
     headerText: "",
     subHeaderText: "GLOBAL",
     subHeaderOpts: [],
-    authToken: "",
-    endPoint: API_ENDPOINT,
-    isloading: "block",
   });
   const [displayUI, setDisplayUI] = useState(false);
-  const [defaultUsername, setDefaultUsername] = useState("Steve Rogers");
 
   // Http Requests
   let datasetReqConfig = {
@@ -119,10 +116,10 @@ export default function DCSC() {
   };
 
   useEffect(() => {
-    // console.log(cookieValue)
     isLoader(true);
     setJwt(cookieValue);
     if (jwt) {
+      isLoader(true);
       executeDataset({
         url: `${API_ENDPOINT}/${parentDSKey}`,
         headers: { Authorization: `Bearer ${jwt}` },
@@ -213,8 +210,6 @@ export default function DCSC() {
                     clickEvent={switchPage}
                     persona={appState.subHeaderText}
                     setPersonaHandler={setPersonaOptions}
-                    baseUrl={appState.endPoint}
-                    authToken={appState.authToken}
                     isLoader={isLoader}
                   />
                   <CookieNotification />

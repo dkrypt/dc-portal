@@ -3,30 +3,32 @@ import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import fetchMock from 'fetch-mock';
 
-import App from '../app.js';
-import Sidebar from '../components/Sidebar.js';
-import CenterHeader from '../components/CenterHeader.js';
+import App from '../app';
+import DCSC from "../dcsc";
 
 configure({adapter: new Adapter()});
 
-describe('Testing from App.test.js <App />', () => {
+describe('Testing from App.test.js <DCSC />', () => {
 
-    it('should render the App component', () => {
-        fetchMock.get(`*`, JSON.stringify('SECONDGETOBJ'), { overwriteRoutes: false });
-        const wrapper = shallow(<App />, { disableLifecycleMethods: true });
-        expect(wrapper).toBeTruthy();
-    });
-
+    
     it('should render Header component only once', () => {
         fetchMock.get(`*`, JSON.stringify('SECONDGETOBJ'), { overwriteRoutes: false });
-        const wrapper = shallow(<App />, { disableLifecycleMethods: true });
-        expect(wrapper.find(CenterHeader).length).toBe(1);
+        const wrDCSCer = shallow(<App />, { disableLifecycleMethods: true });
+        expect(wrDCSCer.find(DCSC).length).toBe(1);
     });
 
-    it('should render Navbar component only once', () => {
+    // Will be used in future
+
+    /* it('should render the DCSC component', () => {
         fetchMock.get(`*`, JSON.stringify('SECONDGETOBJ'), { overwriteRoutes: false });
-        const wrapper = shallow(<App />, { disableLifecycleMethods: true });
-        expect(wrapper.find(Sidebar).length).toBe(1);
-    });
+        const wrDCSCer = shallow(<DCSC />, { disableLifecycleMethods: true });
+        expect(wrDCSCer).toBeTruthy();
+    }); */
+
+    /* it('should render Navbar component only once', () => {
+        fetchMock.get(`*`, JSON.stringify('SECONDGETOBJ'), { overwriteRoutes: false });
+        const wrDCSCer = shallow(<DCSC />, { disableLifecycleMethods: true });
+        expect(wrDCSCer.find(Sidebar).length).toBe(1);
+    }); */
 
 });
